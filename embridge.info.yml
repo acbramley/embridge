@@ -1,0 +1,5 @@
+name: EMBridge
+type: module
+description: Module to integrate Drupal with EnterMedia Digital Asset Management System.
+core: 8.x
+package: EMBridge

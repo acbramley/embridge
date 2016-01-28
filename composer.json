@@ -1,0 +1,14 @@
+{
+  "name": "drupal/embridge",
+  "type": "drupal-module",
+  "description": "Module to integrate Drupal with EnterMedia Digital Asset Management System.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/embridge",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "http://drupal.org/project/issues/embridge",
+    "source": "http://cgit.drupalcode.org/embridge"
+  },
+  "require": { }
+}
