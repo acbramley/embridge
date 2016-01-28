@@ -1,0 +1,5 @@
+connection:
+  url: 'http://entermedia.databasepublish.com'
+  port: 8080
+  username: 'admin'
+  password: 'admin'
