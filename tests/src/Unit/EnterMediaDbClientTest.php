@@ -52,6 +52,13 @@ class EnterMediaDbClientTest extends UnitTestCase {
   protected $emdbClient;
 
   /**
+   * Mock config.
+   *
+   * @var []
+   */
+  protected $sampleConfig;
+
+  /**
    * Sets up the test.
    */
   protected function setUp() {
@@ -61,14 +68,22 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $mockConfig = $this->getMockBuilder(ImmutableConfig::class)->disableOriginalConstructor()->getMock();
     // Create a map of arguments to return values.
     $sample_config = [
-      ['uri', 'http://www.example.com'],
-      ['port', '8080'],
+      'uri' => 'http://www.example.com',
+      'port' => '8080',
+      'username' => 'admin',
+      'password' => 'admin',
     ];
+    $this->sampleConfig = $sample_config;
 
     // Configure the stub.
     $mockConfig->expects($this->exactly(2))
       ->method('get')
-      ->will($this->returnValueMap($sample_config));
+      ->will($this->returnValueMap(
+        [
+          ['uri', $sample_config['uri']],
+          ['port', $sample_config['port']],
+        ]
+      ));
 
     $this->configFactory = $this->getMock(ConfigFactoryInterface::class);
     $this->configFactory
@@ -90,9 +105,24 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $request = $this->emdbClient->initRequest();
     $this->assertInstanceOf('\GuzzleHttp\Psr7\Request', $request);
 
-    $uri_obj = new Uri('http://www.example.com:8080');
+    $expected_uri = new Uri($this->sampleConfig['uri'] . ':' . $this->sampleConfig['port'] . '/');
     $this->assertEquals('POST', $request->getMethod());
-    $this->assertEquals($uri_obj, $request->getUri());
+    $this->assertEquals($expected_uri, $request->getUri());
+  }
+
+
+  /**
+   * Tests initRequest() with parameter.
+   *
+   * @covers ::initRequest
+   * @test
+   */
+  public function initRequestWithPathReturnsRequestObjectPopulatedWithConfig() {
+    $request = $this->emdbClient->initRequest('pleaseandthankyou');
+    $this->assertInstanceOf('\GuzzleHttp\Psr7\Request', $request);
+
+    $expected_uri = new Uri($this->sampleConfig['uri'] . ':' . $this->sampleConfig['port'] . '/pleaseandthankyou');
+    $this->assertEquals($expected_uri, $request->getUri());
   }
 
 }
