@@ -1,0 +1,4 @@
+services:
+  embridge.client:
+    class: Drupal\embridge\EnterMediaDbClient
+    arguments: ["@config.factory", "@http_client", "@serialization.json"]
