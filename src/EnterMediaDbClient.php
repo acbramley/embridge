@@ -55,7 +55,11 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
    * {@inheritdoc}
    */
   public function initRequest() {
-    $request = new Request();
+
+    $settings = $this->configFactory->get('embridge.settings');
+    $uri = $settings->get('uri');
+    $port = $settings->get('port');
+    $request = new Request('POST', sprintf('%s:%s', $uri, $port));
 
     return $request;
   }
