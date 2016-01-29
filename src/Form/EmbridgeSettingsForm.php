@@ -21,23 +21,24 @@ use GuzzleHttp\Client;
 class EmbridgeSettingsForm extends ConfigFormBase {
 
   /**
-   * GuzzleHttp\Client definition.
+   * Our webclient.
    *
-   * @var GuzzleHttp\Client
+   * @var \GuzzleHttp\Client
    */
   protected $http_client;
-  public function __construct(
-    ConfigFactoryInterface $config_factory,
-      Client $http_client
-    ) {
+
+  public function __construct(ConfigFactoryInterface $config_factory, Client $http_client) {
     parent::__construct($config_factory);
-        $this->http_client = $http_client;
+    $this->http_client = $http_client;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-            $container->get('http_client')
+      $container->get('http_client')
     );
   }
 
@@ -47,7 +48,7 @@ class EmbridgeSettingsForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'embridge.embridgesettings',
+      'embridge.settings',
     ];
   }
 
@@ -62,8 +63,13 @@ class EmbridgeSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('embridge.embridgesettings');
-    $form['url'] = array(
+    $config = $this->config('embridge.settings');
+    $form['connection'] = array(
+      '#type' => 'fieldset',
+      '#title' => $this->t('Connection'),
+      '#collapsible' => TRUE,
+    );
+    $form['connection']['url'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Server url'),
       '#description' => $this->t('EnterMedia Hostname (e.g. http://entermedia.databasepublish.com).'),
@@ -71,7 +77,7 @@ class EmbridgeSettingsForm extends ConfigFormBase {
       '#size' => 100,
       '#default_value' => $config->get('url'),
     );
-    $form['port'] = array(
+    $form['connection']['port'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Port'),
       '#description' => $this->t('EnterMedia server port (e.g. 8080).'),
@@ -79,11 +85,7 @@ class EmbridgeSettingsForm extends ConfigFormBase {
       '#size' => 7,
       '#default_value' => $config->get('port'),
     );
-    $form['login_details'] = array(
-      '#type' => 'fieldset',
-      '#title' => $this->t('Login details'),
-    );
-    $form['username'] = array(
+    $form['connection']['username'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Username'),
       '#description' => $this->t('Login for EnterMedia service.'),
@@ -91,8 +93,8 @@ class EmbridgeSettingsForm extends ConfigFormBase {
       '#size' => 64,
       '#default_value' => $config->get('username'),
     );
-    $form['password'] = array(
-      '#type' => 'textfield',
+    $form['connection']['password'] = array(
+      '#type' => 'password',
       '#title' => $this->t('Password'),
       '#description' => $this->t('Password for EnterMedia service.'),
       '#maxlength' => 64,
@@ -115,10 +117,9 @@ class EmbridgeSettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    $this->config('embridge.embridgesettings')
+    $this->config('embridge.settings')
       ->set('url', $form_state->getValue('url'))
       ->set('port', $form_state->getValue('port'))
-      ->set('login_details', $form_state->getValue('login_details'))
       ->set('username', $form_state->getValue('username'))
       ->set('password', $form_state->getValue('password'))
       ->save();
