@@ -156,4 +156,34 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->assertTrue($this->emdbClient->login());
   }
 
+
+  /**
+   * Tests login() failure.
+   *
+   * @covers ::login
+   * @test
+   */
+  public function loginReturnsFalseWhenClientReturnsFailedXml() {
+
+    $request = new Request('POST', 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin');
+    $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mockResponse
+      ->expects($this->once())
+      ->method('getStatusCode')
+      ->willReturn(200);
+
+    $mockResponse
+      ->expects($this->once())
+      ->method('getBody')
+      ->willReturn(file_get_contents('expected/login-expected-bad-response.xml', TRUE));
+
+    $this->client
+      ->expects($this->once())
+      ->method('send')
+      ->with($request)
+      ->willReturn($mockResponse);
+
+    $this->assertFalse($this->emdbClient->login());
+  }
+
 }
