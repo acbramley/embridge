@@ -57,23 +57,17 @@ class EnterMediaDbClientTest extends UnitTestCase {
     parent::setUp();
     $this->client = $this->getMock(ClientInterface::class);
     $this->serializer = new Json();
-    $sample_config = [
-      'url' => 'www.example.com',
-      'port' => '8080',
-      'username' => 'admin',
-      'password' => 'admin',
-    ];
     $mockConfig = $this->getMockBuilder(ImmutableConfig::class)->disableOriginalConstructor()->getMock();
-    $mockConfig
-      ->expects($this->once())
+    // Create a map of arguments to return values.
+    $sample_config = [
+      ['uri', 'http://www.example.com'],
+      ['port' => '8080'],
+    ];
+
+    // Configure the stub.
+    $mockConfig->expects($this->exactly(2))
       ->method('get')
-      ->with('url')
-      ->willReturn($sample_config['url']);
-    $mockConfig
-      ->expects($this->once())
-      ->method('get')
-      ->with('port')
-      ->willReturn($sample_config['port']);
+      ->will($this->returnValueMap($sample_config));
 
     $this->configFactory = $this->getMock(ConfigFactoryInterface::class);
     $this->configFactory
@@ -95,7 +89,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $request = $this->emdbClient->initRequest();
     $this->assertInstanceOf('\GuzzleHttp\Psr7\Request', $request);
 
-    $this->assertEquals('GET', $request->getMethod());
+    $this->assertEquals('POST', $request->getMethod());
     $this->assertEquals('www.example.com:8080', $request->getUri());
   }
 
