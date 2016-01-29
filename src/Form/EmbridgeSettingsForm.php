@@ -70,13 +70,13 @@ class EmbridgeSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Connection'),
       '#collapsible' => TRUE,
     );
-    $form['connection']['url'] = array(
+    $form['connection']['uri'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('Server url'),
+      '#title' => $this->t('Server uri'),
       '#description' => $this->t('EnterMedia Hostname (e.g. http://entermedia.databasepublish.com).'),
       '#maxlength' => 255,
       '#size' => 100,
-      '#default_value' => $config->get('url'),
+      '#default_value' => $config->get('uri'),
     );
     $form['connection']['port'] = array(
       '#type' => 'textfield',
@@ -119,7 +119,7 @@ class EmbridgeSettingsForm extends ConfigFormBase {
     parent::submitForm($form, $form_state);
 
     $this->config('embridge.settings')
-      ->set('url', $form_state->getValue('url'))
+      ->set('uri', $form_state->getValue('uri'))
       ->set('port', $form_state->getValue('port'))
       ->set('username', $form_state->getValue('username'))
       ->set('password', $form_state->getValue('password'))
