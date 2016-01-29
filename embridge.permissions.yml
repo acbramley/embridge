@@ -1,0 +1,4 @@
+
+administer embridge settings:
+  title: 'Administer EMBridge settings'
+  description: 'Allow access to the EMBridge configuration page.'
