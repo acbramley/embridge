@@ -13,6 +13,7 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\embridge\EnterMediaDbClient;
 use Drupal\Tests\UnitTestCase;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 
 /**
@@ -76,18 +77,20 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->sampleConfig = $sample_config;
 
     // Configure the stub.
-    $mockConfig->expects($this->exactly(2))
+    $mockConfig->expects($this->any())
       ->method('get')
       ->will($this->returnValueMap(
         [
           ['uri', $sample_config['uri']],
           ['port', $sample_config['port']],
+          ['username', $sample_config['username']],
+          ['password', $sample_config['password']],
         ]
       ));
 
     $this->configFactory = $this->getMock(ConfigFactoryInterface::class);
     $this->configFactory
-      ->expects($this->once())
+      ->expects($this->any())
       ->method('get')
       ->with('embridge.settings')
       ->willReturn($mockConfig);
@@ -110,7 +113,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->assertEquals($expected_uri, $request->getUri());
   }
 
-
   /**
    * Tests initRequest() with parameter.
    *
@@ -123,6 +125,35 @@ class EnterMediaDbClientTest extends UnitTestCase {
 
     $expected_uri = new Uri($this->sampleConfig['uri'] . ':' . $this->sampleConfig['port'] . '/pleaseandthankyou');
     $this->assertEquals($expected_uri, $request->getUri());
+  }
+
+  /**
+   * Tests login() success.
+   *
+   * @covers ::login
+   * @test
+   */
+  public function loginReturnsTrueWhenClientReturns200AndValidXml() {
+
+    $request = new Request('POST', 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin');
+    $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mockResponse
+      ->expects($this->once())
+      ->method('getStatusCode')
+      ->willReturn(200);
+
+    $mockResponse
+      ->expects($this->once())
+      ->method('getBody')
+      ->willReturn(file_get_contents('expected/login-expected-good-response.xml', TRUE));
+
+    $this->client
+      ->expects($this->once())
+      ->method('send')
+      ->with($request)
+      ->willReturn($mockResponse);
+
+    $this->assertTrue($this->emdbClient->login());
   }
 
 }
