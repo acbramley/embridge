@@ -16,8 +16,11 @@ interface EnterMediaDbClientInterface {
   /**
    * Initialises a Request object with the configuration.
    *
+   * @param string $path
+   *   An optional path relative to the base uri in configuration.
+   *
    * @return \GuzzleHttp\Psr7\Request
    */
-  public function initRequest();
+  public function initRequest($path = '');
 
 }

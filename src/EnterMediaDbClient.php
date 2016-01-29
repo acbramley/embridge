@@ -14,6 +14,8 @@ use GuzzleHttp\Psr7\Request;
 
 class EnterMediaDbClient implements EnterMediaDbClientInterface {
 
+  const EMBRIDGE_LOGIN_PATH_DEFAULT = '/media/services/rest/login.xml';
+
   /**
    * Config Factory.
    *
@@ -54,12 +56,12 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   /**
    * {@inheritdoc}
    */
-  public function initRequest() {
+  public function initRequest($path = '') {
 
     $settings = $this->configFactory->get('embridge.settings');
     $uri = $settings->get('uri');
     $port = $settings->get('port');
-    $request = new Request('POST', sprintf('%s:%s', $uri, $port));
+    $request = new Request('POST', sprintf('%s:%s/%s', $uri, $port, $path));
 
     return $request;
   }
