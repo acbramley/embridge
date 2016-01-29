@@ -11,6 +11,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\embridge\EnterMediaDbClient;
+use Drupal\embridge\EnterMediaDbClientInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -23,11 +24,11 @@ class EmbridgeSettingsForm extends ConfigFormBase {
   /**
    * Our EMDB client.
    *
-   * @var \Drupal\embridge\EnterMediaDbClient
+   * @var EnterMediaDbClientInterface
    */
   protected $client;
 
-  public function __construct(ConfigFactoryInterface $config_factory, EnterMediaDbClient $client) {
+  public function __construct(ConfigFactoryInterface $config_factory, EnterMediaDbClientInterface $client) {
     parent::__construct($config_factory);
     $this->client = $client;
   }
