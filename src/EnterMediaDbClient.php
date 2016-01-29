@@ -12,12 +12,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 
-/**
- * Class EnterMediaDbClient.
- *
- * @package Drupal\embridge
- */
-class EnterMediaDbClient {
+class EnterMediaDbClient implements EnterMediaDbClientInterface {
 
   /**
    * Config Factory.
@@ -57,11 +52,9 @@ class EnterMediaDbClient {
   }
 
   /**
-   * Initialises a Request object with the configuration.
-   *
-   * @return \GuzzleHttp\Psr7\Request
+   * {@inheritdoc}
    */
-  private function initRequest() {
+  public function initRequest() {
     $request = new Request();
 
     return $request;
