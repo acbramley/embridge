@@ -23,4 +23,11 @@ interface EnterMediaDbClientInterface {
    */
   public function initRequest($path = '');
 
+  /**
+   * Logs into the EMDB instance.
+   *
+   * @return bool
+   *   Whether the login was successful or not.
+   */
+  public function login();
 }
