@@ -84,9 +84,15 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     if ($response->getStatusCode() != '200') {
       throw new \Exception('An unexpected response was returned from the Entity Pilot backend');
     }
-    $body = (string) $response->getBody();
 
-    return TRUE;
+    $body = (string) $response->getBody();
+    $xml_obj = simplexml_load_string($body);
+    $xml_arr = (array) $xml_obj;
+    if (!empty($xml_arr['@attributes']['stat']) && $xml_arr['@attributes']['stat'] == 'ok') {
+      return TRUE;
+    }
+
+    return FALSE;
   }
 
   /**
