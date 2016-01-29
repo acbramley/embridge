@@ -13,6 +13,7 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\embridge\EnterMediaDbClient;
 use Drupal\Tests\UnitTestCase;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Uri;
 
 /**
  * Class EnterMediaDbClientTest
@@ -61,7 +62,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
     // Create a map of arguments to return values.
     $sample_config = [
       ['uri', 'http://www.example.com'],
-      ['port' => '8080'],
+      ['port', '8080'],
     ];
 
     // Configure the stub.
@@ -89,8 +90,9 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $request = $this->emdbClient->initRequest();
     $this->assertInstanceOf('\GuzzleHttp\Psr7\Request', $request);
 
+    $uri_obj = new Uri('http://www.example.com:8080');
     $this->assertEquals('POST', $request->getMethod());
-    $this->assertEquals('www.example.com:8080', $request->getUri());
+    $this->assertEquals($uri_obj, $request->getUri());
   }
 
 }
