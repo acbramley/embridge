@@ -13,6 +13,7 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\embridge\EnterMediaDbClient;
 use Drupal\Tests\UnitTestCase;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 
@@ -156,7 +157,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->assertTrue($this->emdbClient->login());
   }
 
-
   /**
    * Tests login() failure.
    *
@@ -184,6 +184,76 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->willReturn($mockResponse);
 
     $this->assertFalse($this->emdbClient->login());
+  }
+
+  /**
+   * Tests login() failure.
+   *
+   * @covers ::login
+   * @test
+   */
+  public function loginThrowsExceptionWhenResponseReturnsNon200Code() {
+
+    $request = new Request('POST', 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin');
+    $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mockResponse
+      ->expects($this->once())
+      ->method('getStatusCode')
+      ->willReturn(403);
+
+    $this->client
+      ->expects($this->once())
+      ->method('send')
+      ->with($request)
+      ->willReturn($mockResponse);
+
+    $this->setExpectedException('Exception', 'An unexpected response was returned from the Entity Pilot backend');
+    $this->emdbClient->login();
+  }
+
+  /**
+   * Tests login() failure.
+   *
+   * @covers ::login
+   * @test
+   */
+  public function loginThrowsExceptionWhenSendFailsAndResponseIsNull() {
+
+    $request = new Request('POST', 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin');
+
+    $this->client
+      ->expects($this->once())
+      ->method('send')
+      ->with($request)
+      ->willThrowException(new RequestException('', $request, NULL));
+
+    $this->setExpectedException('Exception', 'Error connecting to EMDB backend');
+    $this->emdbClient->login();
+  }
+
+  /**
+   * Tests login() failure.
+   *
+   * @covers ::login
+   * @test
+   */
+  public function loginThrowsExceptionWhenSendFailsAndResponseCodeIs403() {
+
+    $request = new Request('POST', 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin');
+    $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mockResponse
+      ->expects($this->exactly(2))
+      ->method('getStatusCode')
+      ->willReturn(403);
+
+    $this->client
+      ->expects($this->once())
+      ->method('send')
+      ->with($request)
+      ->willThrowException(new RequestException('', $request, $mockResponse));
+
+    $this->setExpectedException('Exception', 'Failed to authenticate with EMDB, please check your settings.');
+    $this->emdbClient->login();
   }
 
 }
