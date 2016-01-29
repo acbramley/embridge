@@ -69,8 +69,11 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     $login_path = self::EMBRIDGE_LOGIN_PATH_DEFAULT . '?' . $query;
 
     $request = $this->initRequest($login_path);
+    $options = [
+      'timeout' => 5,
+    ];
     try {
-      $response = $this->httpClient->send($request);
+      $response = $this->httpClient->send($request, $options);
     }
     catch (RequestException $e) {
       $response = $e->getResponse();
