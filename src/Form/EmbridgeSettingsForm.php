@@ -10,8 +10,8 @@ namespace Drupal\embridge\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\embridge\EnterMediaDbClient;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use GuzzleHttp\Client;
 
 /**
  * Class EmbridgeSettingsForm.
@@ -21,15 +21,15 @@ use GuzzleHttp\Client;
 class EmbridgeSettingsForm extends ConfigFormBase {
 
   /**
-   * Our webclient.
+   * Our EMDB client.
    *
-   * @var \GuzzleHttp\Client
+   * @var \Drupal\embridge\EnterMediaDbClient
    */
-  protected $http_client;
+  protected $client;
 
-  public function __construct(ConfigFactoryInterface $config_factory, Client $http_client) {
+  public function __construct(ConfigFactoryInterface $config_factory, EnterMediaDbClient $client) {
     parent::__construct($config_factory);
-    $this->http_client = $http_client;
+    $this->client = $client;
   }
 
   /**
@@ -38,7 +38,7 @@ class EmbridgeSettingsForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('http_client')
+      $container->get('embridge.client')
     );
   }
 
