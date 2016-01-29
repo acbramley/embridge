@@ -28,6 +28,9 @@ interface EnterMediaDbClientInterface {
    *
    * @return bool
    *   Whether the login was successful or not.
+   *
+   * @throws \Exception
+   *   When the login fails in various ways.
    */
   public function login();
 }
