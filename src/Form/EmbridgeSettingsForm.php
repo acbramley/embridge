@@ -71,7 +71,7 @@ class EmbridgeSettingsForm extends ConfigFormBase {
       '#collapsible' => TRUE,
     );
     $form['connection']['uri'] = array(
-      '#type' => 'textfield',
+      '#type' => 'url',
       '#title' => $this->t('Server uri'),
       '#description' => $this->t('EnterMedia Hostname (e.g. http://entermedia.databasepublish.com).'),
       '#maxlength' => 255,
@@ -79,7 +79,7 @@ class EmbridgeSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('uri'),
     );
     $form['connection']['port'] = array(
-      '#type' => 'textfield',
+      '#type' => 'number',
       '#title' => $this->t('Port'),
       '#description' => $this->t('EnterMedia server port (e.g. 8080).'),
       '#maxlength' => 64,
