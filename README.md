@@ -1,11 +1,11 @@
-## SUMMARY
+### Summary
 
 The EMBridge module (located here),extends the image management functionalities
 of Drupal by connecting it to EnterMedia, an open-source digital asset management
 system distributed under the GNU General Public License, used to search, manage, 
 reuse, and track all digital files.
 
-## EMBRIDGE CONFIGURATION
+### EMBridge Configuration
 
 * Go to Administer > Configuration > Web Services > EMBridge Settings
 
@@ -22,6 +22,6 @@ reuse, and track all digital files.
   - Search Result Fields: selected fields will be included in EnterMedia Search
   result.
 
-## EMBRIDGE_FIELD CONFIGURATION
+### EMBridge Field Configuration
 
 COMING SOON.
