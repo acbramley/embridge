@@ -9,11 +9,9 @@ namespace Drupal\embridge\Plugin\Field\FieldWidget;
 
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\embridge\Element\EmbridgeAsset;
-use Drupal\file\Element\ManagedFile;
 use Drupal\file\Plugin\Field\FieldWidget\FileWidget;
 
 /**
@@ -70,6 +68,7 @@ class EmbridgeAssetWidget extends FileWidget {
       '#display_default' => $field_settings['display_default'],
       '#description_field' => $field_settings['description_field'],
       '#cardinality' => $cardinality,
+      '#catalog_id' => $field_settings['catalog_id'],
     );
 
     $element['#weight'] = $delta;
