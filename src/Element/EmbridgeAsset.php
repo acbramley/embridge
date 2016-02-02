@@ -349,6 +349,7 @@ class EmbridgeAsset extends FormElement {
    *   ID, or FALSE if no files were saved.
    */
   public static function saveFileUpload($element, FormStateInterface $form_state) {
+    $catalog_id = $element['#catalog_id'];
     $upload_name = implode('_', $element['#parents']);
     $file_upload = \Drupal::request()->files->get("files[$upload_name]", NULL, TRUE);
     if (empty($file_upload)) {
@@ -366,7 +367,7 @@ class EmbridgeAsset extends FormElement {
     $files_uploaded = $element['#multiple'] && count(array_filter($file_upload)) > 0;
     $files_uploaded |= !$element['#multiple'] && !empty($file_upload);
     if ($files_uploaded) {
-      if (!$files = self::saveUpload($upload_name, $element['#upload_validators'], $destination)) {
+      if (!$files = self::saveUpload($upload_name, $catalog_id, $element['#upload_validators'], $destination)) {
         \Drupal::logger('file')->notice('The file upload failed. %upload', array('%upload' => $upload_name));
         $form_state->setError($element, t('Files in the @name field were unable to be uploaded.', array('@name' => $element['#title'])));
         return array();
@@ -392,6 +393,8 @@ class EmbridgeAsset extends FormElement {
    * @param string $form_field_name
    *   A string that is the associative array key of the upload form element in
    *   the form array.
+   * @param string $catalog_id
+   *   EnterMedia Catalog ID.
    * @param array $validators
    *   An optional, associative array of callback functions used to validate the
    *   file. See file_validate() for a full discussion of the array format.
@@ -401,7 +404,7 @@ class EmbridgeAsset extends FormElement {
    *   explicitly set the 'file_validate_extensions' validator to an empty array
    *   (Beware: this is not safe and should only be allowed for trusted users, if
    *   at all).
-   * @param string|bool $destination
+   * @param string|bool $destination_dir
    *   A string containing the URI that the file should be copied to. This must
    *   be a stream wrapper URI. If this value is omitted, Drupal's temporary
    *   files scheme will be used ("temporary://").
@@ -427,7 +430,7 @@ class EmbridgeAsset extends FormElement {
    *   - source: Path to the file before it is moved.
    *   - destination: Path to the file after it is moved (same as 'uri').
    */
-  public static function saveUpload($form_field_name, $validators = array(), $destination = FALSE, $delta = NULL, $replace = FILE_EXISTS_RENAME) {
+  public static function saveUpload($form_field_name, $catalog_id, $validators = array(), $destination_dir = FALSE, $delta = NULL, $replace = FILE_EXISTS_RENAME) {
     $user = \Drupal::currentUser();
     static $upload_cache;
 
@@ -543,28 +546,28 @@ class EmbridgeAsset extends FormElement {
       }
 
       // If the destination is not provided, use the temporary directory.
-      if (empty($destination)) {
-        $destination = 'temporary://';
+      if (empty($destination_dir)) {
+        $destination_dir = 'temporary://';
       }
 
       // Assert that the destination contains a valid stream.
-      $destination_scheme = file_uri_scheme($destination);
+      $destination_scheme = file_uri_scheme($destination_dir);
       if (!file_stream_wrapper_valid_scheme($destination_scheme)) {
-        drupal_set_message(t('The file could not be uploaded because the destination %destination is invalid.', array('%destination' => $destination)), 'error');
+        drupal_set_message(t('The file could not be uploaded because the destination %destination is invalid.', array('%destination' => $destination_dir)), 'error');
         $files[$i] = FALSE;
         continue;
       }
 
       $file->source = $form_field_name;
       // A file URI may already have a trailing slash or look like "public://".
-      if (substr($destination, -1) != '/') {
-        $destination .= '/';
+      if (substr($destination_dir, -1) != '/') {
+        $destination_dir .= '/';
       }
-      $file->destination = file_destination($destination . $file->getFilename(), $replace);
+      $file_destination = file_destination($destination_dir . $file->getFilename(), $replace);
       // If file_destination() returns FALSE then $replace === FILE_EXISTS_ERROR and
       // there's an existing file so we need to bail.
-      if ($file->destination === FALSE) {
-        drupal_set_message(t('The file %source could not be uploaded because a file by that name already exists in the destination %directory.', array('%source' => $form_field_name, '%directory' => $destination)), 'error');
+      if ($file_destination === FALSE) {
+        drupal_set_message(t('The file %source could not be uploaded because a file by that name already exists in the destination %directory.', array('%source' => $form_field_name, '%directory' => $destination_dir)), 'error');
         $files[$i] = FALSE;
         continue;
       }
@@ -597,7 +600,7 @@ class EmbridgeAsset extends FormElement {
       // Move uploaded files from PHP's upload_tmp_dir to Drupal's temporary
       // directory. This overcomes open_basedir restrictions for future file
       // operations.
-      $file->setSourcePath($file->destination);
+      $file->setSourcePath($file_destination);
       if (!drupal_move_uploaded_file($file_info->getRealPath(), $file->getSourcePath())) {
         drupal_set_message(t('File upload error. Could not move uploaded file.'), 'error');
         \Drupal::logger('file')->notice('Upload error. Could not move uploaded file %file to destination %destination.', array('%file' => $file->getFilename(), '%destination' => $file->getFileUri()));
