@@ -6,6 +6,8 @@
 
 namespace Drupal\embridge;
 
+use Drupal\embridge\Entity\EmbridgeAssetEntity;
+
 /**
  * Class EnterMediaDbClient.
  *
@@ -33,4 +35,12 @@ interface EnterMediaDbClientInterface {
    *   When the login fails in various ways.
    */
   public function login();
+
+  /**
+   * Uploads a file to the EMDB instance.
+   *
+   * @return EmbridgeAssetEntityInterface[]|bool
+   *  An array of asset entities that were saved, or FALSE if the upload failed.
+   */
+  public function upload();
 }

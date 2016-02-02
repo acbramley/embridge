@@ -10,6 +10,7 @@ namespace Drupal\embridge;
 use Drupal\Component\Serialization\SerializationInterface;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\embridge\Entity\EmbridgeAssetEntity;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
@@ -40,6 +41,13 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   protected $jsonEncoder;
 
   /**
+   * Whether we have logged in or not.
+   *
+   * @var bool
+   */
+  protected $loggedIn;
+
+  /**
    * Constructs a new \Drupal\entity_pilot\Transport object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
@@ -53,12 +61,29 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     $this->configFactory = $config_factory;
     $this->jsonEncoder = $serializer;
     $this->httpClient = $client;
+    $this->loggedIn = FALSE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function initRequest($path = '') {
+    $settings = $this->configFactory->get('embridge.settings');
+    $uri = $settings->get('uri');
+    $port = $settings->get('port');
+    $request = new Request('POST', sprintf('%s:%s/%s', $uri, $port, $path));
+
+    return $request;
   }
 
   /**
    * {@inheritdoc}
    */
   public function login() {
+    if ($this->loggedIn) {
+      return TRUE;
+    }
+
     $config = $this->configFactory->get('embridge.settings');
     $query_params = [
       'catalogid' => 'media',
@@ -92,6 +117,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     $xml_obj = simplexml_load_string($body);
     $xml_arr = (array) $xml_obj;
     if (!empty($xml_arr['@attributes']['stat']) && $xml_arr['@attributes']['stat'] == 'ok') {
+      $this->loggedIn = TRUE;
       return TRUE;
     }
 
@@ -99,14 +125,14 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * Uploads a file to the EMDB instance.
+   *
+   * @return EmbridgeAssetEntityInterface[]|bool
+   *  An array of asset entities that were saved, or FALSE if the upload failed.
    */
-  public function initRequest($path = '') {
-    $settings = $this->configFactory->get('embridge.settings');
-    $uri = $settings->get('uri');
-    $port = $settings->get('port');
-    $request = new Request('POST', sprintf('%s:%s/%s', $uri, $port, $path));
+  public function upload() {
+    $this->login();
 
-    return $request;
+    
   }
 }
