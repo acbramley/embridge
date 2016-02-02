@@ -12,6 +12,8 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\embridge\Element\EmbridgeAsset;
+use Drupal\embridge\EmbridgeAssetEntityInterface;
+use Drupal\embridge\Entity\EmbridgeAssetEntity;
 use Drupal\file\Plugin\Field\FieldWidget\FileWidget;
 
 /**
@@ -98,10 +100,21 @@ class EmbridgeAssetWidget extends FileWidget {
     return $element;
   }
 
+
   /**
    * Form API callback. Retrieves the value for the file_generic field element.
    *
    * This method is assigned as a #value_callback in formElement() method.
+   *
+   * @param array $element
+   *   The element.
+   * @param array|bool $input
+   *   An array of input values, or FALSE.
+   * @param FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return array|mixed|null
+   *   An array values for the widget.
    */
   public static function value($element, $input = FALSE, FormStateInterface $form_state) {
     if ($input) {
@@ -130,6 +143,13 @@ class EmbridgeAssetWidget extends FileWidget {
    * if user has uploaded more files than allowed.
    *
    * This validator is used only when cardinality not set to 1 or unlimited.
+   *
+   * @param array $element
+   *   The element.
+   * @param FormStateInterface $form_state
+   *   The form state.
+   * @param array $form
+   *   The form.
    */
   public static function validateMultipleCount($element, FormStateInterface $form_state, $form) {
     $parents = $element['#parents'];
@@ -145,9 +165,10 @@ class EmbridgeAssetWidget extends FileWidget {
       $keep = $uploaded - $count + $field_storage->getCardinality();
       $removed_files = array_slice($values['fids'], $keep);
       $removed_names = array();
-      foreach ($removed_files as $fid) {
-        $file = File::load($fid);
-        $removed_names[] = $file->getFilename();
+      foreach ($removed_files as $id) {
+        /** @var EmbridgeAssetEntityInterface $asset */
+        $asset = EmbridgeAssetEntity::load($id);
+        $removed_names[] = $asset->getFilename();
       }
       $args = array('%field' => $field_storage->getName(), '@max' => $field_storage->getCardinality(), '@count' => $uploaded, '%list' => implode(', ', $removed_names));
       $message = t('Field %field can only hold @max values but there were @count uploaded. The following files have been omitted as a result: %list.', $args);
