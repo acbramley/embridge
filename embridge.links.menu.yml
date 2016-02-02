@@ -4,4 +4,3 @@ embridge.embridge_settings_form:
   description: 'Manage EnterMedia settings.'
   parent: system.admin_config_services
   weight: 99
-

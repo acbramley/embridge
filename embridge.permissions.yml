@@ -2,3 +2,6 @@
 administer embridge settings:
   title: 'Administer EMBridge settings'
   description: 'Allow access to the EMBridge configuration page.'
+access embridge asset overview:
+  title: 'Access the Embridge Asset overview'
+  description: 'Get an overview of all embridge assets.'
