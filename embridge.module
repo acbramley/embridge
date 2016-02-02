@@ -1,0 +1,73 @@
+<?php
+/**
+ * @file
+ * EMBridge module file.
+ */
+
+use \Drupal\Core\Url;
+use \Drupal\Core\Link;
+use \Drupal\embridge\Entity\EmbridgeAssetEntity;
+use \Drupal\Core\Template\Attribute;
+
+/**
+ * Implements hook_theme().
+ */
+function embridge_theme() {
+  return array(
+    // From file.module.
+    'embridge_file_link' => array(
+      'variables' => array('asset' => NULL),
+    ),
+  );
+}
+
+/**
+ * Prepares variables for file link templates.
+ *
+ * Default template: file-link.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - asset: An EMbridge Asset Entity object to which the link will be created.
+ *   - icon_directory: (optional) A path to a directory of icons to be used for
+ *     files. Defaults to the value of the "icon.directory" variable.
+ *   - description: A description to be displayed instead of the filename.
+ *   - attributes: An associative array of attributes to be placed in the a tag.
+ */
+function template_preprocess_file_link(&$variables) {
+  $asset = $variables['asset'];
+  $options = array();
+
+  $asset_entity = ($asset instanceof EmbridgeAssetEntity) ? $asset : EmbridgeAssetEntity::load($asset->id);
+  $url = $asset_entity->getSourcePath();
+
+  $mime_type = $asset->getMimeType();
+  // Set options as per anchor format described at
+  // http://microformats.org/wiki/file-format-examples
+  $options['attributes']['type'] = $mime_type . '; length=' . $asset->getSize();
+
+  // Use the description as the link text if available.
+  if (empty($variables['description'])) {
+    $link_text = $asset_entity->getFilename();
+  }
+  else {
+    $link_text = $variables['description'];
+    $options['attributes']['title'] = $asset_entity->getFilename();
+  }
+
+  // Classes to add to the file field for icons.
+  $classes = array(
+    'file',
+    // Add a specific class for each and every mime type.
+    'file--mime-' . strtr($mime_type, array('/' => '-', '.' => '-')),
+    // Add a more general class for groups of well known mime types.
+    'file--' . file_icon_class($mime_type),
+  );
+
+  // Set file classes to the options array.
+  $variables['attributes'] = new Attribute($variables['attributes']);
+  $variables['attributes']->addClass($classes);
+
+  $link = Link::fromTextAndUrl($link_text, Url::fromUri($url, $options));
+  $variables['link'] = $link;
+}
