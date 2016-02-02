@@ -248,7 +248,7 @@ class EmbridgeAsset extends FormElement {
       foreach ($element['#files'] as $delta => $file) {
         $file_link = [
           '#theme' => 'embridge_file_link',
-          '#file' => $file,
+          '#asset' => $file,
         ];
         if ($element['#multiple']) {
           $element['file_' . $delta]['selected'] = [
@@ -367,17 +367,17 @@ class EmbridgeAsset extends FormElement {
     $files_uploaded = $element['#multiple'] && count(array_filter($file_upload)) > 0;
     $files_uploaded |= !$element['#multiple'] && !empty($file_upload);
     if ($files_uploaded) {
-      if (!$files = self::saveUpload($upload_name, $catalog_id, $element['#upload_validators'], $destination)) {
+      if (!$assets = self::saveUpload($upload_name, $catalog_id, $element['#upload_validators'], $destination)) {
         \Drupal::logger('file')->notice('The file upload failed. %upload', array('%upload' => $upload_name));
         $form_state->setError($element, t('Files in the @name field were unable to be uploaded.', array('@name' => $element['#title'])));
         return array();
       }
 
       // Value callback expects FIDs to be keys.
-      $files = array_filter($files);
-      $fids = array_map(function($file) { return $file->id(); }, $files);
+      $assets = array_filter($assets);
+      $fids = array_map(function($asset) { return $asset->id(); }, $assets);
 
-      return empty($files) ? array() : array_combine($fids, $files);
+      return empty($assets) ? array() : array_combine($fids, $assets);
     }
 
     return array();
@@ -417,7 +417,7 @@ class EmbridgeAsset extends FormElement {
    *     unique.
    *   - FILE_EXISTS_ERROR: Do nothing and return FALSE.
    *
-   * @return array
+   * @return EmbridgeAssetEntityInterface[]
    *   Function returns array of files or a single file object if $delta
    *   != NULL. Each file object contains the file information if the
    *   upload succeeded or FALSE in the event of an error. Function
@@ -558,7 +558,6 @@ class EmbridgeAsset extends FormElement {
         continue;
       }
 
-      $file->source = $form_field_name;
       // A file URI may already have a trailing slash or look like "public://".
       if (substr($destination_dir, -1) != '/') {
         $destination_dir .= '/';
@@ -618,7 +617,6 @@ class EmbridgeAsset extends FormElement {
         $existing_files = entity_load_multiple_by_properties('embridge_asset_entity', array('uri' => $file->getSourcePath()));
         if (count($existing_files)) {
           $existing = reset($existing_files);
-          $file->fid = $existing->id();
           $file->setOriginalId($existing->id());
         }
       }
