@@ -39,7 +39,8 @@ function template_preprocess_embridge_file_link(&$variables) {
   $options = array();
 
   $asset_entity = ($asset instanceof EmbridgeAssetEntity) ? $asset : EmbridgeAssetEntity::load($asset->id);
-  $url = $asset_entity->getSourcePath();
+  // TODO: Remove once we have urls from EMDB.
+  $url = file_create_url($asset_entity->getSourcePath());
 
   $mime_type = $asset->getMimeType();
   // Set options as per anchor format described at
