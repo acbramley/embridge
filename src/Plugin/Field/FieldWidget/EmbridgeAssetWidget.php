@@ -11,6 +11,7 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Render\ElementInfoManagerInterface;
 use Drupal\embridge\Element\EmbridgeAsset;
 use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\Entity\EmbridgeAssetEntity;
@@ -28,6 +29,11 @@ use Drupal\file\Plugin\Field\FieldWidget\FileWidget;
  * )
  */
 class EmbridgeAssetWidget extends FileWidget {
+
+  /**
+   * @var ElementInfoManagerInterface
+   */
+  protected $elementInfo;
 
   /**
    * {@inheritdoc}
