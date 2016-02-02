@@ -39,8 +39,7 @@ interface EnterMediaDbClientInterface {
   /**
    * Uploads a file to the EMDB instance.
    *
-   * @return EmbridgeAssetEntityInterface[]|bool
-   *  An array of asset entities that were saved, or FALSE if the upload failed.
+   * @param EmbridgeAssetEntityInterface $file
    */
-  public function upload();
+  public function upload(EmbridgeAssetEntityInterface $file);
 }
