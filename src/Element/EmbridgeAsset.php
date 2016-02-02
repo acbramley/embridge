@@ -247,7 +247,7 @@ class EmbridgeAsset extends FormElement {
     if (!empty($fids) && $element['#files']) {
       foreach ($element['#files'] as $delta => $file) {
         $file_link = [
-          '#theme' => 'file_link',
+          '#theme' => 'embridge_file_link',
           '#file' => $file,
         ];
         if ($element['#multiple']) {
