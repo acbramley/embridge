@@ -228,4 +228,11 @@ interface EmbridgeAssetEntityInterface extends ContentEntityInterface, EntityCha
    */
   public function setCreatedTime($timestamp);
 
+  /**
+   * Returns whether the file is temporary or not.
+   *
+   * @return bool
+   */
+  public function isTemporary();
+
 }

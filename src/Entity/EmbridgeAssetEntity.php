@@ -238,6 +238,14 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
   /**
    * {@inheritdoc}
    */
+  public function isTemporary() {
+    // TODO: Implement this.
+    return TRUE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields['id'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('ID'))
