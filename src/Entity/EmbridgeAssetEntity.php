@@ -275,6 +275,11 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
       ->setLabel(t('Filename'))
       ->setDescription(t('The name of the Embridge asset file.'));
 
+    $fields['status'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Status'))
+      ->setDescription(t('The status of the asset, temporary (FALSE) and permanent (TRUE).'))
+      ->setDefaultValue(FALSE);
+
     $fields['source_path'] = BaseFieldDefinition::create('uri')
       ->setLabel(t('Source path'))
       ->setDescription(t('EnterMedia asset source path.'))
