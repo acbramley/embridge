@@ -128,7 +128,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   /**
    * {@inheritdoc}
    */
-  public function upload(EmbridgeAssetEntityInterface $file) {
+  public function upload(EmbridgeAssetEntityInterface $asset) {
     $this->login();
 
     $response = '';
