@@ -10,7 +10,9 @@ namespace Drupal\Tests\embridge\Unit;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\EnterMediaDbClient;
+use Drupal\embridge\Entity\EmbridgeAssetEntity;
 use Drupal\Tests\UnitTestCase;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -254,6 +256,54 @@ class EnterMediaDbClientTest extends UnitTestCase {
 
     $this->setExpectedException('Exception', 'Failed to authenticate with EMDB, please check your settings.');
     $this->emdbClient->login();
+  }
+
+
+  /**
+   * Tests upload() success.
+   *
+   * @covers ::upload
+   * @test
+   */
+  public function uploadReturnsAssetWhenClientReturns200AndValidXml() {
+    $login_request = new Request('POST', 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin');
+    $mockLoginResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mockLoginResponse
+      ->expects($this->once())
+      ->method('getStatusCode')
+      ->willReturn(200);
+    $mockLoginResponse
+      ->expects($this->once())
+      ->method('getBody')
+      ->willReturn(file_get_contents('expected/login-expected-good-response.xml', TRUE));
+    $this->client
+      ->expects($this->once())
+      ->method('send')
+      ->with($login_request)
+      ->willReturn($mockLoginResponse);
+
+    $upload_request = new Request('POST', 'http://www.example.com:8080/media/services/rest/upload.xml');
+    $mockUploadResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mockUploadResponse
+      ->expects($this->once())
+      ->method('getStatusCode')
+      ->willReturn(200);
+    $mockUploadResponse
+      ->expects($this->once())
+      ->method('getBody')
+      ->willReturn(file_get_contents('expected/upload-expected-good-response.xml', TRUE));
+
+    $this->client
+      ->expects($this->once())
+      ->method('send')
+      ->with($upload_request)
+      ->willReturn($mockUploadResponse);
+
+    /** @var EmbridgeAssetEntityInterface $asset */
+    $asset = EmbridgeAssetEntity::create();
+    $expected = [
+    ];
+    $this->assertEquals($expected, $this->emdbClient->upload($asset));
   }
 
 }
