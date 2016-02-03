@@ -14,6 +14,10 @@ use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\EnterMediaDbClientInterface;
 use Drupal\embridge\Entity\EmbridgeAssetEntity;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Drupal\Component\Utility\NestedArray;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\ReplaceCommand;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Provides an AJAX/progress aware widget for uploading and saving a file.
@@ -130,6 +134,53 @@ class EmbridgeAsset extends FormElement {
 
     $return['fids'] = $fids;
     return $return;
+  }
+
+  /**
+   * #ajax callback for embridge_asset upload forms.
+   *
+   * This ajax callback takes care of the following things:
+   *   - Ensures that broken requests due to too big files are caught.
+   *   - Adds a class to the response to be able to highlight in the UI, that a
+   *     new file got uploaded.
+   *
+   * @param array $form
+   *   The build form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The current request.
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *   The ajax response of the ajax upload.
+   */
+  public static function uploadAjaxCallback(&$form, FormStateInterface &$form_state, Request $request) {
+    /** @var \Drupal\Core\Render\RendererInterface $renderer */
+    $renderer = \Drupal::service('renderer');
+
+    $form_parents = explode('/', $request->query->get('element_parents'));
+
+    // Retrieve the element to be rendered.
+    $form = NestedArray::getValue($form, $form_parents);
+
+    // Add the special AJAX class if a new file was added.
+    $current_file_count = $form_state->get('file_upload_delta_initial');
+    if (isset($form['#file_upload_delta']) && $current_file_count < $form['#file_upload_delta']) {
+      $form[$current_file_count]['#attributes']['class'][] = 'ajax-new-content';
+    }
+    // Otherwise just add the new content class on a placeholder.
+    else {
+      $form['#suffix'] .= '<span class="ajax-new-content"></span>';
+    }
+
+    $status_messages = ['#type' => 'status_messages'];
+    $form['#prefix'] .= $renderer->renderRoot($status_messages);
+    $output = $renderer->renderRoot($form);
+
+    $response = new AjaxResponse();
+    $response->setAttachments($form['#attached']);
+
+    return $response->addCommand(new ReplaceCommand(NULL, $output));
   }
 
   /**
