@@ -22,30 +22,14 @@ class EmbridgeAssetEntityAccessControlHandler extends EntityAccessControlHandler
    * {@inheritdoc}
    */
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
-    /** @var \Drupal\embridge\EmbridgeAssetEntityInterface $entity */
-    switch ($operation) {
-      case 'view':
-        if (!$entity->isPublished()) {
-          return AccessResult::allowedIfHasPermission($account, 'view unpublished embridge asset entity entities');
-        }
-        return AccessResult::allowedIfHasPermission($account, 'view published embridge asset entity entities');
-
-      case 'update':
-        return AccessResult::allowedIfHasPermission($account, 'edit embridge asset entity entities');
-
-      case 'delete':
-        return AccessResult::allowedIfHasPermission($account, 'delete embridge asset entity entities');
-    }
-
-    // Unknown operation, no opinion.
-    return AccessResult::neutral();
+    return AccessResult::allowedIfHasPermission($account, 'administer embridge asset entities');
   }
 
   /**
    * {@inheritdoc}
    */
   protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
-    return AccessResult::allowedIfHasPermission($account, 'add embridge asset entity entities');
+    return AccessResult::allowedIfHasPermission($account, 'administer embridge asset entities');
   }
 
 }
