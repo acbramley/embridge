@@ -626,24 +626,24 @@ class EmbridgeAsset extends FormElement {
       $file = EmbridgeAssetEntity::create($values);
 
       $extensions = '';
-      if (isset($validators['file_validate_extensions'])) {
-        if (isset($validators['file_validate_extensions'][0])) {
+      if (isset($validators['embridge_asset_validate_file_extensions'])) {
+        if (isset($validators['embridge_asset_validate_file_extensions'][0])) {
           // Build the list of non-munged extensions if the caller provided them.
-          $extensions = $validators['file_validate_extensions'][0];
+          $extensions = $validators['embridge_asset_validate_file_extensions'][0];
         }
         else {
           // If 'file_validate_extensions' is set and the list is empty then the
           // caller wants to allow any extension. In this case we have to remove the
           // validator or else it will reject all extensions.
-          unset($validators['file_validate_extensions']);
+          unset($validators['embridge_asset_validate_file_extensions']);
         }
       }
       else {
         // No validator was provided, so add one using the default list.
         // Build a default non-munged safe list for file_munge_filename().
         $extensions = 'jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp';
-        $validators['file_validate_extensions'] = array();
-        $validators['file_validate_extensions'][0] = $extensions;
+        $validators['embridge_asset_validate_file_extensions'] = array();
+        $validators['embridge_asset_validate_file_extensions'][0] = $extensions;
       }
 
       if (!empty($extensions)) {
@@ -663,7 +663,7 @@ class EmbridgeAsset extends FormElement {
         // The .txt extension may not be in the allowed list of extensions. We have
         // to add it here or else the file upload will fail.
         if (!empty($extensions)) {
-          $validators['file_validate_extensions'][0] .= ' txt';
+          $validators['embridge_asset_validate_file_extensions'][0] .= ' txt';
           drupal_set_message(t('For security reasons, your upload has been renamed to %filename.', array('%filename' => $file->getFilename())));
         }
       }
@@ -695,11 +695,11 @@ class EmbridgeAsset extends FormElement {
       }
 
       // Add in our check of the file name length.
-      $validators['file_validate_name_length'] = array();
+      // TODO: Do we need this?
+      // $validators['file_validate_name_length'] = array();
 
       // Call the validation functions specified by this function's caller.
-      // TODO: Implement this for Embridge Assets.
-      // $errors = file_validate($file, $validators);
+      $errors = embridge_asset_validate($file, $validators);
 
       // Check for errors.
       if (!empty($errors)) {
