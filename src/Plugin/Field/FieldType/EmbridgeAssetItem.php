@@ -6,6 +6,7 @@
 
 namespace Drupal\embridge\Plugin\Field\FieldType;
 
+use Drupal\Component\Utility\Bytes;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
@@ -22,7 +23,7 @@ use Drupal\file\Plugin\Field\FieldType\FileItem;
  *   default_widget = "embridge_asset_widget",
  *   default_formatter = "embridge_default",
  *   list_class = "\Drupal\Core\Field\EntityReferenceFieldItemList",
- *   constraints = {"ReferenceAccess" = {}}
+ *   constraints = {"ReferenceAccess" = {}, "EmbridgeAssetValidation" = {}}
  * )
  */
 class EmbridgeAssetItem extends FileItem {
@@ -97,4 +98,34 @@ class EmbridgeAssetItem extends FileItem {
 
     return $element + parent::fieldSettingsForm($form, $form_state);
   }
+
+
+  /**
+   * Retrieves the upload validators for a file field.
+   *
+   * @return array
+   *   An array suitable for passing to file_save_upload() or the file field
+   *   element's '#upload_validators' property.
+   */
+  public function getUploadValidators() {
+    $validators = array();
+    $settings = $this->getSettings();
+
+    // Cap the upload size according to the PHP limit.
+    $max_filesize = Bytes::toInt(file_upload_max_size());
+    if (!empty($settings['max_filesize'])) {
+      $max_filesize = min($max_filesize, Bytes::toInt($settings['max_filesize']));
+    }
+
+    // There is always a file size limit due to the PHP server limit.
+    $validators['embridge_file_validate_size'] = array($max_filesize);
+
+    // Add the extension check if necessary.
+    if (!empty($settings['file_extensions'])) {
+      $validators['embridge_file_validate_extensions'] = array($settings['file_extensions']);
+    }
+
+    return $validators;
+  }
+
 }

@@ -24,7 +24,7 @@ class EmbridgeAssetValidationConstraintValidator extends ConstraintValidator {
     // Get the validators.
     $validators = $value->getUploadValidators();
     // Checks that a file meets the criteria specified by the validators.
-    if ($errors = embridge_file_validate($asset, $validators)) {
+    if ($errors = embridge_asset_validate($asset, $validators)) {
       foreach ($errors as $error) {
         $this->context->addViolation($error);
       }
