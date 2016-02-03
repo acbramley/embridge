@@ -18,6 +18,7 @@ use GuzzleHttp\Psr7\Request;
 class EnterMediaDbClient implements EnterMediaDbClientInterface {
 
   const EMBRIDGE_LOGIN_PATH_DEFAULT = 'media/services/rest/login.xml';
+  const EMBRIDGE_UPLOAD_PATH_DEFAULT = 'media/services/rest/upload.xml';
 
   /**
    * Config Factory.
@@ -125,13 +126,12 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   }
 
   /**
-   * Uploads a file to the EMDB instance.
-   *
-   * @param EmbridgeAssetEntityInterface $file
+   * {@inheritdoc}
    */
   public function upload(EmbridgeAssetEntityInterface $file) {
     $this->login();
 
-
+    $response = '';
+    return $response;
   }
 }
