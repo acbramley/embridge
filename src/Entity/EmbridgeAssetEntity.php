@@ -238,9 +238,29 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
   /**
    * {@inheritdoc}
    */
+  public function isPermanent() {
+    return $this->get('status')->value == FILE_STATUS_PERMANENT;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function isTemporary() {
-    // TODO: Implement this.
-    return TRUE;
+    return $this->get('status')->value == 0;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setPermanent() {
+    $this->get('status')->value = FILE_STATUS_PERMANENT;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setTemporary() {
+    $this->get('status')->value = 0;
   }
 
   /**
