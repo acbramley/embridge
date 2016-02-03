@@ -125,7 +125,7 @@ function embridge_asset_validate(EmbridgeAssetEntityInterface $asset, $validator
  *
  * @see hook_file_validate()
  */
-function embridge_file_validate_extensions(EmbridgeAssetEntityInterface $asset, $extensions) {
+function embridge_asset_validate_file_extensions(EmbridgeAssetEntityInterface $asset, $extensions) {
   $errors = array();
 
   $regex = '/\.(' . preg_replace('/ +/', '|', preg_quote($extensions)) . ')$/i';
@@ -153,7 +153,7 @@ function embridge_file_validate_extensions(EmbridgeAssetEntityInterface $asset, 
  *
  * @see hook_file_validate()
  */
-function embridge_file_validate_size(EmbridgeAssetEntityInterface $file, $file_limit = 0, $user_limit = 0) {
+function embridge_asset_validate_file_size(EmbridgeAssetEntityInterface $file, $file_limit = 0, $user_limit = 0) {
   $user = \Drupal::currentUser();
   $errors = array();
 
