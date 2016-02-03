@@ -118,11 +118,11 @@ class EmbridgeAssetItem extends FileItem {
     }
 
     // There is always a file size limit due to the PHP server limit.
-    $validators['embridge_file_validate_size'] = array($max_filesize);
+    $validators['embridge_asset_validate_file_size'] = array($max_filesize);
 
     // Add the extension check if necessary.
     if (!empty($settings['file_extensions'])) {
-      $validators['embridge_file_validate_extensions'] = array($settings['file_extensions']);
+      $validators['embridge_asset_validate_file_extensions'] = array($settings['file_extensions']);
     }
 
     return $validators;
