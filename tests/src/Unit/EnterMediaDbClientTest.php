@@ -15,6 +15,7 @@ use Drupal\embridge\EnterMediaDbClient;
 use Drupal\embridge\Entity\EmbridgeAssetEntity;
 use Drupal\Tests\UnitTestCase;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Cookie\SessionCookieJar;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
@@ -99,35 +100,11 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->willReturn($mockConfig);
 
     $this->emdbClient = new EnterMediaDbClient($this->configFactory, $this->client, $this->serializer);
-  }
 
-  /**
-   * Tests that initRequest() uses the config factory and populates an object.
-   *
-   * @covers ::initRequest
-   * @test
-   */
-  public function initRequestReturnsRequestObjectPopulatedWithConfig() {
-    $request = $this->emdbClient->initRequest();
-    $this->assertInstanceOf('\GuzzleHttp\Psr7\Request', $request);
-
-    $expected_uri = new Uri($this->sampleConfig['uri'] . ':' . $this->sampleConfig['port'] . '/');
-    $this->assertEquals('POST', $request->getMethod());
-    $this->assertEquals($expected_uri, $request->getUri());
-  }
-
-  /**
-   * Tests initRequest() with parameter.
-   *
-   * @covers ::initRequest
-   * @test
-   */
-  public function initRequestWithPathReturnsRequestObjectPopulatedWithConfig() {
-    $request = $this->emdbClient->initRequest('pleaseandthankyou');
-    $this->assertInstanceOf('\GuzzleHttp\Psr7\Request', $request);
-
-    $expected_uri = new Uri($this->sampleConfig['uri'] . ':' . $this->sampleConfig['port'] . '/pleaseandthankyou');
-    $this->assertEquals($expected_uri, $request->getUri());
+    $this->defaultOptions = [
+      'timeout' => 5,
+      'cookies' => new SessionCookieJar('SESSION_STORAGE', TRUE),
+    ];
   }
 
   /**
@@ -138,7 +115,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
    */
   public function loginReturnsTrueWhenClientReturns200AndValidXml() {
 
-    $request = new Request('POST', 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin');
     $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockResponse
       ->expects($this->once())
@@ -150,10 +126,11 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->method('getBody')
       ->willReturn(file_get_contents('expected/login-expected-good-response.xml', TRUE));
 
+    $uri = 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin';
     $this->client
       ->expects($this->once())
-      ->method('send')
-      ->with($request)
+      ->method('request')
+      ->with('POST', $uri, $this->defaultOptions)
       ->willReturn($mockResponse);
 
     $this->assertTrue($this->emdbClient->login());
