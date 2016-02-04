@@ -68,13 +68,37 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   /**
    * {@inheritdoc}
    */
-  public function initRequest($path = '') {
+  public function doRequest($path = '', $body = [], $method = 'POST') {
     $settings = $this->configFactory->get('embridge.settings');
     $uri = $settings->get('uri');
     $port = $settings->get('port');
-    $request = new Request('POST', sprintf('%s:%s/%s', $uri, $port, $path));
+    $uri = sprintf('%s:%s/%s', $uri, $port, $path);
+    $options = [
+      'timeout' => 5,
+      'cookies' => $this->cookieJar,
+    ];
+    if (!empty($body)) {
+      $options['form_params'] = $body;
+    }
 
-    return $request;
+    try {
+      $response = $this->httpClient->request($method, $uri, $options);
+    }
+
+    catch (RequestException $e) {
+      $response = $e->getResponse();
+      if ($response === NULL) {
+        throw new \Exception('Error connecting to EMDB backend');
+      }
+      if ($response->getStatusCode() == 403) {
+        throw new \Exception('Failed to authenticate with EMDB, please check your settings.');
+      }
+    }
+    if ($response->getStatusCode() != '200') {
+      throw new \Exception('An unexpected response was returned from the Entity Pilot backend');
+    }
+
+    return $response;
   }
 
   /**
@@ -94,25 +118,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     $query = UrlHelper::buildQuery($query_params);
     $login_path = self::EMBRIDGE_LOGIN_PATH_DEFAULT . '?' . $query;
 
-    $request = $this->initRequest($login_path);
-    $options = [
-      'timeout' => 5,
-    ];
-    try {
-      $response = $this->httpClient->send($request, $options);
-    }
-    catch (RequestException $e) {
-      $response = $e->getResponse();
-      if ($response === NULL) {
-        throw new \Exception('Error connecting to EMDB backend');
-      }
-      if ($response->getStatusCode() == 403) {
-        throw new \Exception('Failed to authenticate with EMDB, please check your settings.');
-      }
-    }
-    if ($response->getStatusCode() != '200') {
-      throw new \Exception('An unexpected response was returned from the Entity Pilot backend');
-    }
+    $response = $this->doRequest($login_path);
 
     $body = (string) $response->getBody();
     $xml_obj = simplexml_load_string($body);
