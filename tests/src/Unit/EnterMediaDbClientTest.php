@@ -50,6 +50,14 @@ class EnterMediaDbClientTest extends UnitTestCase {
   protected $configFactory;
 
   /**
+   * Mock file system.
+   *
+   * @var \Drupal\Core\File\FileSystem|\PHPUnit_Framework_MockObject_MockObject
+   */
+  protected $fileSystem;
+
+
+  /**
    * Our client.
    *
    * @var \Drupal\embridge\EnterMediaDbClient

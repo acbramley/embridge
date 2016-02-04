@@ -10,6 +10,7 @@ namespace Drupal\embridge;
 use Drupal\Component\Serialization\SerializationInterface;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\File\FileSystem;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Cookie\SessionCookieJar;
 use GuzzleHttp\Exception\RequestException;
@@ -41,6 +42,13 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   protected $jsonEncoder;
 
   /**
+   * File system helper.
+   *
+   * @var \Drupal\Core\File\FileSystem
+   */
+  protected $fileSystem;
+
+  /**
    * Whether we have logged in or not.
    *
    * @var bool
@@ -63,11 +71,14 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
    *   The http client service.
    * @param \Drupal\Component\Serialization\SerializationInterface $serializer
    *   The json serializer service.
+   * @param \Drupal\Core\File\FileSystem
+   *   The file system service.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, ClientInterface $client, SerializationInterface $serializer) {
+  public function __construct(ConfigFactoryInterface $config_factory, ClientInterface $client, SerializationInterface $serializer, FileSystem $file_system) {
     $this->configFactory = $config_factory;
     $this->jsonEncoder = $serializer;
     $this->httpClient = $client;
+    $this->fileSystem = $file_system;
     $this->loggedIn = FALSE;
     $this->cookieJar = new SessionCookieJar('SESSION_STORAGE', TRUE);
   }
@@ -157,9 +168,9 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     $this->login();
 
     $body = [
-      'catalogid' => 'public',
-      'sourcepath' => 'demo/2015/01',
-      'file' => '@' . \file_create_url($asset->getSourcePath()),
+      'catalogid' => 'media/catalogs/public',
+      'sourcepath' => 'demo/2016/02/',
+      'file' => '@' . $this->fileSystem->realpath($asset->getSourcePath()),
     ];
     $response = $this->doRequest(self::EMBRIDGE_UPLOAD_PATH_DEFAULT, $body);
     $body = (string) $response->getBody();
