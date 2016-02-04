@@ -287,7 +287,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->willReturn($mockUploadResponse);
 
     /** @var EmbridgeAssetEntityInterface $asset */
-    $asset = EmbridgeAssetEntity::create();
+    $asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
     $expected = [
     ];
     $this->assertEquals($expected, $this->emdbClient->upload($asset));
