@@ -6,8 +6,6 @@
 
 namespace Drupal\embridge;
 
-use Drupal\embridge\Entity\EmbridgeAssetEntity;
-
 /**
  * Class EnterMediaDbClient.
  *
@@ -16,14 +14,18 @@ use Drupal\embridge\Entity\EmbridgeAssetEntity;
 interface EnterMediaDbClientInterface {
 
   /**
-   * Initialises a Request object with the configuration.
+   * Sends a request with the configuration provided.
    *
    * @param string $path
    *   An optional path relative to the base uri in configuration.
+   * @param [] $body
+   *   An optional body to attach to the request.
+   * @param string $method
+   *   The method to use on the request, defaults to POST.
    *
-   * @return \GuzzleHttp\Psr7\Request
+   * @return \Psr\Http\Message\ResponseInterface
    */
-  public function initRequest($path = '');
+  public function doRequest($path = '', $body = [], $method = 'POST');
 
   /**
    * Logs into the EMDB instance.
