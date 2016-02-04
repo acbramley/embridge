@@ -64,6 +64,13 @@ class EnterMediaDbClientTest extends UnitTestCase {
   protected $sampleConfig;
 
   /**
+   * Default options for our request.
+   *
+   * @var []
+   */
+  protected $defaultOptions;
+
+  /**
    * Sets up the test.
    */
   protected function setUp() {
@@ -144,7 +151,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
    */
   public function loginReturnsFalseWhenClientReturnsFailedXml() {
 
-    $request = new Request('POST', 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin');
     $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockResponse
       ->expects($this->once())
@@ -156,10 +162,11 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->method('getBody')
       ->willReturn(file_get_contents('expected/login-expected-bad-response.xml', TRUE));
 
+    $uri = 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin';
     $this->client
       ->expects($this->once())
-      ->method('send')
-      ->with($request)
+      ->method('request')
+      ->with('POST', $uri, $this->defaultOptions)
       ->willReturn($mockResponse);
 
     $this->assertFalse($this->emdbClient->login());
@@ -173,17 +180,17 @@ class EnterMediaDbClientTest extends UnitTestCase {
    */
   public function loginThrowsExceptionWhenResponseReturnsNon200Code() {
 
-    $request = new Request('POST', 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin');
     $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockResponse
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(403);
 
+    $uri = 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin';
     $this->client
       ->expects($this->once())
-      ->method('send')
-      ->with($request)
+      ->method('request')
+      ->with('POST', $uri, $this->defaultOptions)
       ->willReturn($mockResponse);
 
     $this->setExpectedException('Exception', 'An unexpected response was returned from the Entity Pilot backend');
@@ -198,13 +205,13 @@ class EnterMediaDbClientTest extends UnitTestCase {
    */
   public function loginThrowsExceptionWhenSendFailsAndResponseIsNull() {
 
-    $request = new Request('POST', 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin');
-
+    $uri = 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin';
+    $method = 'POST';
     $this->client
       ->expects($this->once())
-      ->method('send')
-      ->with($request)
-      ->willThrowException(new RequestException('', $request, NULL));
+      ->method('request')
+      ->with($method, $uri, $this->defaultOptions)
+      ->willThrowException(new RequestException('', new Request($method, $uri), NULL));
 
     $this->setExpectedException('Exception', 'Error connecting to EMDB backend');
     $this->emdbClient->login();
@@ -218,18 +225,19 @@ class EnterMediaDbClientTest extends UnitTestCase {
    */
   public function loginThrowsExceptionWhenSendFailsAndResponseCodeIs403() {
 
-    $request = new Request('POST', 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin');
     $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockResponse
       ->expects($this->exactly(2))
       ->method('getStatusCode')
       ->willReturn(403);
 
+    $uri = 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin';
+    $method = 'POST';
     $this->client
       ->expects($this->once())
-      ->method('send')
-      ->with($request)
-      ->willThrowException(new RequestException('', $request, $mockResponse));
+      ->method('request')
+      ->with($method, $uri, $this->defaultOptions)
+      ->willThrowException(new RequestException('', new Request($method, $uri), $mockResponse));
 
     $this->setExpectedException('Exception', 'Failed to authenticate with EMDB, please check your settings.');
     $this->emdbClient->login();
@@ -243,20 +251,22 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * @test
    */
   public function uploadReturnsAssetWhenClientReturns200AndValidXml() {
-    $login_request = new Request('POST', 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin');
     $mockLoginResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockLoginResponse
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(200);
+
     $mockLoginResponse
       ->expects($this->once())
       ->method('getBody')
       ->willReturn(file_get_contents('expected/login-expected-good-response.xml', TRUE));
+
+    $uri = 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin';
     $this->client
       ->expects($this->once())
-      ->method('send')
-      ->with($login_request)
+      ->method('request')
+      ->with('POST', $uri, $this->defaultOptions)
       ->willReturn($mockLoginResponse);
 
     $upload_request = new Request('POST', 'http://www.example.com:8080/media/services/rest/upload.xml');
