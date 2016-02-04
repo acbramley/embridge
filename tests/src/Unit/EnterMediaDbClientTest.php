@@ -248,6 +248,36 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->emdbClient->login();
   }
 
+  /**
+   * Tests login() failure.
+   *
+   * @covers ::login
+   * @covers ::doRequest
+   * @test
+   */
+  public function loginRequestsOnlyRunOnceWhenLoginCalledTwice() {
+
+    $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mockResponse
+      ->expects($this->once())
+      ->method('getStatusCode')
+      ->willReturn(200);
+
+    $mockResponse
+      ->expects($this->once())
+      ->method('getBody')
+      ->willReturn(file_get_contents('expected/login-expected-good-response.xml', TRUE));
+
+    $uri = 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin';
+    $this->client
+      ->expects($this->once())
+      ->method('request')
+      ->with('POST', $uri, $this->defaultOptions)
+      ->willReturn($mockResponse);
+
+    $this->assertTrue($this->emdbClient->login());
+    $this->assertTrue($this->emdbClient->login());
+  }
 
   /**
    * Tests upload() success.
