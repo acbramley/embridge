@@ -118,6 +118,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * Tests login() success.
    *
    * @covers ::login
+   * @covers ::doRequest
    * @test
    */
   public function loginReturnsTrueWhenClientReturns200AndValidXml() {
@@ -147,6 +148,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * Tests login() failure.
    *
    * @covers ::login
+   * @covers ::doRequest
    * @test
    */
   public function loginReturnsFalseWhenClientReturnsFailedXml() {
@@ -176,6 +178,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * Tests login() failure.
    *
    * @covers ::login
+   * @covers ::doRequest
    * @test
    */
   public function loginThrowsExceptionWhenResponseReturnsNon200Code() {
@@ -201,6 +204,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * Tests login() failure.
    *
    * @covers ::login
+   * @covers ::doRequest
    * @test
    */
   public function loginThrowsExceptionWhenSendFailsAndResponseIsNull() {
@@ -221,6 +225,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * Tests login() failure.
    *
    * @covers ::login
+   * @covers ::doRequest
    * @test
    */
   public function loginThrowsExceptionWhenSendFailsAndResponseCodeIs403() {
@@ -247,7 +252,9 @@ class EnterMediaDbClientTest extends UnitTestCase {
   /**
    * Tests upload() success.
    *
+   * @covers ::login
    * @covers ::upload
+   * @covers ::doRequest
    * @test
    */
   public function uploadReturnsAssetWhenClientReturns200AndValidXml() {
