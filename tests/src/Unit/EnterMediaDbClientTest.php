@@ -10,15 +10,14 @@ namespace Drupal\Tests\embridge\Unit;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\File\FileSystem;
 use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\EnterMediaDbClient;
-use Drupal\embridge\Entity\EmbridgeAssetEntity;
 use Drupal\Tests\UnitTestCase;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Cookie\SessionCookieJar;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Uri;
 
 /**
  * Class EnterMediaDbClientTest
@@ -114,7 +113,8 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->with('embridge.settings')
       ->willReturn($mockConfig);
 
-    $this->emdbClient = new EnterMediaDbClient($this->configFactory, $this->client, $this->serializer);
+    $this->fileSystem = $this->getMockBuilder(FileSystem::class)->disableOriginalConstructor()->getMock();
+    $this->emdbClient = new EnterMediaDbClient($this->configFactory, $this->client, $this->serializer, $this->fileSystem);
 
     $this->defaultOptions = [
       'timeout' => 5,
@@ -284,6 +284,8 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->willReturn($mockResponse);
 
     $this->assertTrue($this->emdbClient->login());
+    // Proves that request is only called once, with subsequent login calls,
+    // not a mistake.
     $this->assertTrue($this->emdbClient->login());
   }
 
@@ -314,7 +316,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->with('POST', $uri, $this->defaultOptions)
       ->willReturn($mockLoginResponse);
 
-    $upload_request = new Request('POST', 'http://www.example.com:8080/media/services/rest/upload.xml');
+    $uri = 'http://www.example.com:8080/media/services/rest/upload.xml';
     $mockUploadResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockUploadResponse
       ->expects($this->once())
@@ -325,17 +327,33 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->method('getBody')
       ->willReturn(file_get_contents('expected/upload-expected-good-response.xml', TRUE));
 
+
+    /** @var EmbridgeAssetEntityInterface|\PHPUnit_Framework_MockObject_MockObject $mockAsset */
+    $mockAsset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
+    $mock_sourcepath = 'public://test123';
+    $mockAsset
+      ->expects($this->once())
+      ->method('getSourcePath')
+      ->willReturn($mock_sourcepath);
+
+    $expected_realpath = '';
+    $this->fileSystem
+      ->expects($this->once())
+      ->method('realpath')
+      ->with($mock_sourcepath)
+      ->willReturn($expected_realpath);
+
+    $body = $this->defaultOptions;
+    $body['source'] = '@' . $expected_realpath;
     $this->client
       ->expects($this->once())
-      ->method('send')
-      ->with($upload_request)
+      ->method('request')
+      ->with('POST', $uri, $body)
       ->willReturn($mockUploadResponse);
 
-    /** @var EmbridgeAssetEntityInterface $asset */
-    $asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
     $expected = [
     ];
-    $this->assertEquals($expected, $this->emdbClient->upload($asset));
+    $this->assertEquals($expected, $this->emdbClient->upload($mockAsset));
   }
 
 }
