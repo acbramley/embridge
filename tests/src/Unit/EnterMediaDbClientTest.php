@@ -298,6 +298,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * @test
    */
   public function uploadReturnsAssetWhenClientReturns200AndValidXml() {
+    $login_uri = 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin';
     $mockLoginResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockLoginResponse
       ->expects($this->once())
@@ -309,24 +310,17 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->method('getBody')
       ->willReturn(file_get_contents('expected/login-expected-good-response.xml', TRUE));
 
-    $uri = 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin';
-    $this->client
-      ->expects($this->once())
-      ->method('request')
-      ->with('POST', $uri, $this->defaultOptions)
-      ->willReturn($mockLoginResponse);
-
-    $uri = 'http://www.example.com:8080/media/services/rest/upload.xml';
+    $upload_uri = 'http://www.example.com:8080/media/services/rest/upload.xml';
     $mockUploadResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockUploadResponse
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(200);
+
     $mockUploadResponse
       ->expects($this->once())
       ->method('getBody')
       ->willReturn(file_get_contents('expected/upload-expected-good-response.xml', TRUE));
-
 
     /** @var EmbridgeAssetEntityInterface|\PHPUnit_Framework_MockObject_MockObject $mockAsset */
     $mockAsset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
