@@ -11,10 +11,8 @@ use Drupal\Component\Serialization\SerializationInterface;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Cookie\SessionCookieJar;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Request;
 
 class EnterMediaDbClient implements EnterMediaDbClientInterface {
 
@@ -50,6 +48,13 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   protected $loggedIn;
 
   /**
+   * A cookie jar object to use between requests.
+   *
+   * @var SessionCookieJar
+   */
+  protected $cookieJar;
+
+  /**
    * Constructs a new \Drupal\entity_pilot\Transport object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
@@ -68,9 +73,22 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * Sends a request with the configuration provided.
+   *
+   * @param string $path
+   *   An optional path relative to the base uri in configuration.
+   * @param [] $body
+   *   An optional body to attach to the request.
+   * @param string $method
+   *   The method to use on the request, defaults to POST.
+   *
+   * @return \Psr\Http\Message\ResponseInterface
+   *   The response from the server.
+   *
+   * @throws \Exception
+   *   When something goes wrong with the request (i.e 403).
    */
-  public function doRequest($path = '', $body = [], $method = 'POST') {
+  protected function doRequest($path = '', $body = [], $method = 'POST') {
     $settings = $this->configFactory->get('embridge.settings');
     $uri = $settings->get('uri');
     $port = $settings->get('port');
@@ -86,7 +104,6 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     try {
       $response = $this->httpClient->request($method, $uri, $options);
     }
-
     catch (RequestException $e) {
       $response = $e->getResponse();
       if ($response === NULL) {
@@ -139,7 +156,15 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   public function upload(EmbridgeAssetEntityInterface $asset) {
     $this->login();
 
-    $response = '';
-    return $response;
+    $body = [
+      'catalogid' => 'public',
+      'sourcepath' => 'demo/2015/01',
+      'file' => '@' . \file_create_url($asset->getSourcePath()),
+    ];
+    $response = $this->doRequest(self::EMBRIDGE_UPLOAD_PATH_DEFAULT, $body);
+    $body = (string) $response->getBody();
+
+    $values = [];
+    return $values;
   }
 }
