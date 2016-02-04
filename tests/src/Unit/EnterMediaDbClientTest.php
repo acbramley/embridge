@@ -82,7 +82,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
    */
   protected function setUp() {
     parent::setUp();
-    $this->client = $this->getMock(ClientInterface::class);
+    $this->client = $this->getMockBuilder(ClientInterface::class)->disableOriginalConstructor()->getMock();
     $this->serializer = new Json();
     $mockConfig = $this->getMockBuilder(ImmutableConfig::class)->disableOriginalConstructor()->getMock();
     // Create a map of arguments to return values.
