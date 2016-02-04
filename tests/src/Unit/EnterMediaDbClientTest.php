@@ -336,19 +336,27 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->method('getSourcePath')
       ->willReturn($mock_sourcepath);
 
-    $expected_realpath = '';
+    $expected_realpath = '/var/www/crimestatistics/web/sites/default/files/test123';
+
     $this->fileSystem
       ->expects($this->once())
       ->method('realpath')
       ->with($mock_sourcepath)
       ->willReturn($expected_realpath);
 
-    $body = $this->defaultOptions;
-    $body['source'] = '@' . $expected_realpath;
+    $options = $this->defaultOptions;
+    $options['form_params']['source'] = '@' . $expected_realpath;
+
+    // This sucks, returnValueMap wasn't working though.
     $this->client
-      ->expects($this->once())
+      ->expects($this->at(0))
       ->method('request')
-      ->with('POST', $uri, $body)
+      ->with('POST', $login_uri, $this->defaultOptions)
+      ->willReturn($mockLoginResponse);
+    $this->client
+      ->expects($this->at(1))
+      ->method('request')
+      ->with('POST', $upload_uri, $options)
       ->willReturn($mockUploadResponse);
 
     $expected = [
