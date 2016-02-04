@@ -10,8 +10,9 @@ namespace Drupal\embridge;
 use Drupal\Component\Serialization\SerializationInterface;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\embridge\Entity\EmbridgeAssetEntity;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Cookie\SessionCookieJar;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 
@@ -63,6 +64,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     $this->jsonEncoder = $serializer;
     $this->httpClient = $client;
     $this->loggedIn = FALSE;
+    $this->cookieJar = new SessionCookieJar('SESSION_STORAGE', TRUE);
   }
 
   /**
