@@ -38,6 +38,18 @@ class EmbridgeAssetWidget extends FileWidget {
   /**
    * {@inheritdoc}
    */
+  protected function formMultipleElements(FieldItemListInterface $items, array &$form, FormStateInterface $form_state) {
+    $elements = parent::formMultipleElements($items, $form, $form_state);
+
+    // Alter #upload_validators passed to #file_upload_description.
+    $this->alterFileUploadHelpParameters($elements['#file_upload_description']);
+
+    return $elements;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $field_settings = $this->getFieldSettings();
 
@@ -96,6 +108,9 @@ class EmbridgeAssetWidget extends FileWidget {
         '#upload_validators' => $element['#upload_validators'],
         '#cardinality' => $cardinality,
       );
+
+      $this->alterFileUploadHelpParameters($file_upload_help);
+
       $element['#description'] = \Drupal::service('renderer')->renderPlain($file_upload_help);
       $element['#multiple'] = $cardinality != 1 ? TRUE : FALSE;
       if ($cardinality != 1 && $cardinality != -1) {
@@ -181,6 +196,28 @@ class EmbridgeAssetWidget extends FileWidget {
       drupal_set_message($message, 'warning');
       $values['fids'] = array_slice($values['fids'], 0, $keep);
       NestedArray::setValue($form_state->getValues(), $element['#parents'], $values);
+    }
+  }
+
+  /**
+   * We piggy back off file module's file_upload_help themeing.
+   *
+   * We need to alter the upload validator variables passed in to match what
+   * it expects.
+   *
+   * @param array $file_upload_help
+   *   The render array.
+   */
+  protected function alterFileUploadHelpParameters(&$file_upload_help) {
+    // Translate our custom upload validators to file ones so we can piggy
+    // back off file_upload_help's themeing.
+    foreach ($file_upload_help['#upload_validators'] as $func => $value) {
+      if ($func == 'embridge_asset_validate_file_extensions') {
+        $file_upload_help['#upload_validators']['file_validate_extensions'] = $value;
+      }
+      elseif ($func == 'embridge_asset_validate_file_size') {
+        $file_upload_help['#upload_validators']['file_validate_size'] = $value;
+      }
     }
   }
 
