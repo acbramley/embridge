@@ -1,4 +1,59 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<rsp stat="ok">
-    <key>adminmd5421c0af185908a6c0c40d50fd5e3f16760d5580bc</key>
-</rsp>
+{
+    "response": {
+        "status": "ok",
+        "id": "101"
+    },
+    "data": {
+        "id": "101",
+        "name": "batman-arkham-origins-30832-2880x1800.jpg",
+        "description": "TEST",
+        "sourcepath": "2016/02/101/batman-arkham-origins-30832-2880x1800.jpg",
+        "category": [
+            {
+                "id": "2016_02_101",
+                "name": "101"
+            }
+        ],
+        "assettype": {
+            "id": "article",
+            "name": ""
+        },
+        "pushstatus": {
+            "id": "resend",
+            "name": "Resend"
+        },
+        "assetviews": "1",
+        "creator": "billmoyers1",
+        "fileformat": {
+            "id": "jpg",
+            "name": "JPG"
+        },
+        "filesize": "518550",
+        "assetmodificationdate": "2016-02-04T22:40:02",
+        "recordmodificationdate": "2016-02-04T22:40:03",
+        "assetaddeddate": "2016-02-04T19:55:33",
+        "owner": "admin",
+        "importstatus": {
+            "id": "imported",
+            "name": "Imported"
+        },
+        "previewstatus": {
+            "id": "2",
+            "name": "Conversions Complete"
+        },
+        "editstatus": {
+            "id": "1",
+            "name": "Pending Approval"
+        },
+        "keywords": [
+            {
+                "id": "animals",
+                "name": ""
+            },
+            {
+                "id": "bird",
+                "name": ""
+            }
+        ]
+    }
+}
