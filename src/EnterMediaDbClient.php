@@ -110,6 +110,9 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     if (!empty($body['json'])) {
       $options['json'] = $body['json'];
     }
+    elseif (!empty($body['multipart'])) {
+      $options['multipart'] = $body['multipart'];
+    }
 
     try {
       $response = $this->httpClient->request($method, $uri, $options);
@@ -169,14 +172,35 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   public function upload(EmbridgeAssetEntityInterface $asset) {
     $this->login();
 
+    $file_path = $this->fileSystem->realpath($asset->getSourcePath());
+    $json_request = $this->jsonEncoder->encode(
+      [
+        "id" => $asset->getOriginalId(),
+        "description" =>  $asset->getFilename(),
+//        "creator" =>  [
+//          "id" =>  "abramley",
+//          "firstname" =>  "Adam",
+//          "lastname" =>  "Bramley"
+//        ],
+        "category" =>  [
+          "id" =>  "index",
+        ]
+      ]
+    );
     $body = [
-      'catalogid' => 'media/catalogs/public',
-      'sourcepath' => 'demo/2016/02/',
-      'file' => '@' . $this->fileSystem->realpath($asset->getSourcePath()),
+      'multipart' => [
+        [
+          'name' => 'jsonrequest',
+          'contents' => $json_request,
+        ],
+        [
+          'name'     => 'file',
+          'contents' => file_get_contents($file_path),
+          'filename' => $asset->getFilename(),
+        ],
+      ],
     ];
-    $body = $this->doRequest(self::EMBRIDGE_UPLOAD_PATH_DEFAULT, $body);
-
-    $remote_asset = (array) $body['hit'];
+    $response_body = $this->doRequest(self::EMBRIDGE_UPLOAD_PATH_DEFAULT, $body);
 
     return $asset;
   }
