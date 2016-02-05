@@ -126,7 +126,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     }
 
     if ($response->getStatusCode() != '200') {
-      throw new \Exception('An unexpected response was returned from the Entity Pilot backend');
+      throw new \Exception('An unexpected response was returned from the Enter Media backend.');
     }
 
     $body = $this->jsonEncoder->decode((string) $response->getBody());
