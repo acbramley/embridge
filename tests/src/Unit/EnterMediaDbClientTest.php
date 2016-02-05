@@ -28,6 +28,7 @@ use GuzzleHttp\Psr7\Request;
 class EnterMediaDbClientTest extends UnitTestCase {
 
   const EXAMPLE_LOGIN_URL = 'http://www.example.com/mediadb/services/authentication/login';
+  const EXAMPLE_UPLOAD_URL = 'http://www.example.com/mediadb/services/module/asset/create';
 
   /**
    * HTTP Client.
@@ -306,7 +307,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * @test
    */
   public function uploadReturnsAssetWhenClientReturns200AndValidXml() {
-    $login_uri = self::EXAMPLE_LOGIN_URL;
     $mockLoginResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockLoginResponse
       ->expects($this->once())
@@ -353,7 +353,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->client
       ->expects($this->at(0))
       ->method('request')
-      ->with('POST', $login_uri, $this->defaultOptions)
+      ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
       ->willReturn($mockLoginResponse);
     $this->client
       ->expects($this->at(1))
