@@ -17,7 +17,7 @@ use GuzzleHttp\Exception\RequestException;
 class EnterMediaDbClient implements EnterMediaDbClientInterface {
 
   const EMBRIDGE_LOGIN_PATH_DEFAULT = 'mediadb/services/authentication/login';
-  const EMBRIDGE_UPLOAD_PATH_DEFAULT = 'media/services/rest/upload.xml';
+  const EMBRIDGE_UPLOAD_PATH_DEFAULT = 'mediadb/services/module/asset/create';
 
   /**
    * Config Factory.
