@@ -107,9 +107,8 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
       'timeout' => 5,
       'cookies' => $this->cookieJar,
     ];
-    if (!empty($body)) {
-      $options['_body_as_string'] = TRUE;
-      $options['body'] = $this->jsonEncoder->encode($body);
+    if (!empty($body['json'])) {
+      $options['json'] = $body['json'];
     }
 
     try {
@@ -148,8 +147,10 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
 
     $config = $this->configFactory->get('embridge.settings');
     $body = [
-      'id' => $config->get('username'),
-      'password' => $config->get('password'),
+      'json' => [
+        'id' => $config->get('username'),
+        'password' => $config->get('password'),
+      ],
     ];
 
     $body = $this->doRequest(self::EMBRIDGE_LOGIN_PATH_DEFAULT, $body);
