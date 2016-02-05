@@ -24,13 +24,13 @@ interface EnterMediaDbClientInterface {
   public function login();
 
   /**
-   * Uploads a file to the EMDB instance.
+   * Uploads a file to the EMDB instance, updates properties on the asset.
    *
    * @param EmbridgeAssetEntityInterface $asset
    *   An asset entity with a file reference to send to the server.
    *
-   * @return array $response
-   *   The formatted response from the server.
+   * @return EmbridgeAssetEntityInterface
+   *   The updated and saved asset.
    */
   public function upload(EmbridgeAssetEntityInterface $asset);
 }
