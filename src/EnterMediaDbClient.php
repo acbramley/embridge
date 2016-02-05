@@ -154,7 +154,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
 
     $body = $this->doRequest(self::EMBRIDGE_LOGIN_PATH_DEFAULT, $body);
 
-    if (!empty($body['results']['status']) && $body['results']['status'] != 'invalidlogin') {
+    if (!empty($body['results']['status']) && $body['results']['status'] == 'invalidlogin') {
       return FALSE;
     }
 
