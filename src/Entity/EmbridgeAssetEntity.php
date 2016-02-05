@@ -76,6 +76,7 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
    */
   public function setCatalogId($catalog_id) {
     $this->set('catalog_id', $catalog_id);
+    return $this;
   }
 
   /**
@@ -105,6 +106,7 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
    */
   public function setSourcePath($uri) {
     $this->get('source_path')->value = $uri;
+    return $this;
   }
 
   /**
@@ -119,6 +121,7 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
    */
   public function setThumbnail($uri) {
     $this->get('thumbnail')->value = $uri;
+    return $this;
   }
 
   /**
@@ -133,6 +136,7 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
    */
   public function setPreview($uri) {
     $this->get('preview')->value = $uri;
+    return $this;
   }
 
   /**
@@ -147,6 +151,7 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
    */
   public function setWidth($width) {
     $this->get('width')->value = $width;
+    return $this;
   }
 
   /**
@@ -161,6 +166,7 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
    */
   public function setHeight($height) {
     $this->get('height')->value = $height;
+    return $this;
   }
 
   /**
@@ -175,6 +181,7 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
    */
   public function setMimeType($mime) {
     $this->get('filemime')->value = $mime;
+    return $this;
   }
 
   /**
@@ -189,6 +196,7 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
    */
   public function setSize($size) {
     $this->get('filesize')->value = $size;
+    return $this;
   }
 
   /**
@@ -203,6 +211,7 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
    */
   public function setEmbedCode($embed_code) {
     $this->get('embedcode')->value = $embed_code;
+    return $this;
   }
 
   /**
@@ -269,6 +278,7 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
    */
   public function setPermanent() {
     $this->get('status')->value = FILE_STATUS_PERMANENT;
+    return $this;
   }
 
   /**
@@ -276,6 +286,7 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
    */
   public function setTemporary() {
     $this->get('status')->value = 0;
+    return $this;
   }
 
   /**
