@@ -20,6 +20,25 @@ use Drupal\user\EntityOwnerInterface;
 interface EmbridgeAssetEntityInterface extends ContentEntityInterface, EntityChangedInterface, EntityOwnerInterface {
 
   /**
+   * Gets the Embridge asset id.
+   *
+   * @return string
+   *   Id of the Embridge asset entity from EnterMedia.
+   */
+  public function getAssetId();
+
+  /**
+   * Sets the Embridge asset id.
+   *
+   * @param string $asset_id
+   *   The asset id.
+   *
+   * @return \Drupal\embridge\EmbridgeAssetEntityInterface
+   *   The called Embridge asset entity.
+   */
+  public function setAssetId($asset_id);
+
+  /**
    * Gets the Embridge asset catalog id.
    *
    * @return string

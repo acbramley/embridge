@@ -52,6 +52,21 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
   /**
    * {@inheritdoc}
    */
+  public function getAssetId() {
+    return $this->get('asset_id')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setAssetId($asset_id) {
+    $this->set('asset_id', $asset_id);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getCatalogId() {
     return $this->get('catalog_id')->value;
   }
