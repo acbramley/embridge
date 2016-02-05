@@ -129,10 +129,9 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->defaultOptions = [
       'timeout' => 5,
       'cookies' => new SessionCookieJar('SESSION_STORAGE', TRUE),
-      '_body_as_string' => TRUE,
     ];
     $this->defaultLoginOptions = $this->defaultOptions + [
-      'body' => $this->serializer->encode(['id' => $this->sampleConfig['username'], 'password' => $this->sampleConfig['password']]),
+      'json' => ['id' => $this->sampleConfig['username'], 'password' => $this->sampleConfig['password']],
     ];
   }
 
@@ -215,7 +214,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
       ->willReturn($mockResponse);
 
-    $this->setExpectedException('Exception', 'An unexpected response was returned from the Entity Pilot backend');
+    $this->setExpectedException('Exception', 'An unexpected response was returned from the Enter Media backend');
     $this->emdbClient->login();
   }
 
@@ -318,7 +317,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->method('getBody')
       ->willReturn(file_get_contents('expected/login-expected-good-response.json', TRUE));
 
-    $upload_uri = 'http://www.example.com:8080/media/services/rest/upload.xml';
     $mockUploadResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockUploadResponse
       ->expects($this->once())
@@ -328,17 +326,10 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $mockUploadResponse
       ->expects($this->once())
       ->method('getBody')
-      ->willReturn(file_get_contents('expected/upload-expected-good-response.xml', TRUE));
+      ->willReturn(file_get_contents('expected/upload-expected-good-response.json', TRUE));
 
-    /** @var EmbridgeAssetEntityInterface|\PHPUnit_Framework_MockObject_MockObject $mockAsset */
-    $mockAsset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
+    $expected_realpath = dirname(__FILE__) . '/expected/cat3.png';
     $mock_sourcepath = 'public://test123';
-    $mockAsset
-      ->expects($this->once())
-      ->method('getSourcePath')
-      ->willReturn($mock_sourcepath);
-
-    $expected_realpath = '/var/www/crimestatistics/web/sites/default/files/test123';
 
     $this->fileSystem
       ->expects($this->once())
@@ -347,7 +338,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->willReturn($expected_realpath);
 
     $options = $this->defaultOptions;
-    $options['form_params']['source'] = '@' . $expected_realpath;
 
     // This sucks, returnValueMap wasn't working though.
     $this->client
@@ -355,15 +345,54 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->method('request')
       ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
       ->willReturn($mockLoginResponse);
+
+    $expected_filename = 'cat3.png';
+    $json_request = $this->serializer->encode(
+      [
+        "id" => NULL,
+        "description" =>  $expected_filename,
+        "category" =>  [
+          "id" =>  "index",
+        ]
+      ]
+    );
+    $body = [
+      'multipart' => [
+        [
+          'name' => 'jsonrequest',
+          'contents' => $json_request,
+        ],
+        [
+          'name'     => 'file',
+          'contents' => file_get_contents($expected_realpath),
+          'filename' => $expected_filename,
+        ],
+      ],
+    ];
+    $options += $body;
+
     $this->client
       ->expects($this->at(1))
       ->method('request')
-      ->with('POST', $upload_uri, $options)
+      ->with('POST', self::EXAMPLE_UPLOAD_URL, $options)
       ->willReturn($mockUploadResponse);
 
-    $expected = [
-    ];
-    $this->assertEquals($expected, $this->emdbClient->upload($mockAsset));
+    /** @var EmbridgeAssetEntityInterface|\PHPUnit_Framework_MockObject_MockObject $mockAsset */
+    $mockAsset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
+    $mockAsset
+      ->expects($this->once())
+      ->method('getSourcePath')
+      ->willReturn($mock_sourcepath);
+    $mockAsset
+      ->expects($this->once())
+      ->method('getOriginalId')
+      ->willReturn(NULL);
+    $mockAsset
+      ->expects($this->any())
+      ->method('getFileName')
+      ->willReturn($expected_filename);
+
+    $this->emdbClient->upload($mockAsset);
   }
 
 }
