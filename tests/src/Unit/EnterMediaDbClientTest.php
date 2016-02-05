@@ -119,6 +119,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->defaultOptions = [
       'timeout' => 5,
       'cookies' => new SessionCookieJar('SESSION_STORAGE', TRUE),
+      '_body_as_string' => TRUE,
     ];
   }
 
@@ -140,13 +141,15 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $mockResponse
       ->expects($this->once())
       ->method('getBody')
-      ->willReturn(file_get_contents('expected/login-expected-good-response.xml', TRUE));
+      ->willReturn(file_get_contents('expected/login-expected-good-response.json', TRUE));
 
-    $uri = 'http://www.example.com:8080/media/services/rest/login.xml?catalogid=media&accountname=admin&password=admin';
+    $uri = 'http://www.example.com/mediadb/services/authentication/login';
+    $options = $this->defaultOptions;
+    $options['body'] = $this->serializer->encode(['id' => $this->sampleConfig['username'], 'password' => $this->sampleConfig['password']]);
     $this->client
       ->expects($this->once())
       ->method('request')
-      ->with('POST', $uri, $this->defaultOptions)
+      ->with('POST', $uri, $options)
       ->willReturn($mockResponse);
 
     $this->assertTrue($this->emdbClient->login());

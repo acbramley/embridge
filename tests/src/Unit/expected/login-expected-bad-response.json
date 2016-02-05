@@ -1,0 +1,9 @@
+{
+    "response": {
+        "status": "ok",
+        "user": "admin"
+    },
+    "results": {
+        "status": "invalidlogin"
+    }
+}
