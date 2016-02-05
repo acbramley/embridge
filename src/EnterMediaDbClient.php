@@ -172,10 +172,10 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
       'sourcepath' => 'demo/2016/02/',
       'file' => '@' . $this->fileSystem->realpath($asset->getSourcePath()),
     ];
-    $response = $this->doRequest(self::EMBRIDGE_UPLOAD_PATH_DEFAULT, $body);
-    $body = (string) $response->getBody();
+    $body = $this->doRequest(self::EMBRIDGE_UPLOAD_PATH_DEFAULT, $body);
 
-    $values = [];
-    return $values;
+    $remote_asset = (array) $body['hit'];
+
+    return $asset;
   }
 }
