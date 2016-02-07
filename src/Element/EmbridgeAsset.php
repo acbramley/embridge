@@ -580,7 +580,7 @@ class EmbridgeAsset extends FormElement {
       $uploaded_files = array($file_upload);
     }
 
-    $files = array();
+    $assets = array();
     foreach ($uploaded_files as $i => $file_info) {
       // Check for file upload errors and return FALSE for this file if a lower
       // level system error occurred. For a complete list of errors:
@@ -589,13 +589,13 @@ class EmbridgeAsset extends FormElement {
         case UPLOAD_ERR_INI_SIZE:
         case UPLOAD_ERR_FORM_SIZE:
           drupal_set_message(t('The file %file could not be saved because it exceeds %maxsize, the maximum allowed size for uploads.', array('%file' => $file_info->getFilename(), '%maxsize' => format_size(file_upload_max_size()))), 'error');
-          $files[$i] = FALSE;
+          $assets[$i] = FALSE;
           continue;
 
         case UPLOAD_ERR_PARTIAL:
         case UPLOAD_ERR_NO_FILE:
           drupal_set_message(t('The file %file could not be saved because the upload did not complete.', array('%file' => $file_info->getFilename())), 'error');
-          $files[$i] = FALSE;
+          $assets[$i] = FALSE;
           continue;
 
         case UPLOAD_ERR_OK:
@@ -608,7 +608,7 @@ class EmbridgeAsset extends FormElement {
         // Unknown error
         default:
           drupal_set_message(t('The file %file could not be saved. An unknown error has occurred.', array('%file' => $file_info->getFilename())), 'error');
-          $files[$i] = FALSE;
+          $assets[$i] = FALSE;
           continue;
 
       }
@@ -622,8 +622,8 @@ class EmbridgeAsset extends FormElement {
       $values['filemime'] = \Drupal::service('file.mime_type.guesser')->guess($values['filename']);
 
       // Create our Embridge Entity.
-      /** @var EmbridgeAssetEntityInterface $file */
-      $file = EmbridgeAssetEntity::create($values);
+      /** @var EmbridgeAssetEntityInterface $asset */
+      $asset = EmbridgeAssetEntity::create($values);
 
       $extensions = '';
       if (isset($validators['embridge_asset_validate_file_extensions'])) {
@@ -649,22 +649,22 @@ class EmbridgeAsset extends FormElement {
       if (!empty($extensions)) {
         // Munge the filename to protect against possible malicious extension
         // hiding within an unknown file type (ie: filename.html.foo).
-        $file->setFilename(file_munge_filename($file->getFilename(), $extensions));
+        $asset->setFilename(file_munge_filename($asset->getFilename(), $extensions));
       }
 
       // Rename potentially executable files, to help prevent exploits (i.e. will
       // rename filename.php.foo and filename.php to filename.php.foo.txt and
       // filename.php.txt, respectively). Don't rename if 'allow_insecure_uploads'
       // evaluates to TRUE.
-      if (!\Drupal::config('system.file')->get('allow_insecure_uploads') && preg_match('/\.(php|pl|py|cgi|asp|js)(\.|$)/i', $file->getFilename()) && (substr($file->getFilename(), -4) != '.txt')) {
-        $file->setMimeType('text/plain');
+      if (!\Drupal::config('system.file')->get('allow_insecure_uploads') && preg_match('/\.(php|pl|py|cgi|asp|js)(\.|$)/i', $asset->getFilename()) && (substr($asset->getFilename(), -4) != '.txt')) {
+        $asset->setMimeType('text/plain');
         // The destination filename will also later be used to create the URI.
-        $file->setFilename($file->getFilename() . '.txt');
+        $asset->setFilename($asset->getFilename() . '.txt');
         // The .txt extension may not be in the allowed list of extensions. We have
         // to add it here or else the file upload will fail.
         if (!empty($extensions)) {
           $validators['embridge_asset_validate_file_extensions'][0] .= ' txt';
-          drupal_set_message(t('For security reasons, your upload has been renamed to %filename.', array('%filename' => $file->getFilename())));
+          drupal_set_message(t('For security reasons, your upload has been renamed to %filename.', array('%filename' => $asset->getFilename())));
         }
       }
 
@@ -677,7 +677,7 @@ class EmbridgeAsset extends FormElement {
       $destination_scheme = file_uri_scheme($destination_dir);
       if (!file_stream_wrapper_valid_scheme($destination_scheme)) {
         drupal_set_message(t('The file could not be uploaded because the destination %destination is invalid.', array('%destination' => $destination_dir)), 'error');
-        $files[$i] = FALSE;
+        $assets[$i] = FALSE;
         continue;
       }
 
@@ -685,12 +685,12 @@ class EmbridgeAsset extends FormElement {
       if (substr($destination_dir, -1) != '/') {
         $destination_dir .= '/';
       }
-      $file_destination = file_destination($destination_dir . $file->getFilename(), $replace);
+      $asset_destination = file_destination($destination_dir . $asset->getFilename(), $replace);
       // If file_destination() returns FALSE then $replace === FILE_EXISTS_ERROR and
       // there's an existing file so we need to bail.
-      if ($file_destination === FALSE) {
+      if ($asset_destination === FALSE) {
         drupal_set_message(t('The file %source could not be uploaded because a file by that name already exists in the destination %directory.', array('%source' => $form_field_name, '%directory' => $destination_dir)), 'error');
-        $files[$i] = FALSE;
+        $assets[$i] = FALSE;
         continue;
       }
 
@@ -699,13 +699,13 @@ class EmbridgeAsset extends FormElement {
       // $validators['file_validate_name_length'] = array();
 
       // Call the validation functions specified by this function's caller.
-      $errors = embridge_asset_validate($file, $validators);
+      $errors = embridge_asset_validate($asset, $validators);
 
       // Check for errors.
       if (!empty($errors)) {
         $message = array(
           'error' => array(
-            '#markup' => t('The specified file %name could not be uploaded.', array('%name' => $file->getFilename())),
+            '#markup' => t('The specified file %name could not be uploaded.', array('%name' => $asset->getFilename())),
           ),
           'item_list' => array(
             '#theme' => 'item_list',
@@ -715,32 +715,32 @@ class EmbridgeAsset extends FormElement {
         // @todo Add support for render arrays in drupal_set_message()? See
         //  https://www.drupal.org/node/2505497.
         drupal_set_message(\Drupal::service('renderer')->renderPlain($message), 'error');
-        $files[$i] = FALSE;
+        $assets[$i] = FALSE;
         continue;
       }
 
       // Move uploaded files from PHP's upload_tmp_dir to Drupal's temporary
       // directory. This overcomes open_basedir restrictions for future file
       // operations.
-      $file->setSourcePath($file_destination);
-      if (!drupal_move_uploaded_file($file_info->getRealPath(), $file->getSourcePath())) {
+      $asset->setSourcePath($asset_destination);
+      if (!drupal_move_uploaded_file($file_info->getRealPath(), $asset->getSourcePath())) {
         drupal_set_message(t('File upload error. Could not move uploaded file.'), 'error');
-        \Drupal::logger('file')->notice('Upload error. Could not move uploaded file %file to destination %destination.', array('%file' => $file->getFilename(), '%destination' => $file->getFileUri()));
-        $files[$i] = FALSE;
+        \Drupal::logger('file')->notice('Upload error. Could not move uploaded file %file to destination %destination.', array('%file' => $asset->getFilename(), '%destination' => $asset->getFileUri()));
+        $assets[$i] = FALSE;
         continue;
       }
 
       // Set the permissions on the new file.
-      drupal_chmod($file->getSourcePath());
+      drupal_chmod($asset->getSourcePath());
 
       // If we are replacing an existing file re-use its database record.
       // @todo Do not create a new entity in order to update it. See
       //   https://www.drupal.org/node/2241865.
       if ($replace == FILE_EXISTS_REPLACE) {
-        $existing_files = entity_load_multiple_by_properties('embridge_asset_entity', array('uri' => $file->getSourcePath()));
+        $existing_files = entity_load_multiple_by_properties('embridge_asset_entity', array('uri' => $asset->getSourcePath()));
         if (count($existing_files)) {
           $existing = reset($existing_files);
-          $file->setOriginalId($existing->id());
+          $asset->setOriginalId($existing->id());
         }
       }
 
@@ -749,14 +749,14 @@ class EmbridgeAsset extends FormElement {
       $embridge_client->upload($file);
 
       // If we made it this far it's safe to record this file in the database.
-      $file->save();
-      $files[$i] = $file;
+      $asset->save();
+      $assets[$i] = $asset;
     }
 
     // Add files to the cache.
-    $upload_cache[$form_field_name] = $files;
+    $upload_cache[$form_field_name] = $assets;
 
-    return isset($delta) ? $files[$delta] : $files;
+    return isset($delta) ? $assets[$delta] : $assets;
   }
 
 }
