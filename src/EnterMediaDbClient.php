@@ -203,7 +203,6 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     $asset->setAssetId($response_body['data']['id']);
     $asset->setSourcePath($response_body['data']['sourcepath']);
     $asset->setPermanent();
-    $asset->save();
 
     return $asset;
   }

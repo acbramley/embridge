@@ -403,10 +403,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->once())
       ->method('setPermanent')
       ->will($this->returnSelf());
-    $mockAsset
-      ->expects($this->once())
-      ->method('save')
-      ->will($this->returnSelf());
 
     $this->emdbClient->upload($mockAsset);
   }
