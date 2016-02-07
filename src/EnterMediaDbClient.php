@@ -173,18 +173,16 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     $this->login();
 
     $file_path = $this->fileSystem->realpath($asset->getSourcePath());
+    $filename = $asset->getFilename();
     $json_request = $this->jsonEncoder->encode(
       [
         "id" => $asset->getOriginalId(),
-        "description" =>  $asset->getFilename(),
+        "description" => $filename,
 //        "creator" =>  [
 //          "id" =>  "abramley",
 //          "firstname" =>  "Adam",
 //          "lastname" =>  "Bramley"
 //        ],
-        "category" =>  [
-          "id" =>  "index",
-        ]
       ]
     );
     $body = [
@@ -196,11 +194,16 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
         [
           'name'     => 'file',
           'contents' => file_get_contents($file_path),
-          'filename' => $asset->getFilename(),
+          'filename' => $filename,
         ],
       ],
     ];
     $response_body = $this->doRequest(self::EMBRIDGE_UPLOAD_PATH_DEFAULT, $body);
+
+    $asset->setAssetId($response_body['data']['id']);
+    $asset->setSourcePath($response_body['data']['sourcepath']);
+    $asset->setPermanent();
+    $asset->save();
 
     return $asset;
   }
