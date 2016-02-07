@@ -351,9 +351,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
       [
         "id" => NULL,
         "description" =>  $expected_filename,
-        "category" =>  [
-          "id" =>  "index",
-        ]
       ]
     );
     $body = [
@@ -388,9 +385,28 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->method('getOriginalId')
       ->willReturn(NULL);
     $mockAsset
-      ->expects($this->any())
+      ->expects($this->once())
       ->method('getFileName')
       ->willReturn($expected_filename);
+
+    $mockAsset
+      ->expects($this->once())
+      ->method('setAssetId')
+      ->with(456)
+      ->will($this->returnSelf());
+    $mockAsset
+      ->expects($this->once())
+      ->method('setSourcePath')
+      ->with('2016/02/456/cat3.png')
+      ->will($this->returnSelf());
+    $mockAsset
+      ->expects($this->once())
+      ->method('setPermanent')
+      ->will($this->returnSelf());
+    $mockAsset
+      ->expects($this->once())
+      ->method('save')
+      ->will($this->returnSelf());
 
     $this->emdbClient->upload($mockAsset);
   }
