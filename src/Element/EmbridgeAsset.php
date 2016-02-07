@@ -746,7 +746,16 @@ class EmbridgeAsset extends FormElement {
 
       /** @var EnterMediaDbClientInterface $embridge_client */
       $embridge_client = \Drupal::getContainer()->get('embridge.client');
-      $embridge_client->upload($file);
+
+      try {
+        $embridge_client->upload($asset);
+      }
+      catch (\Exception $e) {
+        $message = $e->getMessage();
+        drupal_set_message(t('Uploading the file "%file" to EnterMedia failed with the message "%message".', array('%file' => $asset->getFilename(), '%message' => $message)), 'error');
+        $assets[$i] = FALSE;
+        continue;
+      }
 
       // If we made it this far it's safe to record this file in the database.
       $asset->save();
