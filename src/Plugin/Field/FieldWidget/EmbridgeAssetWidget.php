@@ -88,7 +88,6 @@ class EmbridgeAssetWidget extends FileWidget {
       '#display_default' => $field_settings['display_default'],
       '#description_field' => $field_settings['description_field'],
       '#cardinality' => $cardinality,
-      '#catalog_id' => $field_settings['catalog_id'],
     );
 
     $element['#weight'] = $delta;
