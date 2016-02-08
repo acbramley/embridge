@@ -102,7 +102,7 @@ class EmbridgeAssetItem extends FileItem {
 
     $element['application_id'] = array(
       '#type' => 'select',
-      '#title' => t('Application Id'),
+      '#title' => t('Application'),
       '#default_value' => $settings['application_id'],
       '#options' => $options,
       '#description' => t("Select the Application to source media from for this field."),
