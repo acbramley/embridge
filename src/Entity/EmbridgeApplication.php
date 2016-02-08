@@ -58,4 +58,48 @@ class EmbridgeApplication extends ConfigEntityBase implements EmbridgeApplicatio
    */
   protected $label;
 
+  /**
+   * The EMBridge Application ID in EnterMedia
+   *
+   * @var string
+   */
+  protected $applicationId;
+
+  /**
+   * A newline separated list of conversions
+   *
+   * @var string
+   */
+  protected $conversions;
+
+  /**
+   * Return the Enter Media Application ID
+   *
+   * @return string
+   */
+  public function getApplicationId() {
+    return $this->applicationId;
+  }
+
+  /**
+   * Returns a string of conversions, separated by newlines.
+   *
+   * @return string
+   */
+  public function getConversions() {
+    return $this->conversions;
+  }
+
+  /**
+   * Returns conversions in an array.
+   *
+   * @return array
+   */
+  public function getConversionArray() {
+    $conversions = $this->getConversions();
+    $return = explode("\r\n", $conversions);
+
+    return $return;
+  }
+
 }

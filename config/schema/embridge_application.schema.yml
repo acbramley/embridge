@@ -8,5 +8,11 @@ embridge.embridge_application.*:
     label:
       type: label
       label: 'Label'
+    applicationId:
+      type: string
+      label: 'Application ID'
+    conversions:
+      type: string
+      label: 'Conversions'
     uuid:
       type: string
