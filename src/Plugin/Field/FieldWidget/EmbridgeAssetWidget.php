@@ -208,6 +208,10 @@ class EmbridgeAssetWidget extends FileWidget {
    *   The render array.
    */
   protected function alterFileUploadHelpParameters(&$file_upload_help) {
+    if (empty($file_upload_help['#upload_validators'])) {
+      return;
+    }
+
     // Translate our custom upload validators to file ones so we can piggy
     // back off file_upload_help's themeing.
     foreach ($file_upload_help['#upload_validators'] as $func => $value) {
