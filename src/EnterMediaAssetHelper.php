@@ -36,7 +36,13 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
    * {@inheritdoc}
    */
   public function getAssetConversionUrl(EmbridgeAssetEntityInterface $asset, $conversion) {
+    $settings = $this->configFactory->get('embridge.settings');
+    $uri = $settings->get('uri');
+    $application_id = $settings->get('application_id');
 
+    $url = $uri . '/' . $application_id . '/views/modules/asset/downloads/preview/' . $conversion . '/' . $asset->getSourcePath() . '/thumb.jpg';
+
+    return $url;
   }
 
 }
