@@ -14,14 +14,21 @@ reuse, and track all digital files.
   - Save the configuration
   - click "Test Connection" to verify if we can connect and login to EnterMedia  server. If we are getting "success" message, then our basic server configuration for EnterMedia are complete.
   
-* Continue settings for each catalog (audio, interactive, photo and video).
-  - Renditions: selected renditions will be included in embridge_field
-  for nodes.
+* Continue settings for each application.
+  - Once a connection is established, add an "Application" on the Applications tab.
+  - Applications are related to when adding a Field.
+  - Conversions: Conversions can be used in field formatteds
   - Search Fields: selected fields will be displayed in EnterMedia Search form
   as search conditions.
-  - Search Result Fields: selected fields will be included in EnterMedia Search
-  result.
 
 ### EMBridge Field Configuration
 
-COMING SOON.
+Add a field to your content type and select _*Embridge Asset Item*_
+
+Configure the Allowed Extensions, and Maximum upload size. These will be used to validate the files before uploading to the server.
+
+The File Directory setting is a temporary storage location for files before being uploaded to the EMDB instance.
+
+The Application chosen will dictate which fields can be searched on, and which conversions can be used in the field
+formatter.
+
