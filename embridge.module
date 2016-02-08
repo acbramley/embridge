@@ -17,7 +17,7 @@ function embridge_theme() {
   return array(
     // From file.module.
     'embridge_file_link' => array(
-      'variables' => array('asset' => NULL),
+      'variables' => array('asset' => NULL, 'description' => '', 'entity' => NULL, 'link_to' => ''),
     ),
   );
 }
@@ -40,8 +40,6 @@ function template_preprocess_embridge_file_link(&$variables) {
   $options = array();
 
   $asset_entity = ($asset instanceof EmbridgeAssetEntity) ? $asset : EmbridgeAssetEntity::load($asset->id);
-  // TODO: Remove once we have urls from EMDB.
-  $url = file_create_url($asset_entity->getSourcePath());
 
   $mime_type = $asset->getMimeType();
   // Set options as per anchor format described at
@@ -57,6 +55,17 @@ function template_preprocess_embridge_file_link(&$variables) {
     $options['attributes']['title'] = $asset_entity->getFilename();
   }
 
+  $url = NULL;
+  if (!empty($variables['entity']) && $variables['link_to'] == 'content') {
+    /** @var Drupal\Core\Entity\EntityInterface $entity */
+    $entity = $variables['entity'];
+    $url = $entity->urlInfo();
+  }
+  elseif ($variables['link_to'] == 'file') {
+    // TODO: Build proper link.
+    $url = Url::fromUri(file_create_url($asset_entity->getSourcePath()), $options);
+  }
+
   // Classes to add to the file field for icons.
   $classes = array(
     'file',
@@ -70,7 +79,12 @@ function template_preprocess_embridge_file_link(&$variables) {
   $variables['attributes'] = new Attribute($variables['attributes']);
   $variables['attributes']->addClass($classes);
 
-  $link = Link::fromTextAndUrl($link_text, Url::fromUri($url, $options));
+  if ($url) {
+    $link = Link::fromTextAndUrl($link_text, $url);
+  }
+  else {
+    $link = $link_text;
+  }
   $variables['link'] = $link;
 }
 
