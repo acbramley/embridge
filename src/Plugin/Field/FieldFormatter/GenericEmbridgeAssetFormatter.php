@@ -31,7 +31,6 @@ class GenericEmbridgeAssetFormatter extends EntityReferenceFormatterBase {
    */
   public static function defaultSettings() {
     return [
-      'conversion' => '',
       'link_to' => '',
     ] + parent::defaultSettings();
   }
@@ -41,12 +40,6 @@ class GenericEmbridgeAssetFormatter extends EntityReferenceFormatterBase {
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $element = [];
-    $element['conversion'] = [
-      '#title' => t('Conversion'),
-      '#type' => 'select',
-      '#options' => [],
-      '#default_value' => $this->getSetting('conversion'),
-    ];
     $link_types = array(
       'content' => t('Content'),
       'file' => t('File'),
@@ -67,14 +60,6 @@ class GenericEmbridgeAssetFormatter extends EntityReferenceFormatterBase {
    */
   public function settingsSummary() {
     $summary = [];
-
-    $conversion = $this->getSetting('conversion');
-    if ($conversion) {
-      $summary[] = t('Conversion: @style', ['@style' => $conversion]);
-    }
-    else {
-      $summary[] = t('Original file');
-    }
 
     $link_types = array(
       '' => t('Linked to nothing'),
@@ -110,7 +95,6 @@ class GenericEmbridgeAssetFormatter extends EntityReferenceFormatterBase {
         '#link_to' => $link_setting,
         '#cache' => array(
           'tags' => $asset->getCacheTags(),
-          'max-age' => 0,
         ),
       );
     }
