@@ -1,4 +1,4 @@
 uri: 'http://demo.entermediasoftware.com'
-port: 8080
+application_id: 'emshare'
 username: 'admin'
 password: 'admin'

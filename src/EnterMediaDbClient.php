@@ -101,7 +101,6 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   protected function doRequest($path = '', $body = [], $method = 'POST') {
     $settings = $this->configFactory->get('embridge.settings');
     $uri = $settings->get('uri');
-    $port = $settings->get('port');
     $uri = sprintf('%s/%s', $uri, $path);
     $options = [
       'timeout' => 5,
