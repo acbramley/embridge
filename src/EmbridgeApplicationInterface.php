@@ -13,6 +13,25 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  * Provides an interface for defining EMBridge Application entities.
  */
 interface EmbridgeApplicationInterface extends ConfigEntityInterface {
-  // Add get/set methods for your configuration properties here.
 
+  /**
+   * Return the Enter Media Application ID
+   *
+   * @return string
+   */
+  public function getApplicationId();
+
+  /**
+   * Returns a string of conversions, separated by newlines.
+   *
+   * @return string
+   */
+  public function getConversions();
+
+  /**
+   * Returns conversions in an array.
+   *
+   * @return array
+   */
+  public function getConversionsArray();
 }
