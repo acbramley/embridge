@@ -98,7 +98,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
     // Create a map of arguments to return values.
     $sample_config = [
       'uri' => 'http://www.example.com',
-      'port' => '8080',
       'username' => 'admin',
       'password' => 'admin',
     ];
@@ -110,7 +109,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->will($this->returnValueMap(
         [
           ['uri', $sample_config['uri']],
-          ['port', $sample_config['port']],
           ['username', $sample_config['username']],
           ['password', $sample_config['password']],
         ]
