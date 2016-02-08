@@ -98,16 +98,17 @@ class EmbridgeSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Server uri'),
       '#description' => $this->t('EnterMedia Hostname (e.g. http://entermedia.databasepublish.com).'),
       '#maxlength' => 255,
-      '#size' => 100,
+      '#size' => 64,
       '#default_value' => $config->get('uri'),
+      '#required' => TRUE,
     ];
-    $form['connection']['port'] = [
-      '#type' => 'number',
-      '#title' => $this->t('Port'),
-      '#description' => $this->t('EnterMedia server port (e.g. 8080).'),
-      '#maxlength' => 64,
-      '#size' => 7,
-      '#default_value' => $config->get('port'),
+    $form['connection']['application_id'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Application ID'),
+      '#description' => $this->t('EnterMedia application id (e.g. emshare).'),
+      '#size' => 64,
+      '#default_value' => $config->get('application_id'),
+      '#required' => TRUE,
     ];
     $form['connection']['username'] = [
       '#type' => 'textfield',
@@ -116,6 +117,7 @@ class EmbridgeSettingsForm extends ConfigFormBase {
       '#maxlength' => 64,
       '#size' => 64,
       '#default_value' => $config->get('username'),
+      '#required' => TRUE,
     ];
     $form['connection']['password'] = [
       '#type' => 'password',
@@ -124,6 +126,7 @@ class EmbridgeSettingsForm extends ConfigFormBase {
       '#maxlength' => 64,
       '#size' => 64,
       '#default_value' => $config->get('password'),
+      '#required' => TRUE,
     ];
     return parent::buildForm($form, $form_state);
   }
@@ -171,7 +174,7 @@ class EmbridgeSettingsForm extends ConfigFormBase {
 
     $this->config('embridge.settings')
       ->set('uri', $form_state->getValue('uri'))
-      ->set('port', $form_state->getValue('port'))
+      ->set('application_id', $form_state->getValue('application_id'))
       ->set('username', $form_state->getValue('username'))
       ->set('password', $form_state->getValue('password'))
       ->save();
