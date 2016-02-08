@@ -2,6 +2,6 @@ services:
   embridge.client:
     class: Drupal\embridge\EnterMediaDbClient
     arguments: ["@config.factory", "@http_client", "@serialization.json", "@file_system"]
-    embridge.asset_helper:
-      class: Drupal\embridge\EnterMediaAssetHelper
-      arguments: ["@config.factory"]
+  embridge.asset_helper:
+    class: Drupal\embridge\EnterMediaAssetHelper
+    arguments: ["@config.factory"]
