@@ -65,10 +65,6 @@ function template_preprocess_embridge_file_link(&$variables) {
     $entity = $variables['entity'];
     $url = $entity->urlInfo();
   }
-  elseif ($variables['link_to'] == 'file') {
-    // TODO: Build proper link.
-    $url = Url::fromUri(file_create_url($asset_entity->getSourcePath()), $options);
-  }
   // Add to variables for embridge_image.
   $variables['url'] = $url;
 
@@ -125,8 +121,15 @@ function template_preprocess_embridge_image(&$variables) {
   $variables['image']['#width'] = $asset->getWidth();
   $variables['image']['#height'] = $asset->getHeight();
   $variables['image']['#alt'] = $variables['description'];
-  $source_path = $asset->getSourcePath();
-  $variables['image']['#uri'] = $asset->getSourcePath();
+
+  /** @var \Drupal\embridge\EnterMediaAssetHelperInterface $asset_helper */
+  $asset_helper = Drupal::getContainer()->get('embridge.asset_helper');
+  $uri = $asset_helper->getAssetConversionUrl($asset, $variables['conversion']);
+  if ($variables['link_to'] == 'file') {
+    $variables['url'] = $uri;
+  }
+
+  $variables['image']['#uri'] = $uri;
 }
 
 /**

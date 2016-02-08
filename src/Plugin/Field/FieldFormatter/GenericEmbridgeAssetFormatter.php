@@ -42,7 +42,6 @@ class GenericEmbridgeAssetFormatter extends EntityReferenceFormatterBase {
     $element = [];
     $link_types = array(
       'content' => t('Content'),
-      'file' => t('File'),
     );
     $element['link_to'] = array(
       '#title' => t('Link to:'),

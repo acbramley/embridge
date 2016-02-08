@@ -47,7 +47,9 @@ class EmbridgeImageFormatter extends GenericEmbridgeAssetFormatter {
       '#default_value' => $this->getSetting('conversion'),
     ];
 
-    return $element + parent::settingsForm($form, $form_state);
+    $element = $element + parent::settingsForm($form, $form_state);
+    // Allow linking to the file when rendering an image with a conversion.
+    $element['link_to']['#options']['file'] = t('Linked to file');
   }
 
   /**
