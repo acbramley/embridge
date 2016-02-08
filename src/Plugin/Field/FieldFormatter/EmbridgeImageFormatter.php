@@ -7,12 +7,10 @@
 
 namespace Drupal\embridge\Plugin\Field\FieldFormatter;
 
-use Drupal\Component\Utility\Html;
-use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\FormatterBase;
-use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceFormatterBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\embridge\EmbridgeApplicationInterface;
+use Drupal\embridge\Entity\EmbridgeApplication;
 
 /**
  * Plugin implementation of the 'embridge_default' formatter.
@@ -40,10 +38,14 @@ class EmbridgeImageFormatter extends GenericEmbridgeAssetFormatter {
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $element = [];
+    $application_id = $this->getFieldSetting('application_id');
+    /** @var EmbridgeApplicationInterface $embridge_application */
+    $embridge_application = EmbridgeApplication::load($application_id);
+    $conversions = $embridge_application->getConversionsArray();
     $element['conversion'] = [
       '#title' => t('Conversion'),
       '#type' => 'select',
-      '#options' => ['thumb' => t('Thumbnail')],
+      '#options' => array_combine($conversions, $conversions),
       '#default_value' => $this->getSetting('conversion'),
     ];
 
