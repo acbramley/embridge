@@ -7,6 +7,7 @@
 namespace Drupal\embridge\Plugin\Field\FieldType;
 
 use Drupal\Component\Utility\Bytes;
+use Drupal\Core\Config\Entity\ConfigEntityStorage;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
@@ -42,7 +43,7 @@ class EmbridgeAssetItem extends FileItem {
    */
   public static function defaultFieldSettings() {
     return array(
-      'catalog_id' => '',
+      'application_id' => '',
     ) + parent::defaultFieldSettings();
   }
 
@@ -88,11 +89,23 @@ class EmbridgeAssetItem extends FileItem {
     $element = array();
     $settings = $this->getSettings();
 
-    $element['catalog_id'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Catalog Id'),
-      '#default_value' => $settings['catalog_id'],
-      '#description' => t('Select the catalog for this field.'),
+    /** @var ConfigEntityStorage $application_storage */
+    $application_storage = \Drupal::entityTypeManager()->getStorage('embridge_application');
+    $application_query = $application_storage->getQuery();
+    $entity_ids = array_keys($application_query->execute());
+    $entities = $application_storage->loadMultiple($entity_ids);
+
+    $options = [];
+    foreach ($entities as $entity) {
+      $options[$entity->id()] = $entity->label();
+    }
+
+    $element['application_id'] = array(
+      '#type' => 'select',
+      '#title' => t('Application Id'),
+      '#default_value' => $settings['application_id'],
+      '#options' => $options,
+      '#description' => t("Select the Application to source media from for this field."),
       '#weight' => 6,
     );
 
