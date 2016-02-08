@@ -6,6 +6,7 @@
 
 use \Drupal\Core\Url;
 use \Drupal\Core\Link;
+use \Drupal\Component\Utility\Unicode;
 use \Drupal\embridge\Entity\EmbridgeAssetEntity;
 use \Drupal\embridge\EmbridgeAssetEntityInterface;
 use \Drupal\Core\Template\Attribute;
@@ -15,9 +16,11 @@ use \Drupal\Core\Template\Attribute;
  */
 function embridge_theme() {
   return array(
-    // From file.module.
     'embridge_file_link' => array(
       'variables' => array('asset' => NULL, 'description' => '', 'entity' => NULL, 'link_to' => ''),
+    ),
+    'embridge_image' => array(
+      'variables' => array('asset' => NULL, 'conversion' => '', 'description' => '', 'entity' => NULL, 'link_to' => ''),
     ),
   );
 }
@@ -29,9 +32,9 @@ function embridge_theme() {
  *
  * @param array $variables
  *   An associative array containing:
- *   - asset: An EMbridge Asset Entity object to which the link will be created.
- *   - icon_directory: (optional) A path to a directory of icons to be used for
- *     files. Defaults to the value of the "icon.directory" variable.
+ *   - asset: An EMBridge Asset Entity object to which the link will be created.
+ *   - entity: The referring entity.
+ *   - link_to: whether to link to the content, the file, or nothing.
  *   - description: A description to be displayed instead of the filename.
  *   - attributes: An associative array of attributes to be placed in the a tag.
  */
@@ -40,6 +43,7 @@ function template_preprocess_embridge_file_link(&$variables) {
   $options = array();
 
   $asset_entity = ($asset instanceof EmbridgeAssetEntity) ? $asset : EmbridgeAssetEntity::load($asset->id);
+  $variables['asset'] = $asset;
 
   $mime_type = $asset->getMimeType();
   // Set options as per anchor format described at
@@ -65,6 +69,8 @@ function template_preprocess_embridge_file_link(&$variables) {
     // TODO: Build proper link.
     $url = Url::fromUri(file_create_url($asset_entity->getSourcePath()), $options);
   }
+  // Add to variables for embridge_image.
+  $variables['url'] = $url;
 
   // Classes to add to the file field for icons.
   $classes = array(
@@ -88,6 +94,40 @@ function template_preprocess_embridge_file_link(&$variables) {
   $variables['link'] = $link;
 }
 
+/**
+ * Prepares variables for file link templates.
+ *
+ * Default template: file-link.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - asset: An EMBridge Asset Entity object to which the link will be created.
+ *   - entity: The referring entity.
+ *   - link_to: whether to link to the content, the file, or nothing.
+ *   - description: A description to be displayed instead of the filename.
+ *   - attributes: An associative array of attributes to be placed in the a tag.
+ */
+function template_preprocess_embridge_image(&$variables) {
+  template_preprocess_embridge_file_link($variables);
+
+  $variables['image'] = array(
+    '#theme' => 'image',
+  );
+//  $item = $variables['item'];
+
+//  // Do not output an empty 'title' attribute.
+//  if (Unicode::strlen($item->title) != 0) {
+//    $variables['image']['#title'] = $item->title;
+//  }
+
+  /** @var EmbridgeAssetEntity  $asset */
+  $asset = $variables['asset'];
+  $variables['image']['#width'] = $asset->getWidth();
+  $variables['image']['#height'] = $asset->getHeight();
+  $variables['image']['#alt'] = $variables['description'];
+  $source_path = $asset->getSourcePath();
+  $variables['image']['#uri'] = $asset->getSourcePath();
+}
 
 /**
  * Checks that a file meets the criteria specified by the validators.
