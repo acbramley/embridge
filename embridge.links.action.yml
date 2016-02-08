@@ -1,0 +1,6 @@
+entity.embridge_application.add_form:
+  route_name: 'entity.embridge_application.add_form'
+  title: 'Add EMBridge Application'
+  appears_on:
+    - entity.embridge_application.collection
+

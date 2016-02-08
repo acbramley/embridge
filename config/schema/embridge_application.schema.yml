@@ -1,0 +1,12 @@
+embridge.embridge_application.*:
+  type: config_entity
+  label: 'EMBridge Application config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    uuid:
+      type: string

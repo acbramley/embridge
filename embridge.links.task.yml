@@ -1,0 +1,10 @@
+embridge.embridge_settings_form:
+  title: 'Settings'
+  route_name: embridge.embridge_settings_form
+  base_route: embridge.embridge_settings_form
+# EMBridge Application menu items definition
+entity.embridge_application.collection:
+  title: 'Applications'
+  route_name: entity.embridge_application.collection
+  base_route: embridge.embridge_settings_form
+  weight: 100
