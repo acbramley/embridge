@@ -44,6 +44,12 @@ class EmbridgeAssetWidget extends FileWidget {
     // Alter #upload_validators passed to #file_upload_description.
     $this->alterFileUploadHelpParameters($elements['#file_upload_description']);
 
+    // TODO: Why do we need this?
+    if ($this->isDefaultValueWidget($form_state) && !empty($elements[1])) {
+      unset($elements[1]);
+      $elements['#file_upload_delta'] = 0;
+    }
+
     return $elements;
   }
 
