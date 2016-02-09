@@ -8,7 +8,7 @@ namespace Drupal\embridge;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\Core\File\MimeType\MimeTypeGuesser;
+use Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser;
 
 /**
  * Class EnterMediaAssetHelper.
@@ -45,7 +45,7 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
    *   The config factory.
    * @param \Drupal\Core\Entity\EntityTypeManager $entity_type_manager
    *   The entity type manager class.
-   * @param \Drupal\Core\File\MimeType\MimeTypeGuesser
+   * @param \Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser
    *   The mime type guesser service.
    */
   public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManager $entity_type_manager, MimeTypeGuesser $mime_guesser) {
@@ -83,7 +83,8 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
     $query_result = $query->execute();
 
     if ($query_result) {
-      return $storage->load($query_result['id']);
+      $id = array_pop($query_result);
+      return $storage->load($id);
     }
 
     $values = [
