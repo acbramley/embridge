@@ -215,8 +215,8 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
 
     $body = [
       'json' => [
-        'page' => $page,
-        'hisperpage' => $number_of_items,
+        'page' => (string) $page,
+        'hitsperpage' => (string) $number_of_items,
         'showfilters' => "true",
         'query' => [
           'terms' => $filters,

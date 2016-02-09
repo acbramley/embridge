@@ -517,7 +517,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
 
     $body = [
       'page' => 2,
-      'hisperpage' => 10,
+      'hitsperpage' => 10,
       'showfilters' => "true",
       'query' => [
         'terms' => [
