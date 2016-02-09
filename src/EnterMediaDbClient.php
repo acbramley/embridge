@@ -211,6 +211,21 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
    * {@inheritdoc}
    */
   public function search($page = 1, $number_of_items = 20, $filters = []) {
-    // TODO: Implement search() method.
+    $this->login();
+
+    $body = [
+      'json' => [
+        'page' => $page,
+        'hisperpage' => $number_of_items,
+        'showfilters' => "true",
+        'query' => [
+          'terms' => $filters,
+        ],
+      ],
+    ];
+
+    $response_body = $this->doRequest(self::EMBRIDGE_SEARCH_PATH_DEFAULT, $body);
+
+    return $response_body;
   }
 }
