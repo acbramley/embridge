@@ -10,7 +10,7 @@ namespace Drupal\Tests\embridge\Unit;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\File\MimeType\MimeTypeGuesser;
+use Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser;
 use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\Tests\UnitTestCase;
@@ -117,7 +117,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       'filesize' => 123456789,
       'name' => '123.png',
     ];
-    $mock_id = 456;
+    $mock_id = '456';
     $mockQuery = $this->getMock('\Drupal\Core\Entity\Query\QueryInterface');
     $mockQuery
       ->expects($this->once())
@@ -126,7 +126,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
     $mockQuery
       ->expects($this->once())
       ->method('execute')
-      ->willReturn(['id' => $mock_id]);
+      ->willReturn([$mock_id => $mock_id]);
 
     $mockAsset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
 
@@ -139,6 +139,73 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       ->expects($this->once())
       ->method('load')
       ->with($mock_id)
+      ->willReturn($mockAsset);
+
+    $this->entityTypeManager
+      ->expects($this->once())
+      ->method('getStorage')
+      ->with('embridge_asset_entity')
+      ->willReturn($mockEntityStorage);
+
+    $this->assertEquals($mockAsset, $this->emdbHelper->searchResultToAsset($mock_search_result));
+  }
+
+
+  /**
+   * Tests searchResultToAsset().
+   *
+   * @covers ::searchResultToAsset
+   * @test
+   */
+  public function searchResultToAssetReturnsNewAssetWhenNoneExist() {
+
+    $mock_search_result = [
+      'id' => '123',
+      'sourcepath' => 'test/123.png',
+      'filesize' => 123456789,
+      'name' => '123.png',
+    ];
+    $mockQuery = $this->getMock('\Drupal\Core\Entity\Query\QueryInterface');
+    $mockQuery
+      ->expects($this->once())
+      ->method('condition')
+      ->with('asset_id', $mock_search_result['id']);
+    $mockQuery
+      ->expects($this->once())
+      ->method('execute')
+      ->willReturn([]);
+
+    $mockAsset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
+    $mockAsset
+      ->expects($this->once())
+      ->method('setTemporary')
+      ->willReturn($this->returnSelf());
+    $mockAsset
+      ->expects($this->once())
+      ->method('save');
+
+    $expected_mime = 'image/png';
+    $this->mimeGuesser
+      ->expects($this->once())
+      ->method('guess')
+      ->with($mock_search_result['name'])
+      ->willReturn($expected_mime);
+    $expected_values = [
+      'asset_id' => $mock_search_result['id'],
+      'source_path' => $mock_search_result['sourcepath'],
+      'filesize' => $mock_search_result['filesize'],
+      'filename' => $mock_search_result['name'],
+      'filemime' => $expected_mime,
+    ];
+    $mockEntityStorage = $this->getMock(EntityStorageInterface::class);
+    $mockEntityStorage
+      ->expects($this->once())
+      ->method('getQuery')
+      ->willReturn($mockQuery);
+    $mockEntityStorage
+      ->expects($this->once())
+      ->method('create')
+      ->with($expected_values)
       ->willReturn($mockAsset);
 
     $this->entityTypeManager
