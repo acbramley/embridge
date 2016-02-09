@@ -18,6 +18,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
 
   const EMBRIDGE_LOGIN_PATH_DEFAULT = 'mediadb/services/authentication/login';
   const EMBRIDGE_UPLOAD_PATH_DEFAULT = 'mediadb/services/module/asset/create';
+  const EMBRIDGE_SEARCH_PATH_DEFAULT = 'mediadb/services/module/asset/search';
 
   /**
    * Config Factory.
@@ -204,5 +205,12 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     $asset->setPermanent();
 
     return $asset;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function search($page = 1, $number_of_items = 20, $filters = []) {
+    // TODO: Implement search() method.
   }
 }

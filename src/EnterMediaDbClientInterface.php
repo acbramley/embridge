@@ -33,4 +33,20 @@ interface EnterMediaDbClientInterface {
    *   The updated and saved asset.
    */
   public function upload(EmbridgeAssetEntityInterface $asset);
+
+  /**
+   * Searches the EMDB instance for assets, given a set of filters.
+   *
+   * @param int $page
+   *   The page to fetch.
+   * @param int $number_of_items
+   *   The number of items to fetch per page.
+   * @param array $filters
+   *   An array of filters to apply to the query
+   *
+   * @return array
+   *   A decoded JSON response.
+   */
+  public function search($page = 1, $number_of_items = 20, $filters = []);
+
 }
