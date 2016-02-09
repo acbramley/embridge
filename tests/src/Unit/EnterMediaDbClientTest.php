@@ -140,7 +140,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * @covers ::doRequest
    * @test
    */
-  public function loginReturnsTrueWhenClientReturns200AndValidXml() {
+  public function loginReturnsTrueWhenClientReturns200AndValidJson() {
 
     $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockResponse
@@ -169,7 +169,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * @covers ::doRequest
    * @test
    */
-  public function loginReturnsFalseWhenClientReturnsFailedXml() {
+  public function loginReturnsFalseWhenClientReturnsFailedJson() {
 
     $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockResponse
@@ -303,7 +303,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * @covers ::doRequest
    * @test
    */
-  public function uploadReturnsAssetWhenClientReturns200AndValidXml() {
+  public function uploadUpdatesAssetWhenClientReturns200AndValidJson() {
     $mockLoginResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockLoginResponse
       ->expects($this->once())
@@ -314,6 +314,13 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->once())
       ->method('getBody')
       ->willReturn(file_get_contents('expected/login-expected-good-response.json', TRUE));
+
+    // This sucks, returnValueMap wasn't working though.
+    $this->client
+      ->expects($this->at(0))
+      ->method('request')
+      ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
+      ->willReturn($mockLoginResponse);
 
     $mockUploadResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mockUploadResponse
@@ -336,13 +343,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->willReturn($expected_realpath);
 
     $options = $this->defaultOptions;
-
-    // This sucks, returnValueMap wasn't working though.
-    $this->client
-      ->expects($this->at(0))
-      ->method('request')
-      ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
-      ->willReturn($mockLoginResponse);
 
     $expected_filename = 'cat3.png';
     $json_request = $this->serializer->encode(
