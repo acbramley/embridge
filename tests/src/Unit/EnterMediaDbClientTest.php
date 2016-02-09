@@ -451,8 +451,8 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $options = $this->defaultOptions;
 
     $body = [
-      'page' => 1,
-      'hisperpage' => 20,
+      'page' => '1',
+      'hitsperpage' => '20',
       'showfilters' => "true",
       'query' => [
         'terms' => [],
