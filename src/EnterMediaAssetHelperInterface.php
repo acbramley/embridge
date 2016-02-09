@@ -22,8 +22,17 @@ interface EnterMediaAssetHelperInterface {
    *
    * @return string
    */
-  public function getAssetConversionUrl(
-    EmbridgeAssetEntityInterface $asset,
-    $conversion
-  );
+  public function getAssetConversionUrl(EmbridgeAssetEntityInterface $asset, $conversion);
+
+  /**
+   * Converts a search result to a Embridge Asset Entity.
+   *
+   * @param array $result
+   *   A result from the search results.
+   *
+   * @return EmbridgeAssetEntityInterface
+   *   The populated and saved entity.
+   */
+  public function searchResultToAsset($result);
+
 }
