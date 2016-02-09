@@ -455,16 +455,10 @@ class EnterMediaDbClientTest extends UnitTestCase {
       'hisperpage' => 20,
       'showfilters' => "true",
       'query' => [
-        'terms' => [
-          [
-            'field' => 'id',
-            'operator' => 'matches',
-            'value' => '*',
-          ],
-        ],
+        'terms' => [],
       ],
     ];
-    $options['body'] = $body;
+    $options['json'] = $body;
 
     $this->client
       ->expects($this->at(1))
