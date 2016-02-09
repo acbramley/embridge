@@ -1,0 +1,1701 @@
+{
+  "response": {
+    "status": "ok",
+    "totalhits": 30,
+    "searchtype": "asset",
+    "hitsperpage": 20,
+    "page": 1,
+    "pages": 2,
+    "hitsessionid": "hitsassetmedia/catalogs/public",
+    "query": {
+      "friendly": "Id:* and Readable:true  library_crossroads group_administrators group_visualdata user_admin",
+      "terms": [
+        {
+          "id": "id",
+          "operation": "matches",
+          "value": "*"
+        },
+        {
+          "id": "viewasset",
+          "operation": "orgroup",
+          "value": "true  library_crossroads group_administrators group_visualdata user_admin"
+        }
+      ]
+    }
+  },
+  "results": [
+    {
+      "id": "148",
+      "name": "Audio_AAC.aac",
+      "sourcepath": "By Type/audio/Audio_AAC.aac",
+      "category-exact": "by_type_audio | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_audio",
+          "name": "audio"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "productlaunchfall",
+          "name": "Product Launch Fall Quarter"
+        },
+        {
+          "id": "engineering",
+          "name": "Engineering Courses"
+        }
+      ],
+      "assettype": {
+        "id": "none",
+        "name": "Misc"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "fileformat": {
+        "id": "aac",
+        "name": "aac"
+      },
+      "filesize": "64992",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:45:12",
+      "assetaddeddate": "2012-10-23T10:26:43",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "editstatus": {
+        "id": "rejected",
+        "name": "Rejected"
+      },
+      "keywords": [
+        {
+          "id": "Music",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "1",
+        "name": "Acquisition / Cold Prospecting / Out of Book"
+      },
+      "copyrightstatus": {
+        "id": "False",
+        "name": "Public Domain"
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "146",
+      "name": "2_PAGE_PDF.pdf",
+      "sourcepath": "By Type/documents/2_PAGE_PDF.pdf",
+      "category-exact": "by_type_documents | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_documents",
+          "name": "documents"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "southamericanexpo",
+          "name": "South American Expo"
+        },
+        {
+          "id": "cominghome",
+          "name": "Coming Home"
+        }
+      ],
+      "assettype": {
+        "id": "document",
+        "name": "Stories"
+      },
+      "hasfulltext": "false",
+      "pages": "2",
+      "assetviews": "1",
+      "creator": "Microsoft® Word 2010",
+      "fileformat": {
+        "id": "pdf",
+        "name": "PDF"
+      },
+      "filesize": "165407",
+      "width": "612",
+      "height": "792",
+      "assetcreationdate": "2011-12-27T12:13:46",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:29:14",
+      "assetaddeddate": "2012-10-23T10:26:37",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "editstatus": {
+        "id": "rejected",
+        "name": "Rejected"
+      },
+      "keywords": [
+        {
+          "id": "Instruction",
+          "name": ""
+        },
+        {
+          "id": "Inspirational",
+          "name": ""
+        },
+        {
+          "id": "Quotes",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "1",
+        "name": "Acquisition / Cold Prospecting / Out of Book"
+      },
+      "copyrightstatus": {
+        "id": "False",
+        "name": "Public Domain"
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "132",
+      "name": "Puppy.jpg",
+      "sourcepath": "By Type/photos/Puppy.jpg",
+      "category-exact": "1348673354951 | by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "users",
+          "name": "Users"
+        },
+        {
+          "id": "1348673354951",
+          "name": "Janet Smith"
+        },
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "productlaunchfall",
+          "name": "Product Launch Fall Quarter"
+        },
+        {
+          "id": "engineering",
+          "name": "Engineering Courses"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "9",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "387062",
+      "width": "681",
+      "height": "1024",
+      "assetcreationdate": "2012-09-12T00:00:00",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:45:12",
+      "assetaddeddate": "2011-07-29T17:00:47",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "1",
+        "name": "Exif Stub Created"
+      },
+      "headline": "Dogs Gone Wild",
+      "longcaption": "Walk the dog.",
+      "keywords": [
+        {
+          "id": "Dog",
+          "name": ""
+        },
+        {
+          "id": "Wildlife",
+          "name": ""
+        },
+        {
+          "id": "123",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "3 | 4",
+        "name": ""
+      },
+      "copyrightnotice": "Wild",
+      "publisheds3": "false"
+    },
+    {
+      "id": "121",
+      "name": "OrangeStreetRoof.jpg",
+      "sourcepath": "By Type/photos/OrangeStreetRoof.jpg",
+      "category-exact": "by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "productlaunchfall",
+          "name": "Product Launch Fall Quarter"
+        },
+        {
+          "id": "crossroads",
+          "name": "Crossroads - Shake it Out"
+        },
+        {
+          "id": "commercialendorsement",
+          "name": "Commercial Endorsement"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "565846",
+      "width": "1024",
+      "height": "699",
+      "assetcreationdate": "2004-04-16T00:00:00",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:30:18",
+      "assetaddeddate": "2011-07-29T17:00:36",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "1",
+        "name": "Exif Stub Created"
+      },
+      "longcaption": "And they are all made out of ticky tacky and they all look just the same.",
+      "keywords": [
+        {
+          "id": "Construction",
+          "name": ""
+        },
+        {
+          "id": "Vacation",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "3 | 4",
+        "name": ""
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "128",
+      "name": "Camera.jpg",
+      "sourcepath": "By Type/photos/Camera.jpg",
+      "category-exact": "by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "crossroads",
+          "name": "Crossroads - Shake it Out"
+        },
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "focallength": "38.0 mm",
+      "iso": "100",
+      "colorspace": {
+        "id": "3",
+        "name": "RGB"
+      },
+      "shutterspeed": "1.3",
+      "aperture": "5",
+      "bitspersample": "8",
+      "imageorientation": {
+        "id": "1",
+        "name": "0 Degrees"
+      },
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "277040",
+      "width": "1024",
+      "height": "683",
+      "assetcreationdate": "$jsonUtil.formatDate($val)",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:29:57",
+      "assetaddeddate": "2011-07-29T17:00:43",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "longcaption": "Eye of the beholder.",
+      "keywords": [
+        {
+          "id": "Limited Time Offer",
+          "name": ""
+        },
+        {
+          "id": "Promotional",
+          "name": ""
+        },
+        {
+          "id": "Product",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "2 | 3 | 4",
+        "name": ""
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "130",
+      "name": "FenceDog.jpg",
+      "sourcepath": "By Type/photos/FenceDog.jpg",
+      "category-exact": "by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "productlaunchfall",
+          "name": "Product Launch Fall Quarter"
+        },
+        {
+          "id": "engineering",
+          "name": "Engineering Courses"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "378769",
+      "width": "1024",
+      "height": "768",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:45:12",
+      "assetaddeddate": "2011-07-29T17:00:45",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "longcaption": "Adoption promotion piece.",
+      "keywords": [
+        {
+          "id": "Dog",
+          "name": ""
+        },
+        {
+          "id": "Wildlife",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "3 | 4",
+        "name": ""
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "123",
+      "name": "Concert.jpg",
+      "sourcepath": "By Type/photos/Concert.jpg",
+      "category-exact": "users_admin | by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "users_admin",
+          "name": "The Administrator"
+        },
+        {
+          "id": "users",
+          "name": "Users"
+        },
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "crossroads",
+          "name": "Crossroads - Shake it Out"
+        },
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "1",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "369473",
+      "width": "1024",
+      "height": "681",
+      "assetcreationdate": "2012-09-05T00:00:00",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:27:52",
+      "assetaddeddate": "2011-07-29T17:00:38",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "1",
+        "name": "Exif Stub Created"
+      },
+      "longcaption": "Turn it up",
+      "keywords": [
+        {
+          "id": "Concert",
+          "name": ""
+        },
+        {
+          "id": "Events",
+          "name": ""
+        },
+        {
+          "id": "Sponsored",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "3 | 4",
+        "name": ""
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "109",
+      "name": "em500testvideo.flv",
+      "sourcepath": "By Type/videos/em500testvideo.flv",
+      "category-exact": "by_type_videos | 2012_10 | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "2012",
+          "name": "2012"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        },
+        {
+          "id": "by_type_videos",
+          "name": "videos"
+        },
+        {
+          "id": "2012_10",
+          "name": "October"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "crossroads",
+          "name": "Crossroads - Shake it Out"
+        },
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "1348758017361",
+        "name": "Video Clips"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "length": "25.0",
+      "videocodec": "vp6f",
+      "audiocodec": "mp3",
+      "fileformat": {
+        "id": "flv",
+        "name": "FLV"
+      },
+      "filesize": "2910173",
+      "width": "500",
+      "height": "300",
+      "assetcreationdate": "2007-07-20T00:00:00",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:29:30",
+      "assetaddeddate": "2011-07-29T17:00:25",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "editstatus": {
+        "id": "rejected",
+        "name": "Rejected"
+      },
+      "longcaption": "Blink and you will miss it.",
+      "keywords": [
+        {
+          "id": "Promotional",
+          "name": ""
+        },
+        {
+          "id": "Product",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "1",
+        "name": "Acquisition / Cold Prospecting / Out of Book"
+      },
+      "copyrightstatus": {
+        "id": "False",
+        "name": "Public Domain"
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "147",
+      "name": "Audio_MP3.mp3",
+      "sourcepath": "By Type/audio/Audio_MP3.mp3",
+      "category-exact": "by_type_audio | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_audio",
+          "name": "audio"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "audio",
+        "name": "Audio Clips"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "length": "6.0",
+      "fileformat": {
+        "id": "mp3",
+        "name": "MP3"
+      },
+      "filesize": "111168",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:45:12",
+      "assetaddeddate": "2012-10-23T10:26:42",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "editstatus": {
+        "id": "6",
+        "name": "Approved"
+      },
+      "keywords": [
+        {
+          "id": "Music",
+          "name": ""
+        },
+        {
+          "id": "Speech",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "3",
+        "name": "Information / Educational Material"
+      },
+      "copyrightstatus": {
+        "id": "False",
+        "name": "Public Domain"
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "149",
+      "name": "Audio_WAV.wav",
+      "sourcepath": "By Type/audio/Audio_WAV.wav",
+      "category-exact": "by_type_audio | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_audio",
+          "name": "audio"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "audio",
+        "name": "Audio Clips"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "length": "6.0",
+      "bitspersample": "16",
+      "fileformat": {
+        "id": "wav",
+        "name": "WAV"
+      },
+      "filesize": "603290",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:45:12",
+      "assetaddeddate": "2012-10-23T10:26:43",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "keywords": [
+        {
+          "id": "Speech",
+          "name": ""
+        }
+      ],
+      "publisheds3": "false"
+    },
+    {
+      "id": "131",
+      "name": "Bird.jpg",
+      "sourcepath": "By Type/photos/Bird.jpg",
+      "category-exact": "by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "2",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "391869",
+      "width": "1024",
+      "height": "836",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:23:44",
+      "assetaddeddate": "2011-07-29T17:00:46",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "1",
+        "name": "Exif Stub Created"
+      },
+      "editstatus": {
+        "id": "6",
+        "name": "Approved"
+      },
+      "longcaption": "Flight and song.",
+      "keywords": [
+        {
+          "id": "Wildlife",
+          "name": ""
+        },
+        {
+          "id": "Bird",
+          "name": ""
+        },
+        {
+          "id": "A tag",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "3",
+        "name": "Information / Educational Material"
+      },
+      "copyrightstatus": {
+        "id": "False",
+        "name": "Public Domain"
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "124",
+      "name": "Chimes.jpg",
+      "sourcepath": "By Type/photos/Chimes.jpg",
+      "category-exact": "by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "787377",
+      "width": "768",
+      "height": "1024",
+      "assetcreationdate": "2012-09-01T00:00:00",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:30:37",
+      "assetaddeddate": "2011-07-29T17:00:39",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "editstatus": {
+        "id": "6",
+        "name": "Approved"
+      },
+      "longcaption": "The bells bells bells bells bells bells bells.",
+      "keywords": [
+        {
+          "id": "Music",
+          "name": ""
+        },
+        {
+          "id": "Art",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "3",
+        "name": "Information / Educational Material"
+      },
+      "copyrightstatus": {
+        "id": "False",
+        "name": "Public Domain"
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "115",
+      "name": "BirdnFish.jpg",
+      "sourcepath": "By Type/photos/BirdnFish.jpg",
+      "category-exact": "by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "2",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "256906",
+      "width": "1024",
+      "height": "815",
+      "assetcreationdate": "2012-09-06T00:00:00",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:46:17",
+      "assetaddeddate": "2011-07-29T17:00:30",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "editstatus": {
+        "id": "rejected",
+        "name": "Rejected"
+      },
+      "longcaption": "Grace and precision",
+      "keywords": [
+        {
+          "id": "Wildlife",
+          "name": ""
+        },
+        {
+          "id": "Bird",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "1",
+        "name": "Acquisition / Cold Prospecting / Out of Book"
+      },
+      "copyrightstatus": {
+        "id": "False",
+        "name": "Public Domain"
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "129",
+      "name": "RedFlower.jpg",
+      "sourcepath": "By Type/photos/RedFlower.jpg",
+      "category-exact": "by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "184295",
+      "width": "1024",
+      "height": "666",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:30:52",
+      "assetaddeddate": "2011-07-29T17:00:44",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "editstatus": {
+        "id": "rejected",
+        "name": "Rejected"
+      },
+      "longcaption": "A rose of any other name smells the same.",
+      "keywords": [
+        {
+          "id": "Wildlife",
+          "name": ""
+        },
+        {
+          "id": "Flora",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "1",
+        "name": "Acquisition / Cold Prospecting / Out of Book"
+      },
+      "copyrightstatus": {
+        "id": "False",
+        "name": "Public Domain"
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "117",
+      "name": "Waves.jpg",
+      "sourcepath": "By Type/photos/Waves.jpg",
+      "category-exact": "1348673345329 | by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "1348673345329",
+          "name": "John Doe"
+        },
+        {
+          "id": "users",
+          "name": "Users"
+        },
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "486129",
+      "width": "765",
+      "height": "1024",
+      "assetcreationdate": "2005-06-22T00:00:00",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:46:17",
+      "assetaddeddate": "2011-07-29T17:00:32",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "longcaption": "Water over time erodes rock.",
+      "keywords": [
+        {
+          "id": "Nature",
+          "name": ""
+        }
+      ],
+      "publisheds3": "false"
+    },
+    {
+      "id": "125",
+      "name": "BlueBus.jpg",
+      "sourcepath": "By Type/photos/BlueBus.jpg",
+      "category-exact": "by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "541121",
+      "width": "1024",
+      "height": "681",
+      "assetcreationdate": "2012-09-06T00:00:00",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:46:39",
+      "assetaddeddate": "2011-07-29T17:00:40",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "longcaption": "Public transportation",
+      "keywords": [
+        {
+          "id": "Public",
+          "name": ""
+        },
+        {
+          "id": "Transportation",
+          "name": ""
+        }
+      ],
+      "publisheds3": "false"
+    },
+    {
+      "id": "113",
+      "name": "Bug1.jpg",
+      "sourcepath": "By Type/photos/Bug1.jpg",
+      "category-exact": "by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "4",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "256307",
+      "width": "890",
+      "height": "768",
+      "assetcreationdate": "2010-01-07T00:00:00",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:46:17",
+      "assetaddeddate": "2011-07-29T17:00:28",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "editstatus": {
+        "id": "rejected",
+        "name": "Rejected"
+      },
+      "assettitle": "Carlos Galeano",
+      "headline": "Carlos Galeano",
+      "longcaption": "Friends come in all sizes",
+      "keywords": [
+        {
+          "id": "Wildlife",
+          "name": ""
+        },
+        {
+          "id": "Insects",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "1",
+        "name": "Acquisition / Cold Prospecting / Out of Book"
+      },
+      "copyrightstatus": {
+        "id": "False",
+        "name": "Public Domain"
+      },
+      "copyrightnotice": "cGaleano 2011",
+      "publisheds3": "false"
+    },
+    {
+      "id": "127",
+      "name": "CoffieCup.jpg",
+      "sourcepath": "By Type/photos/CoffieCup.jpg",
+      "category-exact": "by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "433381",
+      "width": "1024",
+      "height": "765",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:46:49",
+      "assetaddeddate": "2011-07-29T17:00:42",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "longcaption": "Good way to start the day.",
+      "keywords": [
+        {
+          "id": "Product",
+          "name": ""
+        },
+        {
+          "id": "Energy",
+          "name": ""
+        }
+      ],
+      "publisheds3": "false"
+    },
+    {
+      "id": "150",
+      "name": "artbeats_red_m480pSMALL.mov",
+      "sourcepath": "2012/10/artbeats_red_m480pSMALL.mov",
+      "category-exact": "2012_10 | index | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "2012",
+          "name": "2012"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        },
+        {
+          "id": "2012_10",
+          "name": "October"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research"
+        }
+      ],
+      "assettype": {
+        "id": "1348758017361",
+        "name": "Video Clips"
+      },
+      "hasfulltext": "false",
+      "assetviews": "2",
+      "fileformat": {
+        "id": "mov",
+        "name": "MOV"
+      },
+      "filesize": "1507328",
+      "assetmodificationdate": "2012-10-25T16:44:16",
+      "recordmodificationdate": "2013-10-25T14:32:05",
+      "assetaddeddate": "2012-10-25T16:44:17",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "editstatus": {
+        "id": "1",
+        "name": "Pending Approval"
+      },
+      "keywords": [
+        {
+          "id": "Product",
+          "name": ""
+        },
+        {
+          "id": "Promotional",
+          "name": ""
+        }
+      ],
+      "publisheds3": "false"
+    },
+    {
+      "id": "122",
+      "name": "Street.jpg",
+      "sourcepath": "By Type/photos/Street.jpg",
+      "category-exact": "by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "johnsonwedding",
+          "name": "Johnson Wedding 2009"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "464832",
+      "width": "1024",
+      "height": "768",
+      "assetcreationdate": "2003-03-13T00:00:00",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:45:51",
+      "assetaddeddate": "2011-07-29T17:00:37",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "editstatus": {
+        "id": "1",
+        "name": "Pending Approval"
+      },
+      "longcaption": "Bikes and cars separated by walls",
+      "purpose": {
+        "id": "2 | 5",
+        "name": ""
+      },
+      "copyrightstatus": {
+        "id": "True",
+        "name": "Copyrighted"
+      },
+      "copyrightnotice": "This file is reserved for private use within the company. Please refer to company policy for more information.",
+      "publisheds3": "false"
+    }
+  ],
+  "filteroptions": [
+    {
+      "id": "libraries",
+      "name": "Libraries",
+      "children": [
+        {
+          "id": "oceanography",
+          "name": "Oceanography Research",
+          "count": "14"
+        },
+        {
+          "id": "engineering",
+          "name": "Engineering Courses",
+          "count": "5"
+        },
+        {
+          "id": "productlaunchfall",
+          "name": "Product Launch Fall Quarter",
+          "count": "4"
+        },
+        {
+          "id": "crossroads",
+          "name": "Crossroads - Shake it Out",
+          "count": "4"
+        },
+        {
+          "id": "johnsonwedding",
+          "name": "Johnson Wedding 2009",
+          "count": "3"
+        },
+        {
+          "id": "agriculture",
+          "name": "Agricultural Ideas",
+          "count": "1"
+        },
+        {
+          "id": "southamericanexpo",
+          "name": "South American Expo",
+          "count": "1"
+        },
+        {
+          "id": "cominghome",
+          "name": "Coming Home",
+          "count": "1"
+        },
+        {
+          "id": "commercialendorsement",
+          "name": "Commercial Endorsement",
+          "count": "1"
+        }
+      ]
+    },
+    {
+      "id": "assettype",
+      "name": "Asset Type",
+      "children": [
+        {
+          "id": "photo",
+          "name": "Artwork",
+          "count": "20"
+        },
+        {
+          "id": "1348758017361",
+          "name": "Video Clips",
+          "count": "4"
+        },
+        {
+          "id": "document",
+          "name": "Stories",
+          "count": "2"
+        },
+        {
+          "id": "audio",
+          "name": "Audio Clips",
+          "count": "2"
+        },
+        {
+          "id": "none",
+          "name": "Misc",
+          "count": "1"
+        }
+      ]
+    },
+    {
+      "id": "fileformat",
+      "name": "File Format",
+      "children": [
+        {
+          "id": "jpg",
+          "name": "JPG",
+          "count": "21"
+        },
+        {
+          "id": "mov",
+          "name": "MOV",
+          "count": "2"
+        },
+        {
+          "id": "ppt",
+          "name": "PPT",
+          "count": "1"
+        },
+        {
+          "id": "aac",
+          "name": "aac",
+          "count": "1"
+        },
+        {
+          "id": "mp3",
+          "name": "MP3",
+          "count": "1"
+        },
+        {
+          "id": "wav",
+          "name": "WAV",
+          "count": "1"
+        },
+        {
+          "id": "pdf",
+          "name": "PDF",
+          "count": "1"
+        },
+        {
+          "id": "mp4",
+          "name": "MPEG 4 mp4",
+          "count": "1"
+        },
+        {
+          "id": "flv",
+          "name": "FLV",
+          "count": "1"
+        }
+      ]
+    },
+    {
+      "id": "editstatus",
+      "name": "Edit Status",
+      "children": [
+        {
+          "id": "1",
+          "name": "Pending Approval",
+          "count": "10"
+        },
+        {
+          "id": "rejected",
+          "name": "Rejected",
+          "count": "6"
+        },
+        {
+          "id": "6",
+          "name": "Approved",
+          "count": "5"
+        }
+      ]
+    }
+  ]
+}
