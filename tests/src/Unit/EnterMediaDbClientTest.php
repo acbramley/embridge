@@ -469,4 +469,83 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $decoded_body = $this->serializer->decode($search_response_body);
     $this->assertEquals($decoded_body, $this->emdbClient->search());
   }
+
+
+  /**
+   * Tests search() success.
+   *
+   * @covers ::login
+   * @covers ::upload
+   * @covers ::doRequest
+   * @test
+   */
+  public function searchCorrectlyPassesParametersToRequest() {
+    $mockLoginResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mockLoginResponse
+      ->expects($this->once())
+      ->method('getStatusCode')
+      ->willReturn(200);
+
+    $mockLoginResponse
+      ->expects($this->once())
+      ->method('getBody')
+      ->willReturn(file_get_contents('expected/login-expected-good-response.json', TRUE));
+
+    // This sucks, returnValueMap wasn't working though.
+    $this->client
+      ->expects($this->at(0))
+      ->method('request')
+      ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
+      ->willReturn($mockLoginResponse);
+
+    $mockSearchResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mockSearchResponse
+      ->expects($this->once())
+      ->method('getStatusCode')
+      ->willReturn(200);
+
+    $search_response_body = file_get_contents(
+      'expected/search-expected-good-response.json',
+      TRUE
+    );
+    $mockSearchResponse
+      ->expects($this->once())
+      ->method('getBody')
+      ->willReturn($search_response_body);
+
+    $options = $this->defaultOptions;
+
+    $body = [
+      'page' => 2,
+      'hisperpage' => 10,
+      'showfilters' => "true",
+      'query' => [
+        'terms' => [
+          [
+            'field' => 'name',
+            'operator' => 'matches',
+            'value' => 'test*',
+          ],
+        ],
+      ],
+    ];
+    $options['json'] = $body;
+
+    $this->client
+      ->expects($this->at(1))
+      ->method('request')
+      ->with('POST', self::EXAMPLE_SEARCH_URL, $options)
+      ->willReturn($mockSearchResponse);
+
+    $decoded_body = $this->serializer->decode($search_response_body);
+    $filters = [
+      [
+        'field' => 'name',
+        'operator' => 'matches',
+        'value' => 'test*',
+      ],
+    ];
+    $this->assertEquals($decoded_body, $this->emdbClient->search(2, 10, $filters));
+  }
+
 }
