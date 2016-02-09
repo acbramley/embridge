@@ -8,3 +8,6 @@ administer embridge asset entities:
 access embridge asset overview:
   title: 'Access the Embridge Asset overview'
   description: 'Get an overview of all embridge assets.'
+search embridge assets:
+  title: 'Search EMBridge Assets'
+  description: 'Access Search functionality for embridge assets.'
