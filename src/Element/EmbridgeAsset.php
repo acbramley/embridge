@@ -6,10 +6,12 @@
 
 namespace Drupal\embridge\Element;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Element\FormElement;
+use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\EnterMediaDbClientInterface;
@@ -367,6 +369,25 @@ class EmbridgeAsset extends FormElement {
       '#error_no_message' => TRUE,
     ];
 
+    // Build link for dialog.
+    if (\Drupal::currentUser()->hasPermission('search embridge assets')) {
+      $link_url = Url::fromRoute('embridge.search.modal', []);
+      $link_url->setOptions(array(
+          'attributes' => array(
+            'class' => array('use-ajax', 'button'),
+            'data-accepts' => 'application/vnd.drupal-modal',
+            'data-dialog-type' => 'modal',
+            'data-dialog-options' => Json::encode(array(
+              'width' => 1000,
+            )),
+          ))
+      );
+      $modal_link = Link::fromTextAndUrl('Asset search', $link_url);
+
+      // TODO: Why can't we just have another element?
+      $element['upload_button']['#suffix'] = $modal_link->toString();
+    }
+
     if (!empty($fids) && $element['#files']) {
       foreach ($element['#files'] as $delta => $file) {
         $file_link = [
@@ -434,6 +455,7 @@ class EmbridgeAsset extends FormElement {
     else {
       $element['remove_button']['#access'] = FALSE;
     }
+
     return $element;
   }
 
