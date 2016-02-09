@@ -42,7 +42,10 @@ interface EnterMediaDbClientInterface {
    * @param int $number_of_items
    *   The number of items to fetch per page.
    * @param array $filters
-   *   An array of filters to apply to the query
+   *   An array of filters to apply to the query. Each filter is an array with keys:
+   *    - field: the field to apply the filter to
+   *    - operator: the operator to apply
+   *    - value: the value of the operator.
    *
    * @return array
    *   A decoded JSON response.
