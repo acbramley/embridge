@@ -4,4 +4,4 @@ services:
     arguments: ["@config.factory", "@http_client", "@serialization.json", "@file_system"]
   embridge.asset_helper:
     class: Drupal\embridge\EnterMediaAssetHelper
-    arguments: ["@config.factory"]
+    arguments: ["@config.factory", "@entity_type.manager", "@file.mime_type.guesser"]
