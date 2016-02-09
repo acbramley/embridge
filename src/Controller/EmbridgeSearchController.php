@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\embridge\Controller\EnterMediaSearchController.
+ * Contains \Drupal\embridge\Controller\EmbridgeSearchController.
  */
 
 namespace Drupal\embridge\Controller;
@@ -12,24 +12,24 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\embridge\EnterMediaDbClient;
 
 /**
- * Class EnterMediaSearchController.
+ * Class EmbridgeSearchController.
  *
  * @package Drupal\embridge\Controller
  */
-class EnterMediaSearchController extends ControllerBase {
+class EmbridgeSearchController extends ControllerBase {
 
   /**
    * The EMDB client.
    *
    * @var \Drupal\embridge\EnterMediaDbClient
    */
-  protected $embridge_client;
+  protected $client;
 
   /**
    * {@inheritdoc}
    */
   public function __construct(EnterMediaDbClient $embridge_client) {
-    $this->embridge_client = $embridge_client;
+    $this->client = $embridge_client;
   }
 
   /**
@@ -42,12 +42,10 @@ class EnterMediaSearchController extends ControllerBase {
   }
 
   /**
-   * Hello.
-   *
-   * @return string
-   *   Return Hello string.
+   * Renders a modal for our field to use to search the EMDB instance.
    */
   public function modal() {
+    $search_response = $this->client->search();
     return [
       '#type' => 'markup',
       '#markup' => $this->t('Implement method: hello'),

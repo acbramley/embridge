@@ -14,7 +14,7 @@ embridge.search.modal:
   options:
     _theme: ajax_base_page
   defaults:
-    _controller: '\Drupal\embridge\Controller\EnterMediaSearchController::modal'
+    _controller: '\Drupal\embridge\Controller\EmbridgeSearchController::modal'
     _title: 'Search assets'
   requirements:
     _permission: 'search embridge assets'
