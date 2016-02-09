@@ -45,11 +45,7 @@ class EmbridgeSearchController extends ControllerBase {
    * Renders a modal for our field to use to search the EMDB instance.
    */
   public function modal() {
-    $search_response = $this->client->search();
-    return [
-      '#type' => 'markup',
-      '#markup' => $this->t('Implement method: hello'),
-    ];
+    return \Drupal::formBuilder()->getForm('Drupal\embridge\Form\EmbridgeSearchForm');
   }
 
 }
