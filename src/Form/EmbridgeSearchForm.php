@@ -8,6 +8,7 @@
 namespace Drupal\embridge\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -65,6 +66,15 @@ class EmbridgeSearchForm extends FormBase {
     $form['#prefix'] =  '<div id="' . $ajax_wrapper_id . '">';
     $form['#sufix'] = '</div>';
 
+//    if (isset($form_state->getUserInput()['dialogOptions']['form_element'])) {
+//      $embridge_file_element = $form_state->getUserInput()['dialogOptions']['form_element'];
+//      $form_state->set('embridge_file_element', $embridge_file_element);
+//      $form_state->setCached(TRUE);
+//    }
+//    else {
+//      $embridge_file_element = $form_state->get('embridge_file_element') ?: [];
+//    }
+
     // For access in the AJAX request.
     $form['client'] = [
       '#type' => 'value',
@@ -84,8 +94,8 @@ class EmbridgeSearchForm extends FormBase {
     );
 
     $operation_options = [
+      'startswith' => $this->t('Starts with'),
       'matches' => $this->t('Matches'),
-      'startswith' => $this->t('Starts with')
     ];
     $form['filename_op'] = array(
       '#type' => 'select',
@@ -94,16 +104,6 @@ class EmbridgeSearchForm extends FormBase {
       '#description' => $this->t('Operation to apply to filename search'),
       '#default_value' => $form_state->get('filename_op'),
     );
-    $table = [
-      '#type' => 'tableselect',
-      '#header' => [$this->t('File')],
-      '#empty' => $this->t('No search results.'),
-    ];
-
-    $form['search_results'] = [
-      'table' => $table,
-      'pager' => ['#type' => 'pager'],
-    ];
 
     $ajax_settings = [
       'callback' => [get_called_class(), 'searchAjaxCallback'],
@@ -119,10 +119,29 @@ class EmbridgeSearchForm extends FormBase {
       '#value' => $this->t('Search'),
     ];
 
-    $form['submit'] = [
+    $table = [
+      '#type' => 'tableselect',
+      '#header' => [$this->t('File')],
+      '#empty' => $this->t('No search results.'),
+      '#default_value' => $form_state->get('search_results_table')
+    ];
+
+    $form['search_results'] = [
+      'search_results_table' => $table,
+      'pager' => ['#type' => 'pager'],
+    ];
+
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Select'),
-      '#tableselect' => TRUE,
+      // No regular submit-handler. This form only works via JavaScript.
+      '#submit' => array(),
+      //'#tableselect' => TRUE,
+      '#ajax' => array(
+        'callback' => '::submitForm',
+        'event' => 'click',
+      ),
     ];
 
     return $form;
@@ -132,9 +151,28 @@ class EmbridgeSearchForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $response = new AjaxResponse();
+    $values = $form_state->getValues();
+    $clicked_button = end($form_state->getTriggeringElement()['#parents']);
+    if ($clicked_button != 'search') {
+      if ($form_state->getErrors()) {
 
+      }
+      else {
+        $response->addCommand(new CloseModalDialogCommand());
+      }
+
+      return $response;
+    }
   }
 
+  /**
+   * Searches the EMDB instance using the user entered filters.
+   *
+   * @param array $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   */
   public static function searchAjaxCallback(array &$form, FormStateInterface $form_state) {
     /** @var \Drupal\Core\Render\RendererInterface $renderer */
     $renderer = \Drupal::service('renderer');
@@ -155,14 +193,14 @@ class EmbridgeSearchForm extends FormBase {
     $num_per_page = 20;
     $search_response = $client->search(1, $num_per_page, $filters);
 
-    $form['search_results']['table']['#options'] = [];
+    $form['search_results']['search_results_table']['#options'] = [];
     foreach($search_response['results'] as $result) {
       $asset = $asset_helper->searchResultToAsset($result);
-      $form['search_results']['table']['#options'][$asset->getAssetId()] = [$asset->getFilename()];
+      $form['search_results']['search_results_table']['#options'][$asset->getAssetId()] = [$asset->getFilename()];
     }
 
     // Manually call processTableSelect to generate the checkboxes again.
-    Tableselect::processTableselect($form['search_results']['table'], $form_state, $form);
+    Tableselect::processTableselect($form['search_results']['search_results_table'], $form_state, $form);
     $output = $renderer->renderRoot($form);
 
     $response = new AjaxResponse();
