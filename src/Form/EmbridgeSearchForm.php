@@ -7,12 +7,12 @@
 
 namespace Drupal\embridge\Form;
 
-use Drupal\Component\Utility\Html;
-use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element\Tableselect;
+use Drupal\embridge\EnterMediaAssetHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\embridge\EnterMediaDbClient;
 
@@ -30,13 +30,22 @@ class EmbridgeSearchForm extends FormBase {
    */
   protected $client;
 
-  public function __construct(EnterMediaDbClient $embridge_client) {
+  /**
+   * Our asset helper.
+   *
+   * @var \Drupal\embridge\EnterMediaAssetHelper
+   */
+  protected $assetHelper;
+
+  public function __construct(EnterMediaDbClient $embridge_client, EnterMediaAssetHelper $asset_helper) {
     $this->client = $embridge_client;
+    $this->assetHelper = $asset_helper;
   }
 
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('embridge.client')
+      $container->get('embridge.client'),
+      $container->get('embridge.asset_helper')
     );
   }
 
@@ -52,10 +61,18 @@ class EmbridgeSearchForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $ajax_wrapper_id = 'embridge-results-wrapper';
+    $form['#prefix'] =  '<div id="' . $ajax_wrapper_id . '">';
+    $form['#sufix'] = '</div>';
+
     // For access in the AJAX request.
     $form['client'] = [
       '#type' => 'value',
       '#value' => $this->client,
+    ];
+    $form['asset_helper'] = [
+      '#type' => 'value',
+      '#value' => $this->assetHelper,
     ];
 
     $form['filename'] = array(
@@ -77,13 +94,15 @@ class EmbridgeSearchForm extends FormBase {
       '#description' => $this->t('Operation to apply to filename search'),
       '#default_value' => $form_state->get('filename_op'),
     );
-    $ajax_wrapper_id = 'embridge-results-wrapper';
-    $form['results_wrapper_id'] = [
-      '#type' => 'value',
-      '#value' => $ajax_wrapper_id,
+    $table = [
+      '#type' => 'tableselect',
+      '#header' => [$this->t('File')],
+      '#empty' => $this->t('No search results.'),
     ];
+
     $form['search_results'] = [
-      '#markup' => '<div id="' . $ajax_wrapper_id . '"></div>'
+      'table' => $table,
+      'pager' => ['#type' => 'pager'],
     ];
 
     $ajax_settings = [
@@ -100,6 +119,12 @@ class EmbridgeSearchForm extends FormBase {
       '#value' => $this->t('Search'),
     ];
 
+    $form['submit'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Select'),
+      '#tableselect' => TRUE,
+    ];
+
     return $form;
   }
 
@@ -110,7 +135,10 @@ class EmbridgeSearchForm extends FormBase {
 
   }
 
-  public static function searchAjaxCallback(array $form, FormStateInterface $form_state) {
+  public static function searchAjaxCallback(array &$form, FormStateInterface $form_state) {
+    /** @var \Drupal\Core\Render\RendererInterface $renderer */
+    $renderer = \Drupal::service('renderer');
+
     $filters = [
       [
         'field' => 'name',
@@ -121,28 +149,26 @@ class EmbridgeSearchForm extends FormBase {
 
     /** @var EnterMediaDbClient $client */
     $client = $form_state->getValue('client');
-    $num_per_page = 20;
-    $response = $client->search(1, $num_per_page, $filters);
-    pager_default_initialize($response['response']['totalhits'], $num_per_page);
+    /** @var EnterMediaAssetHelper $asset_helper */
+    $asset_helper = $form_state->getValue('asset_helper');
 
-    $render = [
-      [
-        '#markup' => '<div id="' . $form_state->getValue('results_wrapper_id') . '">'
-      ],
-      [
-        '#theme' => 'embridge_search_results',
-        '#results' => $response['results'],
-      ],
-      [
-        '#type' => 'pager'
-      ],
-      [
-        '#markup' => '</div>',
-      ]
-    ];
+    $num_per_page = 20;
+    $search_response = $client->search(1, $num_per_page, $filters);
+
+    $form['search_results']['table']['#options'] = [];
+    foreach($search_response['results'] as $result) {
+      $asset = $asset_helper->searchResultToAsset($result);
+      $form['search_results']['table']['#options'][$asset->getAssetId()] = [$asset->getFilename()];
+    }
+
+    // Manually call processTableSelect to generate the checkboxes again.
+    Tableselect::processTableselect($form['search_results']['table'], $form_state, $form);
+    $output = $renderer->renderRoot($form);
+
     $response = new AjaxResponse();
-    $response->addCommand(new ReplaceCommand(NULL, $render));
-    return $response;
+    $response->setAttachments($form['#attached']);
+
+    return $response->addCommand(new ReplaceCommand(NULL, $output));
   }
 
 }
