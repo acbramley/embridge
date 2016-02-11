@@ -16,6 +16,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\embridge\Ajax\EmbridgeSearchSave;
+use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\Entity\EmbridgeAssetEntity;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -192,8 +193,7 @@ class EmbridgeSearchForm extends FormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     $clicked_button = end($form_state->getTriggeringElement()['#parents']);
     if ($clicked_button == 'submit') {
-      $values = $form_state->getUserInput();
-      $entity_id = $values['result_chosen'];
+      $entity_id = $form_state->getUserInput()['result_chosen'];
       $asset = EmbridgeAssetEntity::load($entity_id);
 
       // Ensure the data attributes haven't been tampered with.
@@ -216,6 +216,13 @@ class EmbridgeSearchForm extends FormBase {
 
     // Hidden input value set by javascript
     $entity_id = $form_state->getUserInput()['result_chosen'];
+    /** @var EmbridgeAssetEntityInterface $asset */
+    // Mark permanent if we need to.
+    $asset = EmbridgeAssetEntity::load($entity_id);
+    if ($asset->isTemporary()) {
+      $asset->setPermanent();
+      $asset->save();
+    }
 
     $values['entity_id'] = $entity_id;
     $response->addCommand(new EmbridgeSearchSave($values));
