@@ -107,6 +107,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
    * Tests searchResultToAsset().
    *
    * @covers ::searchResultToAsset
+   * @covers ::assetFromAssetId
    * @test
    */
   public function searchResultToAssetReturnsQueryResultWhenOneExists() {
@@ -155,6 +156,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
    * Tests searchResultToAsset().
    *
    * @covers ::searchResultToAsset
+   * @covers ::assetFromAssetId
    * @test
    */
   public function searchResultToAssetReturnsNewAssetWhenNoneExist() {
