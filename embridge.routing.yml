@@ -10,11 +10,11 @@ embridge.embridge_settings_form:
     _admin_route: TRUE
 
 embridge.search.modal:
-  path: '/embridge/search/modal'
+  path: '/embridge/search/modal/{delta}'
   options:
     _theme: ajax_base_page
   defaults:
-    _controller: '\Drupal\embridge\Controller\EmbridgeSearchController::modal'
+    _form: '\Drupal\embridge\Form\EmbridgeSearchForm'
     _title: 'Search assets'
   requirements:
     _permission: 'search embridge assets'
