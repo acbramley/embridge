@@ -1,0 +1,9 @@
+embridge.lib:
+  version: VERSION
+  js:
+    js/embridge.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal.dialog
+    - core/drupal.ajax
+    - core/drupalSettings
