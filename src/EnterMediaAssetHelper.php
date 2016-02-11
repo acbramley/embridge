@@ -81,7 +81,7 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
   public function searchResultToAsset($result) {
     $storage = $this->entityTypeManager->getStorage('embridge_asset_entity');
 
-    if ($asset = $this->assetFromAssetId($result['id'], $storage)) {
+    if ($asset = $this->loadFromAssetId($result['id'], $storage)) {
       return $asset;
     }
 
@@ -112,7 +112,7 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
    * @return EmbridgeAssetEntity|NULL
    *   Null if the asset didn't exist.
    */
-  public function assetFromAssetId($asset_id, EntityStorageInterface $storage) {
+  public function loadFromAssetId($asset_id, EntityStorageInterface $storage) {
     $query = $storage->getQuery();
     $query->condition('asset_id', $asset_id);
     $query_result = $query->execute();
