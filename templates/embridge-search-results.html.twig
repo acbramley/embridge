@@ -11,8 +11,8 @@
  * @ingroup themeable
  */
 #}
-<ul>
-    {% for result in results %}
-       <li>{{ result.name }}</li>
-    {% endfor %}
-</ul>
+<div>
+{% for result in results %}
+    {{ result }}
+{% endfor %}
+</div>
