@@ -378,6 +378,7 @@ class EmbridgeAsset extends FormElement {
             'data-accepts' => 'application/vnd.drupal-modal',
             'data-dialog-type' => 'modal',
             'data-dialog-options' => Json::encode(array(
+              'delta' => $element['#delta'],
               'width' => 1000,
             )),
           ))
