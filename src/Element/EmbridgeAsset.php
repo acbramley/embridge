@@ -371,14 +371,13 @@ class EmbridgeAsset extends FormElement {
 
     // Build link for dialog.
     if (\Drupal::currentUser()->hasPermission('search embridge assets')) {
-      $link_url = Url::fromRoute('embridge.search.modal', []);
+      $link_url = Url::fromRoute('embridge.search.modal', ['delta' => $element['#delta']]);
       $link_url->setOptions(array(
           'attributes' => array(
             'class' => array('use-ajax', 'button'),
             'data-accepts' => 'application/vnd.drupal-modal',
             'data-dialog-type' => 'modal',
             'data-dialog-options' => Json::encode(array(
-              'delta' => $element['#delta'],
               'width' => 1000,
             )),
           ))
