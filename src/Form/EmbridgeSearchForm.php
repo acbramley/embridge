@@ -12,10 +12,14 @@ use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element\Tableselect;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
+use Drupal\embridge\Ajax\EmbridgeSearchSave;
 use Drupal\embridge\EnterMediaAssetHelper;
+use Drupal\embridge\Entity\EmbridgeAssetEntity;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\embridge\EnterMediaDbClient;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class EmbridgeSearchForm.
@@ -50,7 +54,6 @@ class EmbridgeSearchForm extends FormBase {
     );
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -61,28 +64,12 @@ class EmbridgeSearchForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
-    $ajax_wrapper_id = 'embridge-results-wrapper';
-    $form['#prefix'] =  '<div id="' . $ajax_wrapper_id . '">';
-    $form['#sufix'] = '</div>';
+  public function buildForm(array $form, FormStateInterface $form_state, $delta = 0) {
+    $input = $form_state->getUserInput();
 
-//    if (isset($form_state->getUserInput()['dialogOptions']['form_element'])) {
-//      $embridge_file_element = $form_state->getUserInput()['dialogOptions']['form_element'];
-//      $form_state->set('embridge_file_element', $embridge_file_element);
-//      $form_state->setCached(TRUE);
-//    }
-//    else {
-//      $embridge_file_element = $form_state->get('embridge_file_element') ?: [];
-//    }
-
-    // For access in the AJAX request.
-    $form['client'] = [
+    $form['delta'] = [
       '#type' => 'value',
-      '#value' => $this->client,
-    ];
-    $form['asset_helper'] = [
-      '#type' => 'value',
-      '#value' => $this->assetHelper,
+      '#value' => $delta,
     ];
 
     $form['filename'] = array(
@@ -90,7 +77,7 @@ class EmbridgeSearchForm extends FormBase {
       '#title' => $this->t('Search by filename'),
       '#description' => $this->t('Filter the search by filename'),
       '#size' => 20,
-      '#default_value' => $form_state->get('filename'),
+      '#default_value' => !empty($input['filename']) ? $input['filename'] : '',
     );
 
     $operation_options = [
@@ -102,8 +89,9 @@ class EmbridgeSearchForm extends FormBase {
       '#title' => $this->t('Operation'),
       '#options' => $operation_options,
       '#description' => $this->t('Operation to apply to filename search'),
-      '#default_value' => $form_state->get('filename_op'),
+      '#default_value' => !empty($input['filename_op']) ? $input['filename_op'] : '',
     );
+    $ajax_wrapper_id = 'embridge-results-wrapper';
 
     $ajax_settings = [
       'callback' => [get_called_class(), 'searchAjaxCallback'],
@@ -119,16 +107,24 @@ class EmbridgeSearchForm extends FormBase {
       '#value' => $this->t('Search'),
     ];
 
-    $table = [
-      '#type' => 'tableselect',
-      '#header' => [$this->t('File')],
-      '#empty' => $this->t('No search results.'),
-      '#default_value' => $form_state->get('search_results_table')
-    ];
+    $filters = [];
+    if (!empty($input['filename_op'])) {
+      $filters = [
+        [
+          'field' => 'name',
+          'operator' => $input['filename_op'],
+          'value' => $input['filename'],
+        ],
+      ];
+    }
 
     $form['search_results'] = [
-      'search_results_table' => $table,
-      'pager' => ['#type' => 'pager'],
+      '#theme' => 'embridge_search_results',
+      '#results' => self::getSearchResults($this->client, $this->assetHelper, $filters)
+    ];
+    $form['result_chosen'] = [
+      '#type' => 'hidden',
+      '#value' =>  !empty($input['result_chosen']) ? $input['result_chosen'] : '',
     ];
 
     $form['actions'] = ['#type' => 'actions'];
@@ -139,10 +135,21 @@ class EmbridgeSearchForm extends FormBase {
       '#submit' => array(),
       //'#tableselect' => TRUE,
       '#ajax' => array(
-        'callback' => '::submitForm',
+        'callback' => '::submitFormSelection',
         'event' => 'click',
       ),
+      // Hide the button.
+      '#attributes' => array(
+        'class' => array(
+          'embridge-ajax-search-submit',
+          'hidden-button',
+        ),
+      ),
     ];
+
+    $form['#attached']['library'][] = 'embridge/embridge.lib';
+    $form['#prefix'] =  '<div id="' . $ajax_wrapper_id . '">';
+    $form['#sufix'] = '</div>';
 
     return $form;
   }
@@ -151,56 +158,100 @@ class EmbridgeSearchForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $response = new AjaxResponse();
-    $values = $form_state->getValues();
+
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
     $clicked_button = end($form_state->getTriggeringElement()['#parents']);
-    if ($clicked_button != 'search') {
-      if ($form_state->getErrors()) {
+    if ($clicked_button == 'submit') {
+      $values = $form_state->getUserInput();
+      $selected_result = $values['result_chosen'];
+      $asset = $this->assetHelper->assetFromAssetId($selected_result);
 
+      // Ensure the data attributes haven't been tampered with.
+      if (!$asset) {
+        $form_state->setErrorByName('search_results', $this->t('Invalid choice, please try again.'));
       }
-      else {
-        $response->addCommand(new CloseModalDialogCommand());
-      }
-
-      return $response;
     }
   }
 
   /**
-   * Searches the EMDB instance using the user entered filters.
-   *
+   * {@inheritdoc}
+   */
+  public function submitFormSelection(array &$form, FormStateInterface $form_state) {
+    $response = new AjaxResponse();
+
+    $values = $form_state->getValues();
+    if ($form_state->getErrors()) {
+      return self::ajaxRenderFormAndMessages($form);
+    }
+
+    // Hidden input value set by javascript
+    $selected_result = $form_state->getUserInput()['result_chosen'];
+    $asset = EmbridgeAssetEntity::load($selected_result);
+    $entity_id = $asset->get('id')->value;
+
+    $values['entity_id'] = $entity_id;
+    $response->addCommand(new EmbridgeSearchSave($values));
+    $response->addCommand(new CloseModalDialogCommand());
+
+    return $response;
+  }
+
+  public static function getSearchResults(EnterMediaDbClient $client, EnterMediaAssetHelper $asset_helper, array $filters = []) {
+    $num_per_page = 20;
+    $search_response = $client->search(1, $num_per_page, $filters);
+
+    $render_array = [];
+    foreach($search_response['results'] as $result) {
+
+      $asset = $asset_helper->searchResultToAsset($result);
+
+      $link_url = Url::fromUri($asset_helper->getAssetConversionUrl($asset, 'thumb'));
+      $link_url->setOptions(array(
+        'attributes' => array(
+          'class' => array('embridge-choose-file'),
+          'data-asset-id' => $asset->getAssetId(),
+        ))
+      );
+      $link = Link::fromTextAndUrl('Choose Me', $link_url)->toRenderable();
+      $render_array[] = [
+        [
+          '#theme' => 'embridge_image',
+          '#asset' => $asset,
+          '#conversion' => 'thumb',
+          '#link_to' => '',
+        ],
+        $link
+      ];
+    }
+
+    return $render_array;
+  }
+
+  /**
    * @param array $form
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    * @return \Drupal\Core\Ajax\AjaxResponse
    */
-  public static function searchAjaxCallback(array &$form, FormStateInterface $form_state) {
+  public static function searchAjaxCallback(array &$form, FormStateInterface $form_state, Request $request) {
+    return self::ajaxRenderFormAndMessages($form);
+  }
+
+  /**
+   * @param array $form
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   */
+  protected static function ajaxRenderFormAndMessages(array &$form) {
     /** @var \Drupal\Core\Render\RendererInterface $renderer */
     $renderer = \Drupal::service('renderer');
 
-    $filters = [
-      [
-        'field' => 'name',
-        'operator' => $form_state->getValue('filename_op'),
-        'value' => $form_state->getValue('filename'),
-      ],
-    ];
-
-    /** @var EnterMediaDbClient $client */
-    $client = $form_state->getValue('client');
-    /** @var EnterMediaAssetHelper $asset_helper */
-    $asset_helper = $form_state->getValue('asset_helper');
-
-    $num_per_page = 20;
-    $search_response = $client->search(1, $num_per_page, $filters);
-
-    $form['search_results']['search_results_table']['#options'] = [];
-    foreach($search_response['results'] as $result) {
-      $asset = $asset_helper->searchResultToAsset($result);
-      $form['search_results']['search_results_table']['#options'][$asset->getAssetId()] = [$asset->getFilename()];
-    }
-
-    // Manually call processTableSelect to generate the checkboxes again.
-    Tableselect::processTableselect($form['search_results']['search_results_table'], $form_state, $form);
+    // Retrieve the element to be rendered.
+    $status_messages = ['#type' => 'status_messages', '#weight' => -10];
+    $form['#prefix'] .= $renderer->renderRoot($status_messages);
     $output = $renderer->renderRoot($form);
 
     $response = new AjaxResponse();
