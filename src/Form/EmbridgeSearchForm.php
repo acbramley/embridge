@@ -193,9 +193,8 @@ class EmbridgeSearchForm extends FormBase {
     $clicked_button = end($form_state->getTriggeringElement()['#parents']);
     if ($clicked_button == 'submit') {
       $values = $form_state->getUserInput();
-      $selected_result = $values['result_chosen'];
-      $storage = $this->entityTypeManager->getStorage('embridge_asset_entity');
-      $asset = $this->assetHelper->assetFromAssetId($selected_result, $storage);
+      $entity_id = $values['result_chosen'];
+      $asset = EmbridgeAssetEntity::load($entity_id);
 
       // Ensure the data attributes haven't been tampered with.
       if (!$asset) {
@@ -216,10 +215,7 @@ class EmbridgeSearchForm extends FormBase {
     }
 
     // Hidden input value set by javascript
-    $selected_result = $form_state->getUserInput()['result_chosen'];
-    $storage = $this->entityTypeManager->getStorage('embridge_asset_entity');
-    $asset = $this->assetHelper->assetFromAssetId($selected_result, $storage);
-    $entity_id = $asset->id();
+    $entity_id = $form_state->getUserInput()['result_chosen'];
 
     $values['entity_id'] = $entity_id;
     $response->addCommand(new EmbridgeSearchSave($values));
@@ -233,7 +229,7 @@ class EmbridgeSearchForm extends FormBase {
     $search_response = $client->search(1, $num_per_page, $filters);
 
     $render_array = [];
-    foreach($search_response['results'] as $result) {
+    foreach ($search_response['results'] as $result) {
 
       $asset = $asset_helper->searchResultToAsset($result);
 
@@ -241,7 +237,7 @@ class EmbridgeSearchForm extends FormBase {
       $link_url->setOptions(array(
         'attributes' => array(
           'class' => array('embridge-choose-file'),
-          'data-asset-id' => $asset->getAssetId(),
+          'data-asset-entity-id' => $asset->id(),
         ))
       );
       $link = Link::fromTextAndUrl('Choose Me', $link_url)->toRenderable();
