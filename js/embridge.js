@@ -31,7 +31,7 @@
         jQuery('.field--name-field-emdb-test .details-wrapper').append('<input data-drupal-selector="edit-field-emdb-test-' + delta + '-fids" type="hidden" name="field_emdb_test[' + delta + '][fids]" value="' + entity_id + '">');
         jQuery('.field--name-field-emdb-test .details-wrapper').append('<input data-drupal-selector="edit-field-emdb-test-' + delta + '-fids" type="hidden" name="field_emdb_test[' + delta + '][_weight]" value="' + delta + '">');
         jQuery('.field--name-field-emdb-test .details-wrapper').append('<input data-drupal-selector="edit-field-emdb-test-' + delta + '-fids" type="hidden" name="field_emdb_test[' + delta + '][display]" value="1">');
-        jQuery('input[name="field_emdb_test_1_upload_button"]').mousedown();
+        jQuery('input[name="field_emdb_test_' + delta + '_upload_button"]').mousedown();
     };
 
 })(jQuery, Drupal);
