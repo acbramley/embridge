@@ -84,12 +84,17 @@ class EmbridgeSearchForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $delta = 0) {
+  public function buildForm(array $form, FormStateInterface $form_state, $field_name = '', $delta = 0) {
     $input = $form_state->getUserInput();
 
+    // Store for ajax commands.
     $form['delta'] = [
       '#type' => 'value',
       '#value' => $delta,
+    ];
+    $form['field_name'] = [
+      '#type' => 'value',
+      '#value' => $field_name,
     ];
 
     $form['filename'] = array(
