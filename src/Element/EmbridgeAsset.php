@@ -160,33 +160,31 @@ class EmbridgeAsset extends FormElement {
     // remove button, because we only remove a file in response to its remove
     // button being clicked.
     if ($button_key == 'remove_button') {
-      /** @var EmbridgeAssetEntityInterface[] $files */
-      $files = $element['#files'];
-      $fids = array_keys($files);
+      /** @var EmbridgeAssetEntityInterface[] $assets */
+      $assets = $element['#files'];
+      $entity_ids = array_keys($assets);
       // Get files that will be removed.
       if ($element['#multiple']) {
-        $remove_fids = [];
+        $ids_to_remove = [];
         foreach (Element::children($element) as $name) {
           if (strpos($name, 'file_') === 0 && $element[$name]['selected']['#value']) {
-            $remove_fids[] = (int) substr($name, 5);
+            $ids_to_remove[] = (int) substr($name, 5);
           }
         }
-        $fids = array_diff($fids, $remove_fids);
+        $entity_ids = array_diff($entity_ids, $ids_to_remove);
       }
       else {
         // If we deal with single upload element remove the file and set
         // element's value to empty array (file could not be removed from
         // element if we don't do that).
-        $remove_fids = $fids;
-        $fids = array();
+        $ids_to_remove = $entity_ids;
+        $entity_ids = array();
       }
 
-      foreach ($remove_fids as $fid) {
-        // If it's a temporary file we can safely remove it immediately, otherwise
-        // it's up to the implementing module to remove usages of files to have them
-        // removed.
-        if ($files[$fid] && $files[$fid]->isTemporary()) {
-          $files[$fid]->delete();
+      foreach ($ids_to_remove as $id) {
+        // If it's a temporary file we can safely remove it immediately.
+        if ($assets[$id] && $assets[$id]->isTemporary()) {
+          $assets[$id]->delete();
         }
       }
       // Update both $form_state->getValues() and FormState::$input to reflect
@@ -197,8 +195,8 @@ class EmbridgeAsset extends FormElement {
       // FormState::$input must be updated so that
       // \Drupal\file\Element\ManagedFile::valueCallback() has correct information
       // during the rebuild.
-      $form_state->setValueForElement($element['fids'], implode(' ', $fids));
-      NestedArray::setValue($form_state->getUserInput(), $element['fids']['#parents'], implode(' ', $fids));
+      $form_state->setValueForElement($element['fids'], implode(' ', $entity_ids));
+      NestedArray::setValue($form_state->getUserInput(), $element['fids']['#parents'], implode(' ', $entity_ids));
     }
 
     // Set the form to rebuild so that $form is correctly updated in response to
