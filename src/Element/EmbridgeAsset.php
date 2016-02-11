@@ -141,11 +141,11 @@ class EmbridgeAsset extends FormElement {
   }
 
   /**
-   * Form submission handler for upload / remove buttons of managed_file elements.
+   * Form submission handler for upload / remove buttons of embridge_asset elements.
    *
    * Copied from file_managed_file_submit
    *
-   * @see \Drupal\file\Element\ManagedFile::processManagedFile()
+   * @see \Drupal\embridge\Element\EmbridgeAsset::processManagedFile()
    */
   public static function submitHandler($form, FormStateInterface $form_state) {
     // Determine whether it was the upload or the remove button that was clicked,
@@ -460,7 +460,7 @@ class EmbridgeAsset extends FormElement {
   }
 
   /**
-   * Render API callback: Validates the managed_file element.
+   * Render API callback: Validates the embridge_asset element.
    */
   public static function validateEmbridgeAsset(&$element, FormStateInterface $form_state, &$complete_form) {
     // If referencing an existing file, only allow if there are existing
