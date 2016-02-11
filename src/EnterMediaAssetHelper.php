@@ -8,7 +8,9 @@ namespace Drupal\embridge;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
 use Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser;
+use Drupal\embridge\Entity\EmbridgeAssetEntity;
 
 /**
  * Class EnterMediaAssetHelper.
@@ -77,16 +79,11 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
    *   The populated and saved entity.
    */
   public function searchResultToAsset($result) {
-    $storage = $this->entityTypeManager->getStorage('embridge_asset_entity');
-    $query = $storage->getQuery();
-    $query->condition('asset_id', $result['id']);
-    $query_result = $query->execute();
-
-    if ($query_result) {
-      $id = array_pop($query_result);
-      return $storage->load($id);
+    if ($asset = $this->assetFromAssetId($result['id'])) {
+      return $asset;
     }
 
+    $storage = $this->entityTypeManager->getStorage('embridge_asset_entity');
     $values = [
       'asset_id' => $result['id'],
       'source_path' => $result['sourcepath'],
@@ -103,4 +100,26 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
     return $asset;
   }
 
+  /**
+   * Returns an asset entity given an asset ID.
+   *
+   * @param string $asset_id
+   *   The asset ID property to check for.
+   *
+   * @return EmbridgeAssetEntity|NULL
+   *   Null if the asset didn't exist.
+   */
+  public function assetFromAssetId($asset_id) {
+    /** @var SqlContentEntityStorage $storage */
+    $storage = $this->entityTypeManager->getStorage('embridge_asset_entity');
+    $query = $storage->getQuery();
+    $query->condition('asset_id', $asset_id);
+    $query_result = $query->execute();
+
+    if ($query_result) {
+      $id = array_pop($query_result);
+      return $storage->load($id);
+    }
+    return NULL;
+  }
 }
