@@ -13,7 +13,7 @@
             $('.embridge-choose-file').click(function(event) {
                 event.preventDefault();
                 // Set the result that was chosen.
-                var asset_id = $(this).attr('data-asset-id');
+                var asset_id = $(this).attr('data-asset-entity-id');
                 $('[name="result_chosen"]').val(asset_id);
 
                 $('.embridge-ajax-search-submit').trigger('click');
@@ -27,11 +27,17 @@
     Drupal.AjaxCommands.prototype.embridgeSearchDialogSave = function (ajax, response, status) {
         var delta = response.values.delta;
         var entity_id = response.values.entity_id;
+        var field_name = response.values.field_name;
+        var field_id_dashes = field_name.replace(/_/g,'-');
 
-        jQuery('.field--name-field-emdb-test .details-wrapper').append('<input data-drupal-selector="edit-field-emdb-test-' + delta + '-fids" type="hidden" name="field_emdb_test[' + delta + '][fids]" value="' + entity_id + '">');
-        jQuery('.field--name-field-emdb-test .details-wrapper').append('<input data-drupal-selector="edit-field-emdb-test-' + delta + '-fids" type="hidden" name="field_emdb_test[' + delta + '][_weight]" value="' + delta + '">');
-        jQuery('.field--name-field-emdb-test .details-wrapper').append('<input data-drupal-selector="edit-field-emdb-test-' + delta + '-fids" type="hidden" name="field_emdb_test[' + delta + '][display]" value="1">');
-        jQuery('input[name="field_emdb_test_' + delta + '_upload_button"]').mousedown();
+        var field_wrapper = '.field--name-' + field_id_dashes + ' .details-wrapper';
+        var data_selector = "edit-' + field_id_dashes + '-' + delta + '-fids";
+        // Create inputs as if a file had been added to the form.
+        jQuery(field_wrapper).append('<input data-drupal-selector=' + data_selector + ' type="hidden" name="field_emdb_test[' + delta + '][fids]" value="' + entity_id + '">');
+        jQuery(field_wrapper).append('<input data-drupal-selector=' + data_selector + ' type="hidden" name="field_emdb_test[' + delta + '][_weight]" value="' + delta + '">');
+        jQuery(field_wrapper).append('<input data-drupal-selector=' + data_selector + ' type="hidden" name="field_emdb_test[' + delta + '][display]" value="1">');
+        // Trigger an "upload" of the asset.
+        jQuery('input[name="'+ field_name + '_' + delta + '_upload_button"]').mousedown();
     };
 
 })(jQuery, Drupal);
