@@ -189,7 +189,8 @@ class EmbridgeSearchForm extends FormBase {
     if ($clicked_button == 'submit') {
       $values = $form_state->getUserInput();
       $selected_result = $values['result_chosen'];
-      $asset = $this->assetHelper->assetFromAssetId($selected_result);
+      $storage = $this->entityTypeManager->getStorage('embridge_asset_entity');
+      $asset = $this->assetHelper->assetFromAssetId($selected_result, $storage);
 
       // Ensure the data attributes haven't been tampered with.
       if (!$asset) {
@@ -211,8 +212,9 @@ class EmbridgeSearchForm extends FormBase {
 
     // Hidden input value set by javascript
     $selected_result = $form_state->getUserInput()['result_chosen'];
-    $asset = EmbridgeAssetEntity::load($selected_result);
-    $entity_id = $asset->get('id')->value;
+    $storage = $this->entityTypeManager->getStorage('embridge_asset_entity');
+    $asset = $this->assetHelper->assetFromAssetId($selected_result, $storage);
+    $entity_id = $asset->id();
 
     $values['entity_id'] = $entity_id;
     $response->addCommand(new EmbridgeSearchSave($values));
