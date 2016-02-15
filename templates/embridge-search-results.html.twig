@@ -12,7 +12,7 @@
  */
 #}
 <div>
-{% for result in results %}
-    {{ result }}
+{% for entity_id, image in results %}
+    <a href="#" class="embridge-choose-file" data-asset-entity-id="{{ entity_id  }}">{{ image }}</a>
 {% endfor %}
 </div>
