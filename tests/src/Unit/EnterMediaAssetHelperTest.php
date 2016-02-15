@@ -54,7 +54,6 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       'uri' => 'http://www.example.com',
       'username' => 'admin',
       'password' => 'admin',
-      'application_id' => 'testapp',
     ];
     // Configure the stub.
     $mockConfig->expects($this->any())
@@ -64,7 +63,6 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
           ['uri', $sample_config['uri']],
           ['username', $sample_config['username']],
           ['password', $sample_config['password']],
-          ['application_id', $sample_config['application_id']],
         ]
       ));
 
