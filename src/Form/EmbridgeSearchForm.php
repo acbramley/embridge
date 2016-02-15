@@ -10,6 +10,7 @@ namespace Drupal\embridge\Form;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\Entity\EntityFieldManager;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -52,6 +53,13 @@ class EmbridgeSearchForm extends FormBase {
   protected $entityTypeManager;
 
   /**
+   * Entity field manager.
+   *
+   * @var \Drupal\Core\Entity\EntityFieldManager
+   */
+  protected $fieldManager;
+
+  /**
    * EmbridgeSearchForm constructor.
    *
    * @param \Drupal\embridge\EnterMediaDbClient $embridge_client
@@ -61,17 +69,19 @@ class EmbridgeSearchForm extends FormBase {
    * @param \Drupal\Core\Entity\EntityTypeManager $entity_type_manager
    *   Entity type manager service.
    */
-  public function __construct(EnterMediaDbClient $embridge_client, EnterMediaAssetHelper $asset_helper, EntityTypeManager $entity_type_manager) {
+  public function __construct(EnterMediaDbClient $embridge_client, EnterMediaAssetHelper $asset_helper, EntityTypeManager $entity_type_manager, EntityFieldManager $field_manager) {
     $this->client = $embridge_client;
     $this->assetHelper = $asset_helper;
     $this->entityTypeManager = $entity_type_manager;
+    $this->fieldManager = $field_manager;
   }
 
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('embridge.client'),
       $container->get('embridge.asset_helper'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('entity_field.manager')
     );
   }
 
