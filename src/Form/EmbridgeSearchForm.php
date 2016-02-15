@@ -272,7 +272,7 @@ class EmbridgeSearchForm extends FormBase {
     $render_array = [];
     foreach ($search_response['results'] as $result) {
 
-      $asset = $asset_helper->searchResultToAsset($result);
+      $asset = $asset_helper->searchResultToAsset($result, $catalog_id);
       $render_array[$asset->id()] = [
           '#theme' => 'embridge_image',
           '#asset' => $asset,
