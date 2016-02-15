@@ -1,6 +1,6 @@
-embridge.embridge_application.*:
+embridge.embridge_catalog.*:
   type: config_entity
-  label: 'EMBridge Application config'
+  label: 'EMBridge Catalog config'
   mapping:
     id:
       type: string
