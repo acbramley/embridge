@@ -107,7 +107,7 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
    * @return EmbridgeAssetEntity|NULL
    *   Null if the asset didn't exist.
    */
-  public function loadFromAssetId($asset_id, EntityStorageInterface $storage) {
+  private function loadFromAssetId($asset_id, EntityStorageInterface $storage) {
     $query = $storage->getQuery();
     $query->condition('asset_id', $asset_id);
     $query_result = $query->execute();
