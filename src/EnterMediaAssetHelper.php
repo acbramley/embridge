@@ -69,15 +69,9 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
   }
 
   /**
-   * Converts a search result to a Embridge Asset Entity.
-   *
-   * @param array $result
-   *   A result from the search results.
-   *
-   * @return EmbridgeAssetEntityInterface
-   *   The populated and saved entity.
+   * {@inheritdoc}
    */
-  public function searchResultToAsset($result) {
+  public function searchResultToAsset($result, $catalog_id) {
     /** @var EntityStorageInterface $storage */
     $storage = $this->entityTypeManager->getStorage('embridge_asset_entity');
 
@@ -91,6 +85,7 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
       'filename' => $result['name'],
       'filesize' => $result['filesize'],
       'filemime' => $this->mimeGuesser->guess($result['name']),
+      'catalog_id' => $catalog_id,
     ];
 
     /** @var EmbridgeAssetEntityInterface $asset */

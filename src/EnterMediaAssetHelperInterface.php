@@ -31,10 +31,12 @@ interface EnterMediaAssetHelperInterface {
    *
    * @param array $result
    *   A result from the search results.
+   * @param string $catalog_id
+   *   A catalog id to relate the asset to.
    *
    * @return EmbridgeAssetEntityInterface
    *   The populated and saved entity.
    */
-  public function searchResultToAsset($result);
+  public function searchResultToAsset($result, $catalog_id);
 
 }
