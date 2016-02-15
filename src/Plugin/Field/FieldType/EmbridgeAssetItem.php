@@ -89,23 +89,23 @@ class EmbridgeAssetItem extends FileItem {
     $element = array();
     $settings = $this->getSettings();
 
-    /** @var ConfigEntityStorage $application_storage */
-    $application_storage = \Drupal::entityTypeManager()->getStorage('embridge_application');
-    $application_query = $application_storage->getQuery();
-    $entity_ids = array_keys($application_query->execute());
-    $entities = $application_storage->loadMultiple($entity_ids);
+    /** @var ConfigEntityStorage $catalog_storage */
+    $catalog_storage = \Drupal::entityTypeManager()->getStorage('embridge_catalog');
+    $catalog_query = $catalog_storage->getQuery();
+    $entity_ids = array_keys($catalog_query->execute());
+    $entities = $catalog_storage->loadMultiple($entity_ids);
 
     $options = [];
     foreach ($entities as $entity) {
       $options[$entity->id()] = $entity->label();
     }
 
-    $element['application_id'] = array(
+    $element['catalog_id'] = array(
       '#type' => 'select',
-      '#title' => t('Application'),
-      '#default_value' => $settings['application_id'],
+      '#title' => t('Catalog'),
+      '#default_value' => !empty($settings['catalog_id']) ? $settings['catalog_id'] : '',
       '#options' => $options,
-      '#description' => t("Select the Application to source media from for this field."),
+      '#description' => t("Select the Catalog to source media from for this field."),
       '#weight' => 6,
     );
 
