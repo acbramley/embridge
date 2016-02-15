@@ -303,9 +303,10 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
       ->setDescription(t('The Enter Media ID of the Embridge asset.'))
       ->setReadOnly(TRUE);
 
-    $fields['catalog_id'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Catalog ID'))
-      ->setDescription(t('EnterMedia catalog ID.'));
+    $fields['catalog_id'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Catalog Id'))
+      ->setDescription(t('The catalog we have used to upload the file.'))
+      ->setSetting('target_type', 'embridge_catalog');
 
     $fields['uuid'] = BaseFieldDefinition::create('uuid')
       ->setLabel(t('UUID'))
