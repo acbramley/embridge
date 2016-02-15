@@ -7,6 +7,17 @@
 
     'use strict';
 
+
+    Drupal.behaviors.embridge_search_submit = {
+        attach: function (context, settings) {
+            $('.embridge-search-form input[name="filename"]').on('keypress', function(event) {
+                if (event.keyCode == 13) {
+                    $('.embridge-ajax-search-submit').trigger('mousedown');
+                }
+            });
+        }
+    };
+
     Drupal.behaviors.embridge_search_choose_asset = {
         attach: function (context, settings) {
             // Tie click events for choosing an image to clicking the submission button.
