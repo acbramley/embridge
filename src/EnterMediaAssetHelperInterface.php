@@ -17,12 +17,14 @@ interface EnterMediaAssetHelperInterface {
    *
    * @param \Drupal\embridge\EmbridgeAssetEntityInterface $asset
    *   The embridge asset entity
+   * @param string $application_id
+   *   The application id for the catalog this asset resides in.
    * @param string $conversion
    *   The conversion to get the url for.
    *
    * @return string
    */
-  public function getAssetConversionUrl(EmbridgeAssetEntityInterface $asset, $conversion);
+  public function getAssetConversionUrl(EmbridgeAssetEntityInterface $asset, $application_id, $conversion);
 
   /**
    * Converts a search result to a Embridge Asset Entity.
