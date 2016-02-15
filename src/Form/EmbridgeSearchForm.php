@@ -20,6 +20,7 @@ use Drupal\embridge\Ajax\EmbridgeSearchSave;
 use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\Entity\EmbridgeAssetEntity;
+use Drupal\embridge\Entity\EmbridgeCatalog;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\embridge\EnterMediaDbClient;
 use Symfony\Component\HttpFoundation\Request;
@@ -95,7 +96,7 @@ class EmbridgeSearchForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $field_name = '', $delta = 0) {
+  public function buildForm(array $form, FormStateInterface $form_state, $entity_type = '', $bundle = '', $field_name = '', $delta = 0) {
     $input = $form_state->getUserInput();
 
     // Store for ajax commands.
@@ -154,9 +155,15 @@ class EmbridgeSearchForm extends FormBase {
       ];
     }
 
+    // Get the catalog id for this field for use in the search results themeing.
+    $bundle_fields = $this->fieldManager->getFieldDefinitions($entity_type, $bundle);
+    /** @var \Drupal\Core\Field\BaseFieldDefinition $field_definition */
+    $field_definition = $bundle_fields[$field_name];
+    $catalog_id = $field_definition->getSetting('catalog_id');
+
     $form['search_results'] = [
       '#theme' => 'embridge_search_results',
-      '#results' => self::getSearchResults($this->client, $this->assetHelper, $filters)
+      '#results' => self::getSearchResults($this->client, $this->assetHelper, $catalog_id, $filters)
     ];
     $form['result_chosen'] = [
       '#type' => 'hidden',
@@ -241,16 +248,34 @@ class EmbridgeSearchForm extends FormBase {
     return $response;
   }
 
-  public static function getSearchResults(EnterMediaDbClient $client, EnterMediaAssetHelper $asset_helper, array $filters = []) {
+  /**
+   * Queries EnterMedia for assets matching search filters and returns a render array.
+   *
+   * @param \Drupal\embridge\EnterMediaDbClient $client
+   *   The EMDB Client service.
+   * @param \Drupal\embridge\EnterMediaAssetHelper $asset_helper
+   *   The asset helper service.
+   * @param $catalog_id
+   *   The catalog ID.
+   * @param array $filters
+   *   An array of filters
+   *
+   * @return array
+   *   A render array.
+   */
+  private static function getSearchResults(EnterMediaDbClient $client, EnterMediaAssetHelper $asset_helper, $catalog_id, array $filters = []) {
     $num_per_page = 20;
     $search_response = $client->search(1, $num_per_page, $filters);
+    /** @var \Drupal\embridge\EmbridgeCatalogInterface $catalog */
+    $catalog = EmbridgeCatalog::load($catalog_id);
+    $application_id = $catalog->getApplicationId();
 
     $render_array = [];
     foreach ($search_response['results'] as $result) {
 
       $asset = $asset_helper->searchResultToAsset($result);
 
-      $link_url = Url::fromUri($asset_helper->getAssetConversionUrl($asset, 'thumb'));
+      $link_url = Url::fromUri($asset_helper->getAssetConversionUrl($asset, $application_id, 'thumb'));
       $link_url->setOptions(array(
         'attributes' => array(
           'class' => array('embridge-choose-file'),
@@ -264,6 +289,7 @@ class EmbridgeSearchForm extends FormBase {
           '#asset' => $asset,
           '#conversion' => 'thumb',
           '#link_to' => '',
+          '#application_id' => $application_id,
         ],
         $link
       ];
