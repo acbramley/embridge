@@ -398,10 +398,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->method('setSourcePath')
       ->with('2016/02/456/cat3.png')
       ->will($this->returnSelf());
-    $mockAsset
-      ->expects($this->once())
-      ->method('setPermanent')
-      ->will($this->returnSelf());
 
     $this->emdbClient->upload($mockAsset);
   }
