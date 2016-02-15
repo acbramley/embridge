@@ -23,7 +23,7 @@ use Drupal\file\Plugin\Field\FieldType\FileItem;
  *   category = @Translation("Reference"),
  *   default_widget = "embridge_asset_widget",
  *   default_formatter = "embridge_default",
- *   list_class = "\Drupal\Core\Field\EntityReferenceFieldItemList",
+ *   list_class = "\Drupal\embridge\Plugin\Field\FieldType\EmbridgeAssetItemList",
  *   constraints = {"ReferenceAccess" = {}, "EmbridgeAssetValidation" = {}}
  * )
  */

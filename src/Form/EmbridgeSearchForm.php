@@ -233,13 +233,6 @@ class EmbridgeSearchForm extends FormBase {
 
     // Hidden input value set by javascript
     $entity_id = $form_state->getUserInput()['result_chosen'];
-    /** @var EmbridgeAssetEntityInterface $asset */
-    // Mark permanent if we need to.
-    $asset = EmbridgeAssetEntity::load($entity_id);
-    if ($asset->isTemporary()) {
-      $asset->setPermanent();
-      $asset->save();
-    }
 
     $values['entity_id'] = $entity_id;
     $response->addCommand(new EmbridgeSearchSave($values));
