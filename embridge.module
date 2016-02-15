@@ -18,7 +18,7 @@ function embridge_theme() {
       'variables' => array('asset' => NULL, 'description' => '', 'entity' => NULL, 'link_to' => ''),
     ),
     'embridge_image' => array(
-      'variables' => array('asset' => NULL, 'conversion' => '', 'description' => '', 'entity' => NULL, 'link_to' => ''),
+      'variables' => array('asset' => NULL, 'conversion' => '', 'application_id' => '', 'description' => '', 'entity' => NULL, 'link_to' => ''),
     ),
     'embridge_search_results' => array(
       'variables' => array('results' => []),
@@ -110,12 +110,6 @@ function template_preprocess_embridge_image(&$variables) {
   $variables['image'] = array(
     '#theme' => 'image',
   );
-//  $item = $variables['item'];
-
-//  // Do not output an empty 'title' attribute.
-//  if (Unicode::strlen($item->title) != 0) {
-//    $variables['image']['#title'] = $item->title;
-//  }
 
   /** @var EmbridgeAssetEntity  $asset */
   $asset = $variables['asset'];
@@ -125,7 +119,7 @@ function template_preprocess_embridge_image(&$variables) {
 
   /** @var \Drupal\embridge\EnterMediaAssetHelperInterface $asset_helper */
   $asset_helper = Drupal::getContainer()->get('embridge.asset_helper');
-  $uri = $asset_helper->getAssetConversionUrl($asset, $variables['conversion']);
+  $uri = $asset_helper->getAssetConversionUrl($asset, $variables['application_id'], $variables['conversion']);
   if ($variables['link_to'] == 'file') {
     $variables['url'] = $uri;
   }
