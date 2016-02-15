@@ -142,6 +142,12 @@ class EmbridgeSearchForm extends FormBase {
       '#type' => 'submit',
       '#ajax' => $ajax_settings,
       '#value' => $this->t('Search'),
+      // Hide the button.
+      '#attributes' => array(
+        'class' => array(
+          'embridge-ajax-search-submit',
+        ),
+      ),
     ];
 
     $filters = [];
@@ -184,7 +190,7 @@ class EmbridgeSearchForm extends FormBase {
       // Hide the button.
       '#attributes' => array(
         'class' => array(
-          'embridge-ajax-search-submit',
+          'embridge-ajax-select-file',
           'hidden-button',
         ),
       ),
