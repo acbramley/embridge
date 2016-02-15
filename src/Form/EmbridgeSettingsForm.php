@@ -102,14 +102,6 @@ class EmbridgeSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('uri'),
       '#required' => TRUE,
     ];
-    $form['connection']['application_id'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Application ID'),
-      '#description' => $this->t('EnterMedia application id (e.g. emshare).'),
-      '#size' => 64,
-      '#default_value' => $config->get('application_id'),
-      '#required' => TRUE,
-    ];
     $form['connection']['username'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Username'),
@@ -174,7 +166,6 @@ class EmbridgeSettingsForm extends ConfigFormBase {
 
     $this->config('embridge.settings')
       ->set('uri', $form_state->getValue('uri'))
-      ->set('application_id', $form_state->getValue('application_id'))
       ->set('username', $form_state->getValue('username'))
       ->set('password', $form_state->getValue('password'))
       ->save();
