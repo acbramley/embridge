@@ -78,6 +78,7 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
    *   The populated and saved entity.
    */
   public function searchResultToAsset($result) {
+    /** @var EntityStorageInterface $storage */
     $storage = $this->entityTypeManager->getStorage('embridge_asset_entity');
 
     if ($asset = $this->loadFromAssetId($result['id'], $storage)) {
