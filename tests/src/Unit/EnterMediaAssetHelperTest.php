@@ -146,7 +146,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       ->with('embridge_asset_entity')
       ->willReturn($mockEntityStorage);
 
-    $this->assertEquals($mockAsset, $this->emdbHelper->searchResultToAsset($mock_search_result));
+    $this->assertEquals($mockAsset, $this->emdbHelper->searchResultToAsset($mock_search_result, 'testcatalog'));
   }
 
 
@@ -196,6 +196,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       'filesize' => $mock_search_result['filesize'],
       'filename' => $mock_search_result['name'],
       'filemime' => $expected_mime,
+      'catalog_id' => 'testcatalog',
     ];
     $mockEntityStorage = $this->getMock(EntityStorageInterface::class);
     $mockEntityStorage
@@ -214,6 +215,6 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       ->with('embridge_asset_entity')
       ->willReturn($mockEntityStorage);
 
-    $this->assertEquals($mockAsset, $this->emdbHelper->searchResultToAsset($mock_search_result));
+    $this->assertEquals($mockAsset, $this->emdbHelper->searchResultToAsset($mock_search_result, 'testcatalog'));
   }
 }
