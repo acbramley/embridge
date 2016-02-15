@@ -43,7 +43,7 @@ class EmbridgeAssetItem extends FileItem {
    */
   public static function defaultFieldSettings() {
     return array(
-      'application_id' => '',
+      'catalog_id' => '',
     ) + parent::defaultFieldSettings();
   }
 
@@ -106,6 +106,7 @@ class EmbridgeAssetItem extends FileItem {
       '#default_value' => !empty($settings['catalog_id']) ? $settings['catalog_id'] : '',
       '#options' => $options,
       '#description' => t("Select the Catalog to source media from for this field."),
+      '#required' => TRUE,
       '#weight' => 6,
     );
 
