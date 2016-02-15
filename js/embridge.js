@@ -21,13 +21,13 @@
     Drupal.behaviors.embridge_search_choose_asset = {
         attach: function (context, settings) {
             // Tie click events for choosing an image to clicking the submission button.
-            $('.embridge-choose-file').click(function(event) {
+            $('.embridge-choose-file').on('click', function(event) {
                 event.preventDefault();
                 // Set the result that was chosen.
                 var asset_id = $(this).attr('data-asset-entity-id');
                 $('[name="result_chosen"]').val(asset_id);
 
-                $('.embridge-ajax-search-submit').trigger('click');
+                $('.embridge-ajax-select-file').trigger('click');
             });
         }
     };
@@ -49,7 +49,7 @@
         jQuery(field_wrapper).append('<input data-drupal-selector="' + data_selector + '" type="hidden" name="' + field_name + '[' + delta + '][_weight]" value="' + delta + '">');
         jQuery(field_wrapper).append('<input data-drupal-selector="' + data_selector + '" type="hidden" name="' + field_name + '[' + delta + '][display]" value="1">');
         // Trigger an "upload" of the asset.
-        jQuery('input[name="'+ field_name + '_' + delta + '_upload_button"]').mousedown();
+        jQuery('input[name="'+ field_name + '_' + delta + '_upload_button"]').trigger('mousedown');
     };
 
 })(jQuery, Drupal);
