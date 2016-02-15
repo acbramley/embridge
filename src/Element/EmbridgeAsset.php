@@ -515,7 +515,7 @@ class EmbridgeAsset extends FormElement {
     $files_uploaded = $element['#multiple'] && count(array_filter($file_upload)) > 0;
     $files_uploaded |= !$element['#multiple'] && !empty($file_upload);
     if ($files_uploaded) {
-      if (!$assets = self::saveUpload($upload_name, $element['#upload_validators'], $destination)) {
+      if (!$assets = self::saveUpload($upload_name, $element['#catalog_id'], $element['#upload_validators'], $destination)) {
         \Drupal::logger('file')->notice('The file upload failed. %upload', array('%upload' => $upload_name));
         $form_state->setError($element, t('Files in the @name field were unable to be uploaded.', array('@name' => $element['#title'])));
         return array();
@@ -541,6 +541,8 @@ class EmbridgeAsset extends FormElement {
    * @param string $form_field_name
    *   A string that is the associative array key of the upload form element in
    *   the form array.
+   * @param string $catalog_id
+   *   The catalog id for the catalog we are uploading to.
    * @param array $validators
    *   An optional, associative array of callback functions used to validate the
    *   file. See file_validate() for a full discussion of the array format.
@@ -576,7 +578,7 @@ class EmbridgeAsset extends FormElement {
    *   - source: Path to the file before it is moved.
    *   - destination: Path to the file after it is moved (same as 'uri').
    */
-  public static function saveUpload($form_field_name, $validators = array(), $destination_dir = FALSE, $delta = NULL, $replace = FILE_EXISTS_RENAME) {
+  public static function saveUpload($form_field_name, $catalog_id, $validators = array(), $destination_dir = FALSE, $delta = NULL, $replace = FILE_EXISTS_RENAME) {
     $user = \Drupal::currentUser();
     static $upload_cache;
 
@@ -641,6 +643,7 @@ class EmbridgeAsset extends FormElement {
         'filename' => $file_info->getClientOriginalName(),
         'uri' => $file_info->getRealPath(),
         'filesize' => $file_info->getSize(),
+        'catalog_id' => $catalog_id,
       );
       $values['filemime'] = \Drupal::service('file.mime_type.guesser')->guess($values['filename']);
 
