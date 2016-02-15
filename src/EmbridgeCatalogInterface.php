@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\embridge\EmbridgeApplicationInterface.
+ * Contains \Drupal\embridge\EmbridgeCatalogInterface.
  */
 
 namespace Drupal\embridge;
@@ -12,10 +12,10 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 /**
  * Provides an interface for defining EMBridge Application entities.
  */
-interface EmbridgeApplicationInterface extends ConfigEntityInterface {
+interface EmbridgeCatalogInterface extends ConfigEntityInterface {
 
   /**
-   * Return the Enter Media Application ID
+   * Return the Enter Media Catalog's Application ID
    *
    * @return string
    */

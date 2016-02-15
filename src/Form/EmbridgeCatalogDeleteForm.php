@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\embridge\Form\EmbridgeApplicationDeleteForm.
+ * Contains \Drupal\embridge\Form\EmbridgeCatalogDeleteForm.
  */
 
 namespace Drupal\embridge\Form;
@@ -12,9 +12,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
- * Builds the form to delete EMBridge Application entities.
+ * Builds the form to delete EMBridge Catalog entities.
  */
-class EmbridgeApplicationDeleteForm extends EntityConfirmFormBase {
+class EmbridgeCatalogDeleteForm extends EntityConfirmFormBase {
   /**
    * {@inheritdoc}
    */
@@ -26,7 +26,7 @@ class EmbridgeApplicationDeleteForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('entity.embridge_application.collection');
+    return new Url('entity.embridge_catalog.collection');
   }
 
   /**

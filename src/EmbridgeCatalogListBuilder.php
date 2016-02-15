@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\embridge\EmbridgeApplicationListBuilder.
+ * Contains \Drupal\embridge\EmbridgeCatalogListBuilder.
  */
 
 namespace Drupal\embridge;
@@ -11,14 +11,14 @@ use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
- * Provides a listing of EMBridge Application entities.
+ * Provides a listing of EMBridge Catalog entities.
  */
-class EmbridgeApplicationListBuilder extends ConfigEntityListBuilder {
+class EmbridgeCatalogListBuilder extends ConfigEntityListBuilder {
   /**
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['label'] = $this->t('EMBridge Application');
+    $header['label'] = $this->t('EMBridge Catalog');
     $header['id'] = $this->t('Machine name');
     return $header + parent::buildHeader();
   }

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\embridge\EmbridgeApplicationHtmlRouteProvider.
+ * Contains \Drupal\embridge\EmbridgeCatalogHtmlRouteProvider.
  */
 
 namespace Drupal\embridge;
@@ -12,12 +12,12 @@ use Drupal\Core\Entity\Routing\AdminHtmlRouteProvider;
 use Symfony\Component\Routing\Route;
 
 /**
- * Provides routes for EMBridge Application entities.
+ * Provides routes for EMBridge Catalog entities.
  *
  * @see Drupal\Core\Entity\Routing\AdminHtmlRouteProvider
  * @see Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider
  */
-class EmbridgeApplicationHtmlRouteProvider extends AdminHtmlRouteProvider {
+class EmbridgeCatalogHtmlRouteProvider extends AdminHtmlRouteProvider {
   /**
    * {@inheritdoc}
    */
