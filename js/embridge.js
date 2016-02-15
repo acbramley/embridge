@@ -34,9 +34,9 @@
         var data_selector = 'edit-' + field_id_dashes + '-' + delta + '-fids';
 
         // Create inputs as if a file had been added to the form.
-        jQuery(field_wrapper).append('<input data-drupal-selector="' + data_selector + '" type="hidden" name="field_emdb_test[' + delta + '][fids]" value="' + entity_id + '">');
-        jQuery(field_wrapper).append('<input data-drupal-selector="' + data_selector + '" type="hidden" name="field_emdb_test[' + delta + '][_weight]" value="' + delta + '">');
-        jQuery(field_wrapper).append('<input data-drupal-selector="' + data_selector + '" type="hidden" name="field_emdb_test[' + delta + '][display]" value="1">');
+        jQuery(field_wrapper).append('<input data-drupal-selector="' + data_selector + '" type="hidden" name="' + field_name + '[' + delta + '][fids]" value="' + entity_id + '">');
+        jQuery(field_wrapper).append('<input data-drupal-selector="' + data_selector + '" type="hidden" name="' + field_name + '[' + delta + '][_weight]" value="' + delta + '">');
+        jQuery(field_wrapper).append('<input data-drupal-selector="' + data_selector + '" type="hidden" name="' + field_name + '[' + delta + '][display]" value="1">');
         // Trigger an "upload" of the asset.
         jQuery('input[name="'+ field_name + '_' + delta + '_upload_button"]').mousedown();
     };
