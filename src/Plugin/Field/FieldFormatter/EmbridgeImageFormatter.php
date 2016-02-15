@@ -81,9 +81,13 @@ class EmbridgeImageFormatter extends GenericEmbridgeAssetFormatter {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = parent::viewElements($items, $langcode);
     $conversion = $this->getSetting('conversion');
+    $catalog_id = $this->getFieldSetting('catalog_id');
+    /** @var EmbridgeCatalogInterface $catalog */
+    $catalog = EmbridgeCatalog::load($catalog_id);
     foreach ($elements as $delta => $element) {
       $elements[$delta]['#theme'] = 'embridge_image';
       $elements[$delta]['#conversion'] = $conversion;
+      $elements[$delta]['#application_id'] = $catalog->getApplicationId();
     }
 
     return $elements;
