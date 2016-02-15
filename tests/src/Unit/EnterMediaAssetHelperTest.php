@@ -100,7 +100,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       ->willReturn('2016/02/123/cats.png');
 
     $expected_url = 'http://www.example.com/testapp/views/modules/asset/downloads/preview/thumb/2016/02/123/cats.png/thumb.jpg';
-    $this->assertEquals($expected_url, $this->emdbHelper->getAssetConversionUrl($mockAsset, 'thumb'));
+    $this->assertEquals($expected_url, $this->emdbHelper->getAssetConversionUrl($mockAsset, 'emshare', 'thumb'));
   }
 
   /**
