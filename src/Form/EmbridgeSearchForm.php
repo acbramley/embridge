@@ -249,7 +249,7 @@ class EmbridgeSearchForm extends FormBase {
   }
 
   /**
-   * Queries EnterMedia for assets matching search filters and returns a render array.
+   * Queries EnterMedia for assets matching search filter.
    *
    * @param \Drupal\embridge\EnterMediaDbClient $client
    *   The EMDB Client service.
@@ -261,7 +261,7 @@ class EmbridgeSearchForm extends FormBase {
    *   An array of filters
    *
    * @return array
-   *   A render array.
+   *   An array of variables to pass to embridge_search_results themeing.
    */
   private static function getSearchResults(EnterMediaDbClient $client, EnterMediaAssetHelper $asset_helper, $catalog_id, array $filters = []) {
     $num_per_page = 20;
@@ -274,24 +274,12 @@ class EmbridgeSearchForm extends FormBase {
     foreach ($search_response['results'] as $result) {
 
       $asset = $asset_helper->searchResultToAsset($result);
-
-      $link_url = Url::fromUri($asset_helper->getAssetConversionUrl($asset, $application_id, 'thumb'));
-      $link_url->setOptions(array(
-        'attributes' => array(
-          'class' => array('embridge-choose-file'),
-          'data-asset-entity-id' => $asset->id(),
-        ))
-      );
-      $link = Link::fromTextAndUrl('Choose Me', $link_url)->toRenderable();
-      $render_array[] = [
-        [
+      $render_array[$asset->id()] = [
           '#theme' => 'embridge_image',
           '#asset' => $asset,
           '#conversion' => 'thumb',
           '#link_to' => '',
           '#application_id' => $application_id,
-        ],
-        $link
       ];
     }
 
