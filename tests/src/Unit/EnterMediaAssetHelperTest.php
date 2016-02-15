@@ -34,7 +34,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
   /**
    * Mime type guesser service.
    *
-   * @var \Drupal\Core\File\MimeType\MimeTypeGuesser|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser|\PHPUnit_Framework_MockObject_MockObject
    */
   protected $mimeGuesser;
 
