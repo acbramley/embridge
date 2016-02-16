@@ -10,7 +10,6 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser;
-use Drupal\embridge\Entity\EmbridgeAssetEntity;
 
 /**
  * Class EnterMediaAssetHelper.
@@ -47,7 +46,7 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
    *   The config factory.
    * @param \Drupal\Core\Entity\EntityTypeManager $entity_type_manager
    *   The entity type manager class.
-   * @param \Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser
+   * @param \Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser $mime_guesser
    *   The mime type guesser service.
    */
   public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManager $entity_type_manager, MimeTypeGuesser $mime_guesser) {
@@ -104,7 +103,7 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
    * @param EntityStorageInterface $storage
    *   The storage to load from.
    *
-   * @return EmbridgeAssetEntity|NULL
+   * @return EmbridgeAssetEntityInterface|NULL
    *   Null if the asset didn't exist.
    */
   private function loadFromAssetId($asset_id, EntityStorageInterface $storage) {
@@ -118,4 +117,5 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
     }
     return NULL;
   }
+
 }
