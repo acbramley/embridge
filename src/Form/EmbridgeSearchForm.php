@@ -8,7 +8,9 @@
 namespace Drupal\embridge\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\AppendCommand;
 use Drupal\Core\Ajax\CloseModalDialogCommand;
+use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Entity\EntityFieldManager;
 use Drupal\Core\Entity\EntityTypeManager;
@@ -29,6 +31,9 @@ use Symfony\Component\HttpFoundation\Request;
  * @package Drupal\embridge\Form
  */
 class EmbridgeSearchForm extends FormBase {
+
+  const AJAX_WRAPPER_ID = 'embridge-results-wrapper';
+  const MESSAGE_WRAPPER_ID = 'embridge-message-wrapper';
 
   /**
    * Drupal\embridge\EnterMediaDbClient definition.
@@ -129,11 +134,10 @@ class EmbridgeSearchForm extends FormBase {
       '#description' => $this->t('Operation to apply to filename search'),
       '#default_value' => !empty($input['filename_op']) ? $input['filename_op'] : '',
     );
-    $ajax_wrapper_id = 'embridge-results-wrapper';
 
     $ajax_settings = [
       'callback' => [get_called_class(), 'searchAjaxCallback'],
-      'wrapper' => $ajax_wrapper_id,
+      'wrapper' => self::AJAX_WRAPPER_ID,
       'effect' => 'fade',
       'progress' => [
         'type' => 'throbber',
@@ -204,7 +208,7 @@ class EmbridgeSearchForm extends FormBase {
     ];
 
     $form['#attached']['library'][] = 'embridge/embridge.lib';
-    $form['#prefix'] = '<div id="' . $ajax_wrapper_id . '">';
+    $form['#prefix'] = '<div id="' . self::AJAX_WRAPPER_ID . '"><div id="' . self::MESSAGE_WRAPPER_ID . '"></div>';
     $form['#sufix'] = '</div>';
 
     return $form;
@@ -229,7 +233,7 @@ class EmbridgeSearchForm extends FormBase {
 
       // Ensure the data attributes haven't been tampered with.
       if (!$asset) {
-        $form_state->setErrorByName('search_results', $this->t('Invalid choice, please try again.'));
+        $form_state->setError($form['search_results'], $this->t('Invalid choice, please try again.'));
       }
       else {
         // TODO: Figure out how to remove this without having broken file
@@ -237,7 +241,7 @@ class EmbridgeSearchForm extends FormBase {
         $upload_validators = $form_state->getValue('upload_validators');
         if ($errors = embridge_asset_validate($asset, $upload_validators)) {
           foreach ($errors as $error) {
-            $form_state->setErrorByName('search_results', $error);
+            $form_state->setError($form['search_results'], $error);
           }
         }
       }
@@ -333,18 +337,21 @@ class EmbridgeSearchForm extends FormBase {
    *   An ajax response to replace the form.
    */
   protected static function ajaxRenderFormAndMessages(array &$form) {
+    $response = new AjaxResponse();
+
     /** @var \Drupal\Core\Render\RendererInterface $renderer */
     $renderer = \Drupal::service('renderer');
 
     // Retrieve the element to be rendered.
     $status_messages = ['#type' => 'status_messages', '#weight' => -10];
-    $form['#prefix'] .= $renderer->renderRoot($status_messages);
-    $output = $renderer->renderRoot($form);
+    $message_wrapper_id = '#' . self::MESSAGE_WRAPPER_ID;
 
-    $response = new AjaxResponse();
     $response->setAttachments($form['#attached']);
+    $response->addCommand(new ReplaceCommand(NULL, $renderer->renderRoot($form)));
+    $response->addCommand(new HtmlCommand($message_wrapper_id, ''));
+    $response->addCommand(new AppendCommand($message_wrapper_id, $renderer->renderRoot($status_messages)));
 
-    return $response->addCommand(new ReplaceCommand(NULL, $output));
+    return $response;
   }
 
 }
