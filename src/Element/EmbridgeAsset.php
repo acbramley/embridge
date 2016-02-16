@@ -13,10 +13,7 @@ use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Element\FormElement;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
-use Drupal\embridge\EmbridgeAssetEntityInterface;
-use Drupal\embridge\EnterMediaDbClientInterface;
 use Drupal\embridge\Entity\EmbridgeAssetEntity;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
@@ -141,26 +138,26 @@ class EmbridgeAsset extends FormElement {
   }
 
   /**
-   * Form submission handler for upload / remove buttons of embridge_asset elements.
+   * Form submit handler for upload/remove buttons of embridge_asset elements.
    *
-   * Copied from file_managed_file_submit
+   * Copied from file_managed_file_submit.
    *
    * @see \Drupal\embridge\Element\EmbridgeAsset::processManagedFile()
    */
   public static function submitHandler($form, FormStateInterface $form_state) {
-    // Determine whether it was the upload or the remove button that was clicked,
+    // Determine whether it was the upload or remove button that was clicked,
     // and set $element to the managed_file element that contains that button.
     $parents = $form_state->getTriggeringElement()['#array_parents'];
     $button_key = array_pop($parents);
     $element = NestedArray::getValue($form, $parents);
 
-    // No action is needed here for the upload button, because all file uploads on
-    // the form are processed by \Drupal\embridge\Element\EmbridgeAsset::valueCallback()
+    // No action is needed here for the upload button, because all file uploads
+    // on the form are processed by EmbridgeAsset::valueCallback()
     // regardless of which button was clicked. Action is needed here for the
     // remove button, because we only remove a file in response to its remove
     // button being clicked.
     if ($button_key == 'remove_button') {
-      /** @var EmbridgeAssetEntityInterface[] $assets */
+      /** @var \Drupal\embridge\EmbridgeAssetEntityInterface[] $assets */
       $assets = $element['#files'];
       $entity_ids = array_keys($assets);
       // Get files that will be removed.
@@ -191,25 +188,25 @@ class EmbridgeAsset extends FormElement {
       // that the file has been removed, so that the form is rebuilt correctly.
       // $form_state->getValues() must be updated in case additional submit
       // handlers run, and for form building functions that run during the
-      // rebuild, such as when the managed_file element is part of a field widget.
-      // FormState::$input must be updated so that
-      // \Drupal\file\Element\ManagedFile::valueCallback() has correct information
+      // rebuild, such as when the managed_file element is part of a field
+      // widget.FormState::$input must be updated so that
+      // EmbridgeAsset::valueCallback() has correct information
       // during the rebuild.
       $form_state->setValueForElement($element['fids'], implode(' ', $entity_ids));
       NestedArray::setValue($form_state->getUserInput(), $element['fids']['#parents'], implode(' ', $entity_ids));
     }
 
     // Set the form to rebuild so that $form is correctly updated in response to
-    // processing the file removal. Since this function did not change $form_state
-    // if the upload button was clicked, a rebuild isn't necessary in that
-    // situation and calling $form_state->disableRedirect() would suffice.
-    // However, we choose to always rebuild, to keep the form processing workflow
-    // consistent between the two buttons.
+    // processing the file removal. Since this function did not change
+    // $form_state if the upload button was clicked, a rebuild isn't necessary
+    // in that situation and calling $form_state->disableRedirect() would
+    // suffice. However, we choose to always rebuild, to keep the form
+    // processing workflow consistent between the two buttons.
     $form_state->setRebuild();
   }
 
   /**
-   * #ajax callback for embridge_asset upload forms.
+   * Ajax callback for embridge_asset upload forms.
    *
    * This ajax callback takes care of the following things:
    *   - Ensures that broken requests due to too big files are caught.
@@ -260,8 +257,18 @@ class EmbridgeAsset extends FormElement {
    *
    * Expands the file type to include Upload and Remove buttons, as well as
    * support for a default value.
+   *
+   * @param array $element
+   *   The element.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   * @param array $complete_form
+   *   The complete form.
+   *
+   * @return array
+   *   The processed element.
    */
-  public static function processEmbridgeAsset(&$element, FormStateInterface $form_state, &$complete_form) {
+  public static function processEmbridgeAsset(array &$element, FormStateInterface $form_state, array &$complete_form) {
 
     // This is used sometimes so let's implode it just once.
     $parents_prefix = implode('_', $element['#parents']);
@@ -376,7 +383,8 @@ class EmbridgeAsset extends FormElement {
         'delta' => $element['#delta'],
       ];
       $link_url = Url::fromRoute('embridge.search.modal', $url_options);
-      $link_url->setOptions(array(
+      $link_url->setOptions(
+        array(
           'attributes' => array(
             'class' => array('use-ajax', 'button'),
             'data-accepts' => 'application/vnd.drupal-modal',
@@ -384,7 +392,8 @@ class EmbridgeAsset extends FormElement {
             'data-dialog-options' => Json::encode(array(
               'width' => 1000,
             )),
-          ))
+          ),
+        )
       );
       $modal_link = Link::fromTextAndUrl('Asset search', $link_url);
 
@@ -430,7 +439,7 @@ class EmbridgeAsset extends FormElement {
   /**
    * Render API callback: Hides display of the upload or remove controls.
    *
-   * Upload controls are hidden when an asset is already uploaded. Remove controls
+   * Upload controls are hidden when an assets already uploaded. Remove controls
    * are hidden when there is no file attached. Controls are hidden here instead
    * of in \Drupal\file\Element\ManagedFile::processManagedFile(), because
    * #access for these buttons depends on the managed_file element's #value. See
@@ -444,10 +453,16 @@ class EmbridgeAsset extends FormElement {
    * should not assume that the buttons can't be "clicked" just because they are
    * not displayed.
    *
+   * @param array $element
+   *   The element.
+   *
+   * @return array
+   *   The processed element.
+   *
    * @see \Drupal\file\Element\ManagedFile::processManagedFile()
    * @see \Drupal\Core\Form\FormBuilderInterface::doBuildForm()
    */
-  public static function preRenderEmbridgeAsset($element) {
+  public static function preRenderEmbridgeAsset(array $element) {
     // If we already have a file, we don't want to show the upload controls.
     if (!empty($element['#value']['fids'])) {
       if (!$element['#multiple']) {
@@ -464,9 +479,16 @@ class EmbridgeAsset extends FormElement {
   }
 
   /**
-   * Render API callback: Validates the embridge_asset element.
+   * Validate the element.
+   *
+   * @param array $element
+   *   The element.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   * @param array $complete_form
+   *   The complete form.
    */
-  public static function validateEmbridgeAsset(&$element, FormStateInterface $form_state, &$complete_form) {
+  public static function validateEmbridgeAsset(array &$element, FormStateInterface $form_state, array &$complete_form) {
     // If referencing an existing file, only allow if there are existing
     // references. This prevents unmanaged files from being deleted if this
     // item were to be deleted.
@@ -523,7 +545,9 @@ class EmbridgeAsset extends FormElement {
 
       // Value callback expects FIDs to be keys.
       $assets = array_filter($assets);
-      $fids = array_map(function($asset) { return $asset->id(); }, $assets);
+      $fids = array_map(function($asset) {
+        return $asset->id();
+      }, $assets);
 
       return empty($assets) ? array() : array_combine($fids, $assets);
     }
@@ -532,11 +556,7 @@ class EmbridgeAsset extends FormElement {
   }
 
   /**
-   * Saves file uploads to a new location.
-   *
-   * The files will be added to the {file_managed} table as temporary files.
-   * Temporary files are periodically cleaned. Use the 'file.usage' service to
-   * register the usage of the file which will automatically mark it as permanent.
+   * Uploads the file to EMDB.
    *
    * @param string $form_field_name
    *   A string that is the associative array key of the upload form element in
@@ -545,13 +565,7 @@ class EmbridgeAsset extends FormElement {
    *   The catalog id for the catalog we are uploading to.
    * @param array $validators
    *   An optional, associative array of callback functions used to validate the
-   *   file. See file_validate() for a full discussion of the array format.
-   *   If no extension validator is provided it will default to a limited safe
-   *   list of extensions which is as follows: "jpg jpeg gif png txt
-   *   doc xls pdf ppt pps odt ods odp". To allow all extensions you must
-   *   explicitly set the 'file_validate_extensions' validator to an empty array
-   *   (Beware: this is not safe and should only be allowed for trusted users, if
-   *   at all).
+   *   file.
    * @param string|bool $destination_dir
    *   A string containing the URI that the file should be copied to. This must
    *   be a stream wrapper URI. If this value is omitted, Drupal's temporary
@@ -565,13 +579,13 @@ class EmbridgeAsset extends FormElement {
    *     unique.
    *   - FILE_EXISTS_ERROR: Do nothing and return FALSE.
    *
-   * @return EmbridgeAssetEntityInterface[]
+   * @return \Drupal\embridge\EmbridgeAssetEntityInterface[]
    *   Function returns array of files or a single file object if $delta
    *   != NULL. Each file object contains the file information if the
    *   upload succeeded or FALSE in the event of an error. Function
    *   returns NULL if no file was uploaded.
    *
-   *   The documentation for the "File interface" group, which you can find under
+   *   The docs for the "File interface" group, which you can find under
    *   Related topics, or the header at the top of this file, documents the
    *   components of a file entity. In addition to the standard components,
    *   this function adds:
@@ -599,7 +613,7 @@ class EmbridgeAsset extends FormElement {
 
     // Prepare uploaded files info. Representation is slightly different
     // for multiple uploads and we fix that here.
-    /** @var UploadedFile[] $uploaded_files */
+    /** @var \Symfony\Component\HttpFoundation\File\UploadedFile[] $uploaded_files */
     $uploaded_files = $file_upload;
     if (!is_array($file_upload)) {
       $uploaded_files = array($file_upload);
@@ -630,8 +644,8 @@ class EmbridgeAsset extends FormElement {
             break;
           }
 
-        // Unknown error
         default:
+          // Unknown error.
           drupal_set_message(t('The file %file could not be saved. An unknown error has occurred.', array('%file' => $file_info->getFilename())), 'error');
           $assets[$i] = FALSE;
           continue;
@@ -648,19 +662,19 @@ class EmbridgeAsset extends FormElement {
       $values['filemime'] = \Drupal::service('file.mime_type.guesser')->guess($values['filename']);
 
       // Create our Embridge Entity.
-      /** @var EmbridgeAssetEntityInterface $asset */
+      /** @var \Drupal\embridge\EmbridgeAssetEntityInterface $asset */
       $asset = EmbridgeAssetEntity::create($values);
 
       $extensions = '';
       if (isset($validators['embridge_asset_validate_file_extensions'])) {
         if (isset($validators['embridge_asset_validate_file_extensions'][0])) {
-          // Build the list of non-munged extensions if the caller provided them.
+          // Build the list of non-munged exts if the caller provided them.
           $extensions = $validators['embridge_asset_validate_file_extensions'][0];
         }
         else {
           // If 'file_validate_extensions' is set and the list is empty then the
-          // caller wants to allow any extension. In this case we have to remove the
-          // validator or else it will reject all extensions.
+          // caller wants to allow any extension. In this case we have to remove
+          // the validator or else it will reject all extensions.
           unset($validators['embridge_asset_validate_file_extensions']);
         }
       }
@@ -678,16 +692,13 @@ class EmbridgeAsset extends FormElement {
         $asset->setFilename(file_munge_filename($asset->getFilename(), $extensions));
       }
 
-      // Rename potentially executable files, to help prevent exploits (i.e. will
-      // rename filename.php.foo and filename.php to filename.php.foo.txt and
-      // filename.php.txt, respectively). Don't rename if 'allow_insecure_uploads'
-      // evaluates to TRUE.
+      // Rename potentially executable files, to help prevent exploits.
       if (!\Drupal::config('system.file')->get('allow_insecure_uploads') && preg_match('/\.(php|pl|py|cgi|asp|js)(\.|$)/i', $asset->getFilename()) && (substr($asset->getFilename(), -4) != '.txt')) {
         $asset->setMimeType('text/plain');
         // The destination filename will also later be used to create the URI.
         $asset->setFilename($asset->getFilename() . '.txt');
-        // The .txt extension may not be in the allowed list of extensions. We have
-        // to add it here or else the file upload will fail.
+        // The .txt extension may not be in the allowed list of extensions.
+        // We have to add it here or else the file upload will fail.
         if (!empty($extensions)) {
           $validators['embridge_asset_validate_file_extensions'][0] .= ' txt';
           drupal_set_message(t('For security reasons, your upload has been renamed to %filename.', array('%filename' => $asset->getFilename())));
@@ -712,8 +723,8 @@ class EmbridgeAsset extends FormElement {
         $destination_dir .= '/';
       }
       $asset_destination = file_destination($destination_dir . $asset->getFilename(), $replace);
-      // If file_destination() returns FALSE then $replace === FILE_EXISTS_ERROR and
-      // there's an existing file so we need to bail.
+      // If file_destination() returns FALSE then $replace === FILE_EXISTS_ERROR
+      // and there's an existing file so we need to bail.
       if ($asset_destination === FALSE) {
         drupal_set_message(t('The file %source could not be uploaded because a file by that name already exists in the destination %directory.', array('%source' => $form_field_name, '%directory' => $destination_dir)), 'error');
         $assets[$i] = FALSE;
@@ -723,7 +734,6 @@ class EmbridgeAsset extends FormElement {
       // Add in our check of the file name length.
       // TODO: Do we need this?
       // $validators['file_validate_name_length'] = array();
-
       // Call the validation functions specified by this function's caller.
       $errors = embridge_asset_validate($asset, $validators);
 
@@ -739,7 +749,7 @@ class EmbridgeAsset extends FormElement {
           ),
         );
         // @todo Add support for render arrays in drupal_set_message()? See
-        //  https://www.drupal.org/node/2505497.
+        // https://www.drupal.org/node/2505497.
         drupal_set_message(\Drupal::service('renderer')->renderPlain($message), 'error');
         $assets[$i] = FALSE;
         continue;
@@ -761,7 +771,7 @@ class EmbridgeAsset extends FormElement {
 
       // If we are replacing an existing file re-use its database record.
       // @todo Do not create a new entity in order to update it. See
-      //   https://www.drupal.org/node/2241865.
+      // https://www.drupal.org/node/2241865.
       if ($replace == FILE_EXISTS_REPLACE) {
         $existing_files = entity_load_multiple_by_properties('embridge_asset_entity', array('uri' => $asset->getSourcePath()));
         if (count($existing_files)) {
@@ -770,7 +780,7 @@ class EmbridgeAsset extends FormElement {
         }
       }
 
-      /** @var EnterMediaDbClientInterface $embridge_client */
+      /** @var \Drupal\embridge\EnterMediaDbClientInterface $embridge_client */
       $embridge_client = \Drupal::getContainer()->get('embridge.client');
 
       try {
