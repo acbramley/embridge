@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- * Checks that a embridge asset file referenced in a embridge file field is valid.
+ * Checks that a embridge asset file referenced in a embridge field is valid.
  */
 class EmbridgeAssetValidationConstraintValidator extends ConstraintValidator {
 
