@@ -17,7 +17,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\embridge\Ajax\EmbridgeSearchSave;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\Entity\EmbridgeAssetEntity;
+use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\Entity\EmbridgeCatalog;
+use Drupal\embridge\Plugin\Field\FieldType\EmbridgeAssetItem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\embridge\EnterMediaDbClient;
 use Symfony\Component\HttpFoundation\Request;
@@ -162,6 +164,13 @@ class EmbridgeSearchForm extends FormBase {
     $bundle_fields = $this->fieldManager->getFieldDefinitions($entity_type, $bundle);
     /** @var \Drupal\Core\Field\BaseFieldDefinition $field_definition */
     $field_definition = $bundle_fields[$field_name];
+    // Store the upload validators for the validation hook.
+    $upload_validators = EmbridgeAssetItem::formatUploadValidators($field_definition->getSettings());
+    $form['upload_validators'] = [
+      '#type' => 'value',
+      '#value' => $upload_validators,
+    ];
+
     $catalog_id = $field_definition->getSetting('catalog_id');
 
     $form['search_results'] = [
@@ -214,11 +223,21 @@ class EmbridgeSearchForm extends FormBase {
     $clicked_button = end($form_state->getTriggeringElement()['#parents']);
     if ($clicked_button == 'submit') {
       $entity_id = $form_state->getUserInput()['result_chosen'];
+      /** @var EmbridgeAssetEntityInterface $asset */
       $asset = EmbridgeAssetEntity::load($entity_id);
 
       // Ensure the data attributes haven't been tampered with.
       if (!$asset) {
         $form_state->setErrorByName('search_results', $this->t('Invalid choice, please try again.'));
+      }
+      else {
+        // TODO: Figure out how to remove this without having broken file elements.
+        $upload_validators = $form_state->getValue('upload_validators');
+        if ($errors = embridge_asset_validate($asset, $upload_validators)) {
+          foreach ($errors as $error) {
+            $form_state->setErrorByName('search_results', $error);
+          }
+        }
       }
     }
   }
@@ -230,7 +249,8 @@ class EmbridgeSearchForm extends FormBase {
     $response = new AjaxResponse();
 
     $values = $form_state->getValues();
-    if ($form_state->getErrors()) {
+    $errors = $form_state->getErrors();
+    if ($errors) {
       return self::ajaxRenderFormAndMessages($form);
     }
 
