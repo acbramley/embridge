@@ -236,8 +236,6 @@ class EmbridgeSearchForm extends FormBase {
         $form_state->setError($form['search_results'], $this->t('Invalid choice, please try again.'));
       }
       else {
-        // TODO: Figure out how to remove this without having broken file
-        // elements.
         $upload_validators = $form_state->getValue('upload_validators');
         if ($errors = embridge_asset_validate($asset, $upload_validators)) {
           foreach ($errors as $error) {
