@@ -122,8 +122,23 @@ class EmbridgeAssetItem extends FileItem {
    *   element's '#upload_validators' property.
    */
   public function getUploadValidators() {
-    $validators = array();
     $settings = $this->getSettings();
+
+    $validators = self::formatUploadValidators($settings);
+
+    return $validators;
+  }
+
+  /**
+   * Given an array of settings, returns an array of upload validators.
+   *
+   * @param array $settings
+   *
+   * @return array
+   *   An array of validators to pass to embridge_asset_validate().
+   */
+  public static function formatUploadValidators(array $settings) {
+    $validators = array();
 
     // Cap the upload size according to the PHP limit.
     $max_filesize = Bytes::toInt(file_upload_max_size());
