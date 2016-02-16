@@ -6,7 +6,6 @@
 
 namespace Drupal\embridge;
 
-
 use Drupal\Component\Serialization\SerializationInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\File\FileSystem;
@@ -14,6 +13,11 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Cookie\SessionCookieJar;
 use GuzzleHttp\Exception\RequestException;
 
+/**
+ * Class EnterMediaDbClient.
+ *
+ * @package Drupal\embridge
+ */
 class EnterMediaDbClient implements EnterMediaDbClientInterface {
 
   const EMBRIDGE_LOGIN_PATH_DEFAULT = 'mediadb/services/authentication/login';
@@ -71,7 +75,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
    *   The http client service.
    * @param \Drupal\Component\Serialization\SerializationInterface $serializer
    *   The json serializer service.
-   * @param \Drupal\Core\File\FileSystem
+   * @param \Drupal\Core\File\FileSystem $file_system
    *   The file system service.
    */
   public function __construct(ConfigFactoryInterface $config_factory, ClientInterface $client, SerializationInterface $serializer, FileSystem $file_system) {
@@ -93,7 +97,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
    * @param string $method
    *   The method to use on the request, defaults to POST.
    *
-   * @return []
+   * @return mixed
    *   An array of the body of the response from the server.
    *
    * @throws \Exception
@@ -178,11 +182,6 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
       [
         "id" => $asset->getOriginalId(),
         "description" => $filename,
-//        "creator" =>  [
-//          "id" =>  "abramley",
-//          "firstname" =>  "Adam",
-//          "lastname" =>  "Bramley"
-//        ],
       ]
     );
     $body = [
@@ -227,4 +226,5 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
 
     return $response_body;
   }
+
 }
