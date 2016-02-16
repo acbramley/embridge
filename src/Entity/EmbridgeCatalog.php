@@ -59,14 +59,14 @@ class EmbridgeCatalog extends ConfigEntityBase implements EmbridgeCatalogInterfa
   protected $label;
 
   /**
-   * The EMDB Catalog Application ID in EnterMedia
+   * The EMDB Catalog Application ID in EnterMedia.
    *
    * @var string
    */
   protected $applicationId;
 
   /**
-   * A newline separated list of conversions
+   * A newline separated list of conversions.
    *
    * @var string
    */
