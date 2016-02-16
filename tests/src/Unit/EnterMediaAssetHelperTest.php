@@ -6,15 +6,18 @@
 
 namespace Drupal\Tests\embridge\Unit;
 
-
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser;
-use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\Tests\UnitTestCase;
 
+/**
+ * Class EnterMediaAssetHelperTest.
+ *
+ * @package Drupal\Tests\embridge\Unit
+ */
 class EnterMediaAssetHelperTest extends UnitTestCase {
   /**
    * Config factory.
@@ -45,18 +48,20 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
    */
   protected $emdbHelper;
 
-
+  /**
+   * SetUp().
+   */
   public function setUp() {
     parent::setUp();
 
-    $mockConfig = $this->getMockBuilder(ImmutableConfig::class)->disableOriginalConstructor()->getMock();
+    $mock_config = $this->getMockBuilder(ImmutableConfig::class)->disableOriginalConstructor()->getMock();
     $sample_config = [
       'uri' => 'http://www.example.com',
       'username' => 'admin',
       'password' => 'admin',
     ];
     // Configure the stub.
-    $mockConfig->expects($this->any())
+    $mock_config->expects($this->any())
       ->method('get')
       ->will($this->returnValueMap(
         [
@@ -71,7 +76,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       ->expects($this->any())
       ->method('get')
       ->with('embridge.settings')
-      ->willReturn($mockConfig);
+      ->willReturn($mock_config);
 
     $this->entityTypeManager = $this->getMockBuilder('\Drupal\Core\Entity\EntityTypeManager')->disableOriginalConstructor()->getMock();
     $this->mimeGuesser = $this->getMockBuilder(MimeTypeGuesser::class)->disableOriginalConstructor()->getMock();;
@@ -79,6 +84,9 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
     $this->emdbHelper = new EnterMediaAssetHelper($this->configFactory, $this->entityTypeManager, $this->mimeGuesser);
   }
 
+  /**
+   * Tear down.
+   */
   public function tearDown() {
     parent::tearDown();
   }
@@ -87,18 +95,19 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
    * Tests getAssetConversionUrl().
    *
    * @covers ::getAssetConversionUrl
+   *
    * @test
    */
   public function getAssetConversionUrlReturnsExpectedUrl() {
-    /** @var EmbridgeAssetEntityInterface|\PHPUnit_Framework_MockObject_MockObject $mockAsset */
-    $mockAsset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
-    $mockAsset
+    /** @var \Drupal\embridge\EmbridgeAssetEntityInterface|\PHPUnit_Framework_MockObject_MockObject $mock_asset */
+    $mock_asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
+    $mock_asset
       ->expects($this->once())
       ->method('getSourcePath')
       ->willReturn('2016/02/123/cats.png');
 
     $expected_url = 'http://www.example.com/testapp/views/modules/asset/downloads/preview/thumb/2016/02/123/cats.png/thumb.jpg';
-    $this->assertEquals($expected_url, $this->emdbHelper->getAssetConversionUrl($mockAsset, 'testapp', 'thumb'));
+    $this->assertEquals($expected_url, $this->emdbHelper->getAssetConversionUrl($mock_asset, 'testapp', 'thumb'));
   }
 
   /**
@@ -106,6 +115,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
    *
    * @covers ::searchResultToAsset
    * @covers ::assetFromAssetId
+   *
    * @test
    */
   public function searchResultToAssetReturnsQueryResultWhenOneExists() {
@@ -117,36 +127,36 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       'name' => '123.png',
     ];
     $mock_id = '456';
-    $mockQuery = $this->getMock('\Drupal\Core\Entity\Query\QueryInterface');
-    $mockQuery
+    $mock_query = $this->getMock('\Drupal\Core\Entity\Query\QueryInterface');
+    $mock_query
       ->expects($this->once())
       ->method('condition')
       ->with('asset_id', $mock_search_result['id']);
-    $mockQuery
+    $mock_query
       ->expects($this->once())
       ->method('execute')
       ->willReturn([$mock_id => $mock_id]);
 
-    $mockAsset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
+    $mock_asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
 
-    $mockEntityStorage = $this->getMock(EntityStorageInterface::class);
-    $mockEntityStorage
+    $mock_entity_storage = $this->getMock(EntityStorageInterface::class);
+    $mock_entity_storage
       ->expects($this->once())
       ->method('getQuery')
-      ->willReturn($mockQuery);
-    $mockEntityStorage
+      ->willReturn($mock_query);
+    $mock_entity_storage
       ->expects($this->once())
       ->method('load')
       ->with($mock_id)
-      ->willReturn($mockAsset);
+      ->willReturn($mock_asset);
 
     $this->entityTypeManager
       ->expects($this->once())
       ->method('getStorage')
       ->with('embridge_asset_entity')
-      ->willReturn($mockEntityStorage);
+      ->willReturn($mock_entity_storage);
 
-    $this->assertEquals($mockAsset, $this->emdbHelper->searchResultToAsset($mock_search_result, 'testcatalog'));
+    $this->assertEquals($mock_asset, $this->emdbHelper->searchResultToAsset($mock_search_result, 'testcatalog'));
   }
 
 
@@ -155,6 +165,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
    *
    * @covers ::searchResultToAsset
    * @covers ::assetFromAssetId
+   *
    * @test
    */
   public function searchResultToAssetReturnsNewAssetWhenNoneExist() {
@@ -165,22 +176,22 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       'filesize' => 123456789,
       'name' => '123.png',
     ];
-    $mockQuery = $this->getMock('\Drupal\Core\Entity\Query\QueryInterface');
-    $mockQuery
+    $mock_query = $this->getMock('\Drupal\Core\Entity\Query\QueryInterface');
+    $mock_query
       ->expects($this->once())
       ->method('condition')
       ->with('asset_id', $mock_search_result['id']);
-    $mockQuery
+    $mock_query
       ->expects($this->once())
       ->method('execute')
       ->willReturn([]);
 
-    $mockAsset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
-    $mockAsset
+    $mock_asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
+    $mock_asset
       ->expects($this->once())
       ->method('setTemporary')
       ->willReturn($this->returnSelf());
-    $mockAsset
+    $mock_asset
       ->expects($this->once())
       ->method('save');
 
@@ -198,23 +209,24 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       'filemime' => $expected_mime,
       'catalog_id' => 'testcatalog',
     ];
-    $mockEntityStorage = $this->getMock(EntityStorageInterface::class);
-    $mockEntityStorage
+    $mock_entity_storage = $this->getMock(EntityStorageInterface::class);
+    $mock_entity_storage
       ->expects($this->once())
       ->method('getQuery')
-      ->willReturn($mockQuery);
-    $mockEntityStorage
+      ->willReturn($mock_query);
+    $mock_entity_storage
       ->expects($this->once())
       ->method('create')
       ->with($expected_values)
-      ->willReturn($mockAsset);
+      ->willReturn($mock_asset);
 
     $this->entityTypeManager
       ->expects($this->once())
       ->method('getStorage')
       ->with('embridge_asset_entity')
-      ->willReturn($mockEntityStorage);
+      ->willReturn($mock_entity_storage);
 
-    $this->assertEquals($mockAsset, $this->emdbHelper->searchResultToAsset($mock_search_result, 'testcatalog'));
+    $this->assertEquals($mock_asset, $this->emdbHelper->searchResultToAsset($mock_search_result, 'testcatalog'));
   }
+
 }
