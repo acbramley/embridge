@@ -15,9 +15,10 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 interface EmbridgeCatalogInterface extends ConfigEntityInterface {
 
   /**
-   * Return the Enter Media Catalog's Application ID
+   * Return the Enter Media Catalog's Application ID.
    *
    * @return string
+   *   The application id.
    */
   public function getApplicationId();
 
@@ -25,6 +26,7 @@ interface EmbridgeCatalogInterface extends ConfigEntityInterface {
    * Returns a string of conversions, separated by newlines.
    *
    * @return string
+   *   The conversions.
    */
   public function getConversions();
 
@@ -32,6 +34,8 @@ interface EmbridgeCatalogInterface extends ConfigEntityInterface {
    * Returns conversions in an array.
    *
    * @return array
+   *   An array of conversions.
    */
   public function getConversionsArray();
+
 }
