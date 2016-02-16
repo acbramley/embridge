@@ -17,7 +17,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\embridge\Ajax\EmbridgeSearchSave;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\Entity\EmbridgeAssetEntity;
-use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\Entity\EmbridgeCatalog;
 use Drupal\embridge\Plugin\Field\FieldType\EmbridgeAssetItem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -76,6 +75,9 @@ class EmbridgeSearchForm extends FormBase {
     $this->fieldManager = $field_manager;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('embridge.client'),
@@ -175,11 +177,11 @@ class EmbridgeSearchForm extends FormBase {
 
     $form['search_results'] = [
       '#theme' => 'embridge_search_results',
-      '#results' => self::getSearchResults($this->client, $this->assetHelper, $catalog_id, $filters)
+      '#results' => self::getSearchResults($this->client, $this->assetHelper, $catalog_id, $filters),
     ];
     $form['result_chosen'] = [
       '#type' => 'hidden',
-      '#value' =>  !empty($input['result_chosen']) ? $input['result_chosen'] : '',
+      '#value' => !empty($input['result_chosen']) ? $input['result_chosen'] : '',
     ];
 
     $form['actions'] = ['#type' => 'actions'];
@@ -188,7 +190,6 @@ class EmbridgeSearchForm extends FormBase {
       '#value' => $this->t('Select'),
       // No regular submit-handler. This form only works via JavaScript.
       '#submit' => array(),
-      //'#tableselect' => TRUE,
       '#ajax' => array(
         'callback' => '::submitFormSelection',
         'event' => 'click',
@@ -203,7 +204,7 @@ class EmbridgeSearchForm extends FormBase {
     ];
 
     $form['#attached']['library'][] = 'embridge/embridge.lib';
-    $form['#prefix'] =  '<div id="' . $ajax_wrapper_id . '">';
+    $form['#prefix'] = '<div id="' . $ajax_wrapper_id . '">';
     $form['#sufix'] = '</div>';
 
     return $form;
@@ -223,7 +224,7 @@ class EmbridgeSearchForm extends FormBase {
     $clicked_button = end($form_state->getTriggeringElement()['#parents']);
     if ($clicked_button == 'submit') {
       $entity_id = $form_state->getUserInput()['result_chosen'];
-      /** @var EmbridgeAssetEntityInterface $asset */
+      /** @var \Drupal\embridge\EmbridgeAssetEntityInterface $asset */
       $asset = EmbridgeAssetEntity::load($entity_id);
 
       // Ensure the data attributes haven't been tampered with.
@@ -231,7 +232,8 @@ class EmbridgeSearchForm extends FormBase {
         $form_state->setErrorByName('search_results', $this->t('Invalid choice, please try again.'));
       }
       else {
-        // TODO: Figure out how to remove this without having broken file elements.
+        // TODO: Figure out how to remove this without having broken file
+        // elements.
         $upload_validators = $form_state->getValue('upload_validators');
         if ($errors = embridge_asset_validate($asset, $upload_validators)) {
           foreach ($errors as $error) {
@@ -254,7 +256,7 @@ class EmbridgeSearchForm extends FormBase {
       return self::ajaxRenderFormAndMessages($form);
     }
 
-    // Hidden input value set by javascript
+    // Hidden input value set by javascript.
     $entity_id = $form_state->getUserInput()['result_chosen'];
 
     $values['entity_id'] = $entity_id;
@@ -271,10 +273,10 @@ class EmbridgeSearchForm extends FormBase {
    *   The EMDB Client service.
    * @param \Drupal\embridge\EnterMediaAssetHelper $asset_helper
    *   The asset helper service.
-   * @param $catalog_id
+   * @param string $catalog_id
    *   The catalog ID.
    * @param array $filters
-   *   An array of filters
+   *   An array of filters.
    *
    * @return array
    *   An array of variables to pass to embridge_search_results themeing.
@@ -291,11 +293,11 @@ class EmbridgeSearchForm extends FormBase {
 
       $asset = $asset_helper->searchResultToAsset($result, $catalog_id);
       $render_array[$asset->id()] = [
-          '#theme' => 'embridge_image',
-          '#asset' => $asset,
-          '#conversion' => 'thumb',
-          '#link_to' => '',
-          '#application_id' => $application_id,
+        '#theme' => 'embridge_image',
+        '#asset' => $asset,
+        '#conversion' => 'thumb',
+        '#link_to' => '',
+        '#application_id' => $application_id,
       ];
     }
 
@@ -303,17 +305,32 @@ class EmbridgeSearchForm extends FormBase {
   }
 
   /**
+   * When searching, simply return a ajax response.
+   *
    * @param array $form
+   *   The form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The current request.
+   *
    * @return \Drupal\Core\Ajax\AjaxResponse
+   *   An ajax response to replace the form.
    */
   public static function searchAjaxCallback(array &$form, FormStateInterface $form_state, Request $request) {
     return self::ajaxRenderFormAndMessages($form);
   }
 
   /**
+   * Renders form and status messages and returns an ajax response.
+   *
+   * Used for both submission buttons.
+   *
    * @param array $form
+   *   The form.
+   *
    * @return \Drupal\Core\Ajax\AjaxResponse
+   *   An ajax response to replace the form.
    */
   protected static function ajaxRenderFormAndMessages(array &$form) {
     /** @var \Drupal\Core\Render\RendererInterface $renderer */
