@@ -1,16 +1,14 @@
 <?php
 /**
  * @file
- * Contains \Drupal\embridge\Plugin\Field\FieldType\EmbridgeAssetItem
+ * Contains \Drupal\embridge\Plugin\Field\FieldType\EmbridgeAssetItem.
  */
 
 namespace Drupal\embridge\Plugin\Field\FieldType;
 
 use Drupal\Component\Utility\Bytes;
-use Drupal\Core\Config\Entity\ConfigEntityStorage;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\file\Plugin\Field\FieldType\FileItem;
 
 /**
@@ -133,6 +131,7 @@ class EmbridgeAssetItem extends FileItem {
    * Given an array of settings, returns an array of upload validators.
    *
    * @param array $settings
+   *   An array of field settings.
    *
    * @return array
    *   An array of validators to pass to embridge_asset_validate().
