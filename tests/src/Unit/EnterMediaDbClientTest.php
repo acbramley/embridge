@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\Tests\embridge\Unit\EnterMediaDbClientTest
+ * Contains Drupal\Tests\embridge\Unit\EnterMediaDbClientTest.
  */
 
 namespace Drupal\Tests\embridge\Unit;
@@ -11,7 +11,6 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\File\FileSystem;
-use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\EnterMediaDbClient;
 use Drupal\Tests\UnitTestCase;
 use GuzzleHttp\ClientInterface;
@@ -20,9 +19,10 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 
 /**
- * Class EnterMediaDbClientTest
+ * Class EnterMediaDbClientTest.
  *
  * @package Drupal\Tests\embridge\Unit
+ *
  * @coversDefaultClass \Drupal\embridge\EnterMediaDbClient
  */
 class EnterMediaDbClientTest extends UnitTestCase {
@@ -95,7 +95,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
     parent::setUp();
     $this->client = $this->getMockBuilder(ClientInterface::class)->disableOriginalConstructor()->getMock();
     $this->serializer = new Json();
-    $mockConfig = $this->getMockBuilder(ImmutableConfig::class)->disableOriginalConstructor()->getMock();
+    $mock_config = $this->getMockBuilder(ImmutableConfig::class)->disableOriginalConstructor()->getMock();
     // Create a map of arguments to return values.
     $sample_config = [
       'uri' => 'http://www.example.com',
@@ -105,7 +105,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->sampleConfig = $sample_config;
 
     // Configure the stub.
-    $mockConfig->expects($this->any())
+    $mock_config->expects($this->any())
       ->method('get')
       ->will($this->returnValueMap(
         [
@@ -120,7 +120,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->any())
       ->method('get')
       ->with('embridge.settings')
-      ->willReturn($mockConfig);
+      ->willReturn($mock_config);
 
     $this->fileSystem = $this->getMockBuilder(FileSystem::class)->disableOriginalConstructor()->getMock();
     $this->emdbClient = new EnterMediaDbClient($this->configFactory, $this->client, $this->serializer, $this->fileSystem);
@@ -139,17 +139,18 @@ class EnterMediaDbClientTest extends UnitTestCase {
    *
    * @covers ::login
    * @covers ::doRequest
+   *
    * @test
    */
   public function loginReturnsTrueWhenClientReturns200AndValidJson() {
 
-    $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
-    $mockResponse
+    $mock_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_response
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(200);
 
-    $mockResponse
+    $mock_response
       ->expects($this->once())
       ->method('getBody')
       ->willReturn(file_get_contents('expected/login-expected-good-response.json', TRUE));
@@ -158,7 +159,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->once())
       ->method('request')
       ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
-      ->willReturn($mockResponse);
+      ->willReturn($mock_response);
 
     $this->assertTrue($this->emdbClient->login());
   }
@@ -168,17 +169,18 @@ class EnterMediaDbClientTest extends UnitTestCase {
    *
    * @covers ::login
    * @covers ::doRequest
+   *
    * @test
    */
   public function loginReturnsFalseWhenClientReturnsFailedJson() {
 
-    $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
-    $mockResponse
+    $mock_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_response
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(200);
 
-    $mockResponse
+    $mock_response
       ->expects($this->once())
       ->method('getBody')
       ->willReturn(file_get_contents('expected/login-expected-bad-response.json', TRUE));
@@ -187,7 +189,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->once())
       ->method('request')
       ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
-      ->willReturn($mockResponse);
+      ->willReturn($mock_response);
 
     $this->assertFalse($this->emdbClient->login());
   }
@@ -197,12 +199,13 @@ class EnterMediaDbClientTest extends UnitTestCase {
    *
    * @covers ::login
    * @covers ::doRequest
+   *
    * @test
    */
   public function loginThrowsExceptionWhenResponseReturnsNon200Code() {
 
-    $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
-    $mockResponse
+    $mock_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_response
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(403);
@@ -211,7 +214,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->once())
       ->method('request')
       ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
-      ->willReturn($mockResponse);
+      ->willReturn($mock_response);
 
     $this->setExpectedException('Exception', 'An unexpected response was returned from the Enter Media backend');
     $this->emdbClient->login();
@@ -222,6 +225,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
    *
    * @covers ::login
    * @covers ::doRequest
+   *
    * @test
    */
   public function loginThrowsExceptionWhenSendFailsAndResponseIsNull() {
@@ -242,12 +246,13 @@ class EnterMediaDbClientTest extends UnitTestCase {
    *
    * @covers ::login
    * @covers ::doRequest
+   *
    * @test
    */
   public function loginThrowsExceptionWhenSendFailsAndResponseCodeIs403() {
 
-    $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
-    $mockResponse
+    $mock_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_response
       ->expects($this->exactly(2))
       ->method('getStatusCode')
       ->willReturn(403);
@@ -258,7 +263,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->once())
       ->method('request')
       ->with($method, $uri, $this->defaultLoginOptions)
-      ->willThrowException(new RequestException('', new Request($method, $uri), $mockResponse));
+      ->willThrowException(new RequestException('', new Request($method, $uri), $mock_response));
 
     $this->setExpectedException('Exception', 'Failed to authenticate with EMDB, please check your settings.');
     $this->emdbClient->login();
@@ -269,17 +274,18 @@ class EnterMediaDbClientTest extends UnitTestCase {
    *
    * @covers ::login
    * @covers ::doRequest
+   *
    * @test
    */
   public function loginRequestsOnlyRunOnceWhenLoginCalledTwice() {
 
-    $mockResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
-    $mockResponse
+    $mock_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_response
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(200);
 
-    $mockResponse
+    $mock_response
       ->expects($this->once())
       ->method('getBody')
       ->willReturn(file_get_contents('expected/login-expected-good-response.json', TRUE));
@@ -288,7 +294,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->once())
       ->method('request')
       ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
-      ->willReturn($mockResponse);
+      ->willReturn($mock_response);
 
     $this->assertTrue($this->emdbClient->login());
     // Proves that request is only called once, with subsequent login calls,
@@ -302,16 +308,17 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * @covers ::login
    * @covers ::upload
    * @covers ::doRequest
+   *
    * @test
    */
   public function uploadUpdatesAssetWhenClientReturns200AndValidJson() {
-    $mockLoginResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
-    $mockLoginResponse
+    $mock_login_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_login_response
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(200);
 
-    $mockLoginResponse
+    $mock_login_response
       ->expects($this->once())
       ->method('getBody')
       ->willReturn(file_get_contents('expected/login-expected-good-response.json', TRUE));
@@ -321,15 +328,15 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->at(0))
       ->method('request')
       ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
-      ->willReturn($mockLoginResponse);
+      ->willReturn($mock_login_response);
 
-    $mockUploadResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
-    $mockUploadResponse
+    $mock_upload_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_upload_response
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(200);
 
-    $mockUploadResponse
+    $mock_upload_response
       ->expects($this->once())
       ->method('getBody')
       ->willReturn(file_get_contents('expected/upload-expected-good-response.json', TRUE));
@@ -349,7 +356,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $json_request = $this->serializer->encode(
       [
         "id" => NULL,
-        "description" =>  $expected_filename,
+        "description" => $expected_filename,
       ]
     );
     $body = [
@@ -371,35 +378,35 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->at(1))
       ->method('request')
       ->with('POST', self::EXAMPLE_UPLOAD_URL, $options)
-      ->willReturn($mockUploadResponse);
+      ->willReturn($mock_upload_response);
 
-    /** @var EmbridgeAssetEntityInterface|\PHPUnit_Framework_MockObject_MockObject $mockAsset */
-    $mockAsset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
-    $mockAsset
+    /** @var EmbridgeAssetEntityInterface|\PHPUnit_Framework_MockObject_MockObject $mock_asset */
+    $mock_asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
+    $mock_asset
       ->expects($this->once())
       ->method('getSourcePath')
       ->willReturn($mock_sourcepath);
-    $mockAsset
+    $mock_asset
       ->expects($this->once())
       ->method('getOriginalId')
       ->willReturn(NULL);
-    $mockAsset
+    $mock_asset
       ->expects($this->once())
       ->method('getFileName')
       ->willReturn($expected_filename);
 
-    $mockAsset
+    $mock_asset
       ->expects($this->once())
       ->method('setAssetId')
       ->with(456)
       ->will($this->returnSelf());
-    $mockAsset
+    $mock_asset
       ->expects($this->once())
       ->method('setSourcePath')
       ->with('2016/02/456/cat3.png')
       ->will($this->returnSelf());
 
-    $this->emdbClient->upload($mockAsset);
+    $this->emdbClient->upload($mock_asset);
   }
 
   /**
@@ -408,16 +415,17 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * @covers ::login
    * @covers ::upload
    * @covers ::doRequest
+   *
    * @test
    */
   public function searchReturnsResponseWhenClientReturns200AndValidJson() {
-    $mockLoginResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
-    $mockLoginResponse
+    $mock_login_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_login_response
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(200);
 
-    $mockLoginResponse
+    $mock_login_response
       ->expects($this->once())
       ->method('getBody')
       ->willReturn(file_get_contents('expected/login-expected-good-response.json', TRUE));
@@ -427,10 +435,10 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->at(0))
       ->method('request')
       ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
-      ->willReturn($mockLoginResponse);
+      ->willReturn($mock_login_response);
 
-    $mockSearchResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
-    $mockSearchResponse
+    $mock_search_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_search_response
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(200);
@@ -439,7 +447,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       'expected/search-expected-good-response.json',
       TRUE
     );
-    $mockSearchResponse
+    $mock_search_response
       ->expects($this->once())
       ->method('getBody')
       ->willReturn($search_response_body);
@@ -460,7 +468,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->at(1))
       ->method('request')
       ->with('POST', self::EXAMPLE_SEARCH_URL, $options)
-      ->willReturn($mockSearchResponse);
+      ->willReturn($mock_search_response);
 
     $decoded_body = $this->serializer->decode($search_response_body);
     $this->assertEquals($decoded_body, $this->emdbClient->search());
@@ -473,16 +481,17 @@ class EnterMediaDbClientTest extends UnitTestCase {
    * @covers ::login
    * @covers ::upload
    * @covers ::doRequest
+   *
    * @test
    */
   public function searchCorrectlyPassesParametersToRequest() {
-    $mockLoginResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
-    $mockLoginResponse
+    $mock_login_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_login_response
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(200);
 
-    $mockLoginResponse
+    $mock_login_response
       ->expects($this->once())
       ->method('getBody')
       ->willReturn(file_get_contents('expected/login-expected-good-response.json', TRUE));
@@ -492,10 +501,10 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->at(0))
       ->method('request')
       ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
-      ->willReturn($mockLoginResponse);
+      ->willReturn($mock_login_response);
 
-    $mockSearchResponse = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
-    $mockSearchResponse
+    $mock_search_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_search_response
       ->expects($this->once())
       ->method('getStatusCode')
       ->willReturn(200);
@@ -504,7 +513,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       'expected/search-expected-good-response.json',
       TRUE
     );
-    $mockSearchResponse
+    $mock_search_response
       ->expects($this->once())
       ->method('getBody')
       ->willReturn($search_response_body);
@@ -531,7 +540,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->at(1))
       ->method('request')
       ->with('POST', self::EXAMPLE_SEARCH_URL, $options)
-      ->willReturn($mockSearchResponse);
+      ->willReturn($mock_search_response);
 
     $decoded_body = $this->serializer->decode($search_response_body);
     $filters = [
