@@ -7,10 +7,7 @@
 
 namespace Drupal\embridge\Plugin\Field\FieldFormatter;
 
-use Drupal\Component\Utility\Html;
-use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Field\Plugin\Field\FieldFormatter\EntityReferenceFormatterBase;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -83,7 +80,6 @@ class GenericEmbridgeAssetFormatter extends EntityReferenceFormatterBase {
     $link_setting = $this->getSetting('link_to');
     $entity = $items->getEntity();
 
-    //$entity = $this->get
     foreach ($this->getEntitiesToView($items, $langcode) as $delta => $asset) {
       $item = $asset->_referringItem;
       $elements[$delta] = array(
