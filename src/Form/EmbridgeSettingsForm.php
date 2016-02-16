@@ -13,7 +13,6 @@ use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\embridge\EnterMediaDbClient;
 use Drupal\embridge\EnterMediaDbClientInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -31,6 +30,14 @@ class EmbridgeSettingsForm extends ConfigFormBase {
    */
   protected $client;
 
+  /**
+   * EmbridgeSettingsForm constructor.
+   *
+   * @param ConfigFactoryInterface $config_factory
+   *   The config factory.
+   * @param EnterMediaDbClientInterface $client
+   *   The EMDB client service.
+   */
   public function __construct(ConfigFactoryInterface $config_factory, EnterMediaDbClientInterface $client) {
     parent::__construct($config_factory);
     $this->client = $client;
@@ -122,8 +129,6 @@ class EmbridgeSettingsForm extends ConfigFormBase {
     ];
     return parent::buildForm($form, $form_state);
   }
-
-
 
   /**
    * Ajax callback to validate the email field.
