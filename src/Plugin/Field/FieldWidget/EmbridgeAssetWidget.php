@@ -11,9 +11,7 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
-use Drupal\Core\Render\ElementInfoManagerInterface;
 use Drupal\embridge\Element\EmbridgeAsset;
-use Drupal\embridge\EmbridgeAssetEntityInterface;
 use Drupal\embridge\Entity\EmbridgeAssetEntity;
 use Drupal\file\Plugin\Field\FieldWidget\FileWidget;
 
@@ -31,7 +29,9 @@ use Drupal\file\Plugin\Field\FieldWidget\FileWidget;
 class EmbridgeAssetWidget extends FileWidget {
 
   /**
-   * @var ElementInfoManagerInterface
+   * Element info.
+   *
+   * @var \Drupal\Core\Render\ElementInfoManagerInterface
    */
   protected $elementInfo;
 
@@ -167,8 +167,9 @@ class EmbridgeAssetWidget extends FileWidget {
   }
 
   /**
-   * Form element validation callback for upload element on file widget. Checks
-   * if user has uploaded more files than allowed.
+   * Form element validation callback for upload element on file widget.
+   *
+   * Checks if user has uploaded more files than allowed.
    *
    * This validator is used only when cardinality not set to 1 or unlimited.
    *
@@ -194,11 +195,16 @@ class EmbridgeAssetWidget extends FileWidget {
       $removed_files = array_slice($values['fids'], $keep);
       $removed_names = array();
       foreach ($removed_files as $id) {
-        /** @var EmbridgeAssetEntityInterface $asset */
+        /** @var \Drupal\embridge\EmbridgeAssetEntityInterface $asset */
         $asset = EmbridgeAssetEntity::load($id);
         $removed_names[] = $asset->getFilename();
       }
-      $args = array('%field' => $field_storage->getName(), '@max' => $field_storage->getCardinality(), '@count' => $uploaded, '%list' => implode(', ', $removed_names));
+      $args = array(
+        '%field' => $field_storage->getName(),
+        '@max' => $field_storage->getCardinality(),
+        '@count' => $uploaded,
+        '%list' => implode(', ', $removed_names),
+      );
       $message = t('Field %field can only hold @max values but there were @count uploaded. The following files have been omitted as a result: %list.', $args);
       drupal_set_message($message, 'warning');
       $values['fids'] = array_slice($values['fids'], 0, $keep);
