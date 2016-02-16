@@ -9,7 +9,6 @@ namespace Drupal\embridge\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\embridge\EmbridgeCatalogInterface;
 use Drupal\embridge\Entity\EmbridgeCatalog;
 
 /**
@@ -39,7 +38,7 @@ class EmbridgeImageFormatter extends GenericEmbridgeAssetFormatter {
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $element = [];
     $catalog_id = $this->getFieldSetting('catalog_id');
-    /** @var EmbridgeCatalogInterface $catalog */
+    /** @var \Drupal\embridge\EmbridgeCatalogInterface $catalog */
     $catalog = EmbridgeCatalog::load($catalog_id);
     $conversions = $catalog->getConversionsArray();
     $element['conversion'] = [
@@ -82,7 +81,7 @@ class EmbridgeImageFormatter extends GenericEmbridgeAssetFormatter {
     $elements = parent::viewElements($items, $langcode);
     $conversion = $this->getSetting('conversion');
     $catalog_id = $this->getFieldSetting('catalog_id');
-    /** @var EmbridgeCatalogInterface $catalog */
+    /** @var \Drupal\embridge\EmbridgeCatalogInterface $catalog */
     $catalog = EmbridgeCatalog::load($catalog_id);
     foreach ($elements as $delta => $element) {
       $elements[$delta]['#theme'] = 'embridge_image';
