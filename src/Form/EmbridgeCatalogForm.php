@@ -9,7 +9,6 @@ namespace Drupal\embridge\Form;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\embridge\Entity\EmbridgeCatalog;
 
 /**
  * Class EmbridgeCatalogForm.
@@ -23,7 +22,7 @@ class EmbridgeCatalogForm extends EntityForm {
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
 
-    /** @var EmbridgeCatalog $embridge_catalog */
+    /** @var \Drupal\embridge\EmbridgeCatalogInterface $embridge_catalog */
     $embridge_catalog = $this->entity;
     $form['label'] = array(
       '#type' => 'textfield',
@@ -69,23 +68,23 @@ class EmbridgeCatalogForm extends EntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    /** @var EmbridgeCatalog $embridge_Catalog */
-    $embridge_Catalog = $this->entity;
-    $status = $embridge_Catalog->save();
+    /** @var \Drupal\embridge\EmbridgeCatalogInterface $embridge_catalog */
+    $embridge_catalog = $this->entity;
+    $status = $embridge_catalog->save();
 
     switch ($status) {
       case SAVED_NEW:
         drupal_set_message($this->t('Created the %label EMBridge Catalog.', [
-          '%label' => $embridge_Catalog->label(),
+          '%label' => $embridge_catalog->label(),
         ]));
         break;
 
       default:
         drupal_set_message($this->t('Saved the %label EMBridge Catalog.', [
-          '%label' => $embridge_Catalog->label(),
+          '%label' => $embridge_catalog->label(),
         ]));
     }
-    $form_state->setRedirectUrl($embridge_Catalog->urlInfo('collection'));
+    $form_state->setRedirectUrl($embridge_catalog->urlInfo('collection'));
   }
 
 }
