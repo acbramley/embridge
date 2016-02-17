@@ -22,7 +22,6 @@ use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\EnterMediaDbClientInterface;
 use Drupal\embridge\Plugin\Field\FieldType\EmbridgeAssetItem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\embridge\EnterMediaDbClient;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -73,7 +72,7 @@ class EmbridgeSearchForm extends FormBase {
   /**
    * EmbridgeSearchForm constructor.
    *
-   * @param \Drupal\embridge\EnterMediaDbClient $embridge_client
+   * @param \Drupal\embridge\EnterMediaDbClientInterface $embridge_client
    *   The embridge client.
    * @param \Drupal\embridge\EnterMediaAssetHelper $asset_helper
    *   A helper for asset entities.
@@ -85,7 +84,7 @@ class EmbridgeSearchForm extends FormBase {
    *   The renderer service.
    */
   public function __construct(
-    EnterMediaDbClient $embridge_client,
+    EnterMediaDbClientInterface $embridge_client,
     EnterMediaAssetHelper $asset_helper,
     EntityTypeManager $entity_type_manager,
     EntityFieldManager $field_manager,
@@ -189,7 +188,7 @@ class EmbridgeSearchForm extends FormBase {
     /** @var \Drupal\Core\Field\BaseFieldDefinition $field_definition */
     $field_definition = $bundle_fields[$field_name];
     // Store the upload validators for the validation hook.
-    $upload_validators = EmbridgeAssetItem::formatUploadValidators($field_definition->getSettings());
+    $upload_validators = $this->assetHelper->formatUploadValidators($field_definition->getSettings());
     $form['upload_validators'] = [
       '#type' => 'value',
       '#value' => $upload_validators,

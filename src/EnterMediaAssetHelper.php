@@ -10,6 +10,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser;
+use Drupal\embridge\Plugin\Field\FieldType\EmbridgeAssetItem;
 
 /**
  * Class EnterMediaAssetHelper.
@@ -116,6 +117,21 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
       return $storage->load($id);
     }
     return NULL;
+  }
+
+  /**
+   * Wraps a static function for easy testing.
+   *
+   * TODO: Do this better.
+   *
+   * @param array $settings
+   *   An array of field settings.
+   *
+   * @return array
+   *   An array of upload validators.
+   */
+  public function formatUploadValidators(array $settings) {
+    return EmbridgeAssetItem::formatUploadValidators($settings);
   }
 
 }
