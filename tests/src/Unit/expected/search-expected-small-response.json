@@ -1,0 +1,271 @@
+{
+  "response": {
+    "status": "ok",
+    "totalhits": 3,
+    "searchtype": "asset",
+    "hitsperpage": 20,
+    "page": 1,
+    "pages": 1,
+    "hitsessionid": "hitsassetmedia/catalogs/public",
+    "query": {
+      "friendly": "Id:* and Readable:true  library_crossroads group_administrators group_visualdata user_admin",
+      "terms": [
+        {
+          "id": "id",
+          "operation": "matches",
+          "value": "*"
+        },
+        {
+          "id": "viewasset",
+          "operation": "orgroup",
+          "value": "true  library_crossroads group_administrators group_visualdata user_admin"
+        }
+      ]
+    }
+  },
+  "results": [
+    {
+      "id": "148",
+      "name": "Audio_AAC.aac",
+      "sourcepath": "By Type/audio/Audio_AAC.aac",
+      "category-exact": "by_type_audio | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_audio",
+          "name": "audio"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "productlaunchfall",
+          "name": "Product Launch Fall Quarter"
+        },
+        {
+          "id": "engineering",
+          "name": "Engineering Courses"
+        }
+      ],
+      "assettype": {
+        "id": "none",
+        "name": "Misc"
+      },
+      "hasfulltext": "false",
+      "assetviews": "0",
+      "fileformat": {
+        "id": "aac",
+        "name": "aac"
+      },
+      "filesize": "64992",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:45:12",
+      "assetaddeddate": "2012-10-23T10:26:43",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "editstatus": {
+        "id": "rejected",
+        "name": "Rejected"
+      },
+      "keywords": [
+        {
+          "id": "Music",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "1",
+        "name": "Acquisition / Cold Prospecting / Out of Book"
+      },
+      "copyrightstatus": {
+        "id": "False",
+        "name": "Public Domain"
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "146",
+      "name": "2_PAGE_PDF.pdf",
+      "sourcepath": "By Type/documents/2_PAGE_PDF.pdf",
+      "category-exact": "by_type_documents | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "by_type_documents",
+          "name": "documents"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "southamericanexpo",
+          "name": "South American Expo"
+        },
+        {
+          "id": "cominghome",
+          "name": "Coming Home"
+        }
+      ],
+      "assettype": {
+        "id": "document",
+        "name": "Stories"
+      },
+      "hasfulltext": "false",
+      "pages": "2",
+      "assetviews": "1",
+      "creator": "Microsoft® Word 2010",
+      "fileformat": {
+        "id": "pdf",
+        "name": "PDF"
+      },
+      "filesize": "165407",
+      "width": "612",
+      "height": "792",
+      "assetcreationdate": "2011-12-27T12:13:46",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:29:14",
+      "assetaddeddate": "2012-10-23T10:26:37",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "generated",
+        "name": "Generated (old)"
+      },
+      "editstatus": {
+        "id": "rejected",
+        "name": "Rejected"
+      },
+      "keywords": [
+        {
+          "id": "Instruction",
+          "name": ""
+        },
+        {
+          "id": "Inspirational",
+          "name": ""
+        },
+        {
+          "id": "Quotes",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "1",
+        "name": "Acquisition / Cold Prospecting / Out of Book"
+      },
+      "copyrightstatus": {
+        "id": "False",
+        "name": "Public Domain"
+      },
+      "publisheds3": "false"
+    },
+    {
+      "id": "132",
+      "name": "Puppy.jpg",
+      "sourcepath": "By Type/photos/Puppy.jpg",
+      "category-exact": "1348673354951 | by_type_photos | ",
+      "isfolder": "false",
+      "category": [
+        {
+          "id": "users",
+          "name": "Users"
+        },
+        {
+          "id": "1348673354951",
+          "name": "Janet Smith"
+        },
+        {
+          "id": "by_type_photos",
+          "name": "photos"
+        },
+        {
+          "id": "by_type",
+          "name": "By Type"
+        },
+        {
+          "id": "index",
+          "name": "Archive"
+        }
+      ],
+      "libraries": [
+        {
+          "id": "productlaunchfall",
+          "name": "Product Launch Fall Quarter"
+        },
+        {
+          "id": "engineering",
+          "name": "Engineering Courses"
+        }
+      ],
+      "assettype": {
+        "id": "photo",
+        "name": "Artwork"
+      },
+      "hasfulltext": "false",
+      "assetviews": "9",
+      "bitspersample": "8",
+      "fileformat": {
+        "id": "jpg",
+        "name": "JPG"
+      },
+      "filesize": "387062",
+      "width": "681",
+      "height": "1024",
+      "assetcreationdate": "2012-09-12T00:00:00",
+      "assetmodificationdate": "2012-10-23T10:01:14",
+      "recordmodificationdate": "2013-10-25T14:45:12",
+      "assetaddeddate": "2011-07-29T17:00:47",
+      "owner": "admin",
+      "importstatus": {
+        "id": "complete",
+        "name": "Complete"
+      },
+      "previewstatus": {
+        "id": "1",
+        "name": "Exif Stub Created"
+      },
+      "headline": "Dogs Gone Wild",
+      "longcaption": "Walk the dog.",
+      "keywords": [
+        {
+          "id": "Dog",
+          "name": ""
+        },
+        {
+          "id": "Wildlife",
+          "name": ""
+        },
+        {
+          "id": "123",
+          "name": ""
+        }
+      ],
+      "purpose": {
+        "id": "3 | 4",
+        "name": ""
+      },
+      "copyrightnotice": "Wild",
+      "publisheds3": "false"
+    }
+  ]
+}

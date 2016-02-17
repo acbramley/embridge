@@ -1,0 +1,110 @@
+{
+  "delta": {
+    "#type": "value",
+    "#value": 0
+  },
+  "field_name": {
+    "#type": "value",
+    "#value": "field_test"
+  },
+  "filename": {
+    "#type": "textfield",
+    "#title": "Search by filename",
+    "#description": "Filter the search by filename",
+    "#size": 20,
+    "#default_value": ""
+  },
+  "filename_op": {
+    "#type": "select",
+    "#title": "Operation",
+    "#options": {
+      "startswith": "Starts with",
+      "matches": "Matches"
+    },
+    "#description": "Operation to apply to filename search",
+    "#default_value": ""
+  },
+  "search": {
+    "#type": "submit",
+    "#ajax": {
+      "callback": "::searchAjaxCallback",
+      "wrapper": "embridge-results-wrapper",
+      "effect": "fade",
+      "progress": {
+        "type": "throbber"
+      }
+    },
+    "#value": "Search",
+    "#attributes": {
+      "class": [
+        "embridge-ajax-search-submit"
+      ]
+    }
+  },
+  "upload_validators": {
+    "#type": "value",
+    "#value": {
+      "embridge_asset_validate_file_size": [
+        "2 MB"
+      ],
+      "embridge_asset_validate_file_extensions": [
+        "txt,pdf,jpeg"
+      ]
+    }
+  },
+  "search_results": {
+    "#theme": "embridge_search_results",
+    "#results": [
+      {
+        "#theme": "embridge_image",
+        "#asset": {},
+        "#conversion": "thumb",
+        "#link_to": "",
+        "#application_id": "test_app"
+      },
+      {
+        "#theme": "embridge_image",
+        "#asset": {},
+        "#conversion": "thumb",
+        "#link_to": "",
+        "#application_id": "test_app"
+      },
+      {
+        "#theme": "embridge_image",
+        "#asset": {},
+        "#conversion": "thumb",
+        "#link_to": "",
+        "#application_id": "test_app"
+      }
+    ]
+  },
+  "result_chosen": {
+    "#type": "hidden",
+    "#value": ""
+  },
+  "actions": {
+    "#type": "actions",
+    "submit": {
+      "#type": "submit",
+      "#value": "Select",
+      "#submit": [],
+      "#ajax": {
+        "callback": "::submitFormSelection",
+        "event": "click"
+      },
+      "#attributes": {
+        "class": [
+          "embridge-ajax-select-file",
+          "hidden-button"
+        ]
+      }
+    }
+  },
+  "#attached": {
+    "library": [
+      "embridge\/embridge.lib"
+    ]
+  },
+  "#prefix": "\u003Cdiv id=\u0022embridge-results-wrapper\u0022\u003E\u003Cdiv id=\u0022embridge-message-wrapper\u0022\u003E\u003C\/div\u003E",
+  "#sufix": "\u003C\/div\u003E"
+}
