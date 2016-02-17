@@ -20,6 +20,7 @@ use Drupal\embridge\EnterMediaDbClientInterface;
 use Drupal\embridge\Form\EmbridgeSearchForm;
 use Drupal\Tests\Core\Form\FormTestBase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DomCrawler\Form;
 
 /**
  * Class EmbridgeSearchFormTest.
@@ -196,6 +197,70 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $this->assertEquals($input['filename'], $build['filename']['#default_value']);
     $this->assertEquals($input['filename_op'], $build['filename_op']['#default_value']);
     $this->assertEquals($input['result_chosen'], $build['result_chosen']['#value']);
+  }
+
+  /**
+   * Tests validateForm when the submit button is pressed.
+   *
+   * @covers ::validateForm
+   *
+   * @test
+   */
+  public function validateWithSubmitButtonPressedThrowsNoErrorForSearchButton() {
+    $form = [];
+    $form_state = new FormState();
+    $triggering_element = [
+      '#parents' => ['search'],
+    ];
+    $form_state->setTriggeringElement($triggering_element);
+
+    $this->form->validateForm($form, $form_state);
+
+    $this->assertEmpty($form_state->getErrors());
+  }
+
+  /**
+   * Tests validateForm when the submit button is pressed.
+   *
+   * @covers ::validateForm
+   *
+   * @test
+   */
+  public function validateWithSubmitButtonPressedThrowsErrorForAssetThatDoesntExists() {
+    // Mocking for FormState::setError.
+    $form = [
+      'search_results' => [
+        '#parents' => [],
+      ],
+    ];
+    $form_state = new FormState();
+    $triggering_element = [
+      '#parents' => ['submit'],
+    ];
+    $entity_id = 34298734897;
+    $input = [
+      'result_chosen' => $entity_id,
+    ];
+    $form_state->setTriggeringElement($triggering_element);
+    $form_state->setUserInput($input);
+
+    $mock_asset_storage = $this->getMock(EntityStorageInterface::class);
+    $mock_asset_storage
+      ->expects($this->once())
+      ->method('load')
+      ->with($entity_id)
+      ->willReturn(NULL);
+
+    $this->entityTypeManager
+      ->expects($this->once())
+      ->method('getStorage')
+      ->with('embridge_asset_entity')
+      ->willReturn($mock_asset_storage);
+
+    $this->form->validateForm($form, $form_state);
+
+    $errors = $form_state->getErrors();
+    $this->assertNotEmpty($errors);
   }
 
   /**
