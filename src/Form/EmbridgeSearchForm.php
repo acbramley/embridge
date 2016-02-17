@@ -16,6 +16,7 @@ use Drupal\Core\Entity\EntityFieldManager;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Renderer;
 use Drupal\embridge\Ajax\EmbridgeSearchSave;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\Entity\EmbridgeAssetEntity;
@@ -64,6 +65,12 @@ class EmbridgeSearchForm extends FormBase {
   protected $fieldManager;
 
   /**
+   * Renderer service.
+   *
+   * @var \Drupal\Core\Render\Renderer
+   */
+  protected $renderer;
+  /**
    * EmbridgeSearchForm constructor.
    *
    * @param \Drupal\embridge\EnterMediaDbClient $embridge_client
@@ -72,12 +79,22 @@ class EmbridgeSearchForm extends FormBase {
    *   A helper for asset entities.
    * @param \Drupal\Core\Entity\EntityTypeManager $entity_type_manager
    *   Entity type manager service.
+   * @param \Drupal\Core\Entity\EntityFieldManager $field_manager
+   *   The field manager service.
+   * @param \Drupal\Core\Render\Renderer
+   *   The renderer service.
    */
-  public function __construct(EnterMediaDbClient $embridge_client, EnterMediaAssetHelper $asset_helper, EntityTypeManager $entity_type_manager, EntityFieldManager $field_manager) {
+  public function __construct(
+    EnterMediaDbClient $embridge_client,
+    EnterMediaAssetHelper $asset_helper,
+    EntityTypeManager $entity_type_manager,
+    EntityFieldManager $field_manager,
+    Renderer $renderer) {
     $this->client = $embridge_client;
     $this->assetHelper = $asset_helper;
     $this->entityTypeManager = $entity_type_manager;
     $this->fieldManager = $field_manager;
+    $this->renderer = $renderer;
   }
 
   /**
@@ -88,7 +105,8 @@ class EmbridgeSearchForm extends FormBase {
       $container->get('embridge.client'),
       $container->get('embridge.asset_helper'),
       $container->get('entity_type.manager'),
-      $container->get('entity_field.manager')
+      $container->get('entity_field.manager'),
+      $container->get('renderer')
     );
   }
 
@@ -136,7 +154,7 @@ class EmbridgeSearchForm extends FormBase {
     );
 
     $ajax_settings = [
-      'callback' => [get_called_class(), 'searchAjaxCallback'],
+      'callback' => '::searchAjaxCallback',
       'wrapper' => self::AJAX_WRAPPER_ID,
       'effect' => 'fade',
       'progress' => [
@@ -319,8 +337,8 @@ class EmbridgeSearchForm extends FormBase {
    * @return \Drupal\Core\Ajax\AjaxResponse
    *   An ajax response to replace the form.
    */
-  public static function searchAjaxCallback(array &$form, FormStateInterface $form_state, Request $request) {
-    return self::ajaxRenderFormAndMessages($form);
+  public function searchAjaxCallback(array &$form, FormStateInterface $form_state, Request $request) {
+    return $this->ajaxRenderFormAndMessages($form);
   }
 
   /**
@@ -334,23 +352,22 @@ class EmbridgeSearchForm extends FormBase {
    * @return \Drupal\Core\Ajax\AjaxResponse
    *   An ajax response to replace the form.
    */
-  protected static function ajaxRenderFormAndMessages(array &$form) {
+  protected function ajaxRenderFormAndMessages(array &$form) {
     $response = new AjaxResponse();
-
-    /** @var \Drupal\Core\Render\RendererInterface $renderer */
-    $renderer = \Drupal::service('renderer');
 
     // Retrieve the element to be rendered.
     $status_messages = ['#type' => 'status_messages', '#weight' => -10];
     // For some crazy reason, if we do this inline in the replace command, it
     // breaks ajax functionality entirely.
-    $output = $renderer->renderRoot($form);
+    $output = $this->renderer->renderRoot($form);
+    $messages = $this->renderer->renderRoot($status_messages);
+
     $message_wrapper_id = '#' . self::MESSAGE_WRAPPER_ID;
 
     $response->setAttachments($form['#attached']);
     $response->addCommand(new ReplaceCommand(NULL, $output));
     $response->addCommand(new HtmlCommand($message_wrapper_id, ''));
-    $response->addCommand(new AppendCommand($message_wrapper_id, $renderer->renderRoot($status_messages)));
+    $response->addCommand(new AppendCommand($message_wrapper_id, $messages));
 
     return $response;
   }
