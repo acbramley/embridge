@@ -19,8 +19,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Renderer;
 use Drupal\embridge\Ajax\EmbridgeSearchSave;
 use Drupal\embridge\EnterMediaAssetHelper;
-use Drupal\embridge\Entity\EmbridgeAssetEntity;
-use Drupal\embridge\Entity\EmbridgeCatalog;
+use Drupal\embridge\EnterMediaDbClientInterface;
 use Drupal\embridge\Plugin\Field\FieldType\EmbridgeAssetItem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\embridge\EnterMediaDbClient;
@@ -70,6 +69,7 @@ class EmbridgeSearchForm extends FormBase {
    * @var \Drupal\Core\Render\Renderer
    */
   protected $renderer;
+
   /**
    * EmbridgeSearchForm constructor.
    *
@@ -81,7 +81,7 @@ class EmbridgeSearchForm extends FormBase {
    *   Entity type manager service.
    * @param \Drupal\Core\Entity\EntityFieldManager $field_manager
    *   The field manager service.
-   * @param \Drupal\Core\Render\Renderer
+   * @param \Drupal\Core\Render\Renderer $renderer
    *   The renderer service.
    */
   public function __construct(
@@ -197,9 +197,10 @@ class EmbridgeSearchForm extends FormBase {
 
     $catalog_id = $field_definition->getSetting('catalog_id');
 
+    $search_response = $this->getSearchResults($this->client, $filters);
     $form['search_results'] = [
       '#theme' => 'embridge_search_results',
-      '#results' => self::getSearchResults($this->client, $this->assetHelper, $catalog_id, $filters),
+      '#results' => $this->formatSearchResults($search_response, $this->assetHelper, $catalog_id),
     ];
     $form['result_chosen'] = [
       '#type' => 'hidden',
@@ -246,8 +247,10 @@ class EmbridgeSearchForm extends FormBase {
     $clicked_button = end($form_state->getTriggeringElement()['#parents']);
     if ($clicked_button == 'submit') {
       $entity_id = $form_state->getUserInput()['result_chosen'];
+      /** @var \Drupal\Core\Entity\EntityStorageInterface $storage */
+      $storage = $this->entityTypeManager->getStorage('embridge_asset_entity');
       /** @var \Drupal\embridge\EmbridgeAssetEntityInterface $asset */
-      $asset = EmbridgeAssetEntity::load($entity_id);
+      $asset = $storage->load($entity_id);
 
       // Ensure the data attributes haven't been tampered with.
       if (!$asset) {
@@ -289,23 +292,39 @@ class EmbridgeSearchForm extends FormBase {
   /**
    * Queries EnterMedia for assets matching search filter.
    *
-   * @param \Drupal\embridge\EnterMediaDbClient $client
+   * @param \Drupal\embridge\EnterMediaDbClientInterface $client
    *   The EMDB Client service.
-   * @param \Drupal\embridge\EnterMediaAssetHelper $asset_helper
-   *   The asset helper service.
-   * @param string $catalog_id
-   *   The catalog ID.
    * @param array $filters
    *   An array of filters.
    *
    * @return array
-   *   An array of variables to pass to embridge_search_results themeing.
+   *   A search response array.
    */
-  private static function getSearchResults(EnterMediaDbClient $client, EnterMediaAssetHelper $asset_helper, $catalog_id, array $filters = []) {
+  private function getSearchResults(EnterMediaDbClientInterface $client, array $filters = []) {
     $num_per_page = 20;
     $search_response = $client->search(1, $num_per_page, $filters);
+
+    return $search_response;
+  }
+
+  /**
+   * Formats a response from EMDB to be themed into results.
+   *
+   * @param array $search_response
+   *   The response.
+   * @param \Drupal\embridge\EnterMediaAssetHelper $asset_helper
+   *   A helper service.
+   * @param string $catalog_id
+   *   An ID of the catalog to save against temp assets.
+   *
+   * @return array
+   *   A renderable array.
+   */
+  private function formatSearchResults(array $search_response, EnterMediaAssetHelper $asset_helper, $catalog_id) {
+    /** @var \Drupal\Core\Entity\EntityStorageInterface $storage */
+    $storage = $this->entityTypeManager->getStorage('embridge_catalog');
     /** @var \Drupal\embridge\EmbridgeCatalogInterface $catalog */
-    $catalog = EmbridgeCatalog::load($catalog_id);
+    $catalog = $storage->load($catalog_id);
     $application_id = $catalog->getApplicationId();
 
     $render_array = [];
