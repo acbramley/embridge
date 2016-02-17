@@ -342,10 +342,13 @@ class EmbridgeSearchForm extends FormBase {
 
     // Retrieve the element to be rendered.
     $status_messages = ['#type' => 'status_messages', '#weight' => -10];
+    // For some crazy reason, if we do this inline in the replace command, it
+    // breaks ajax functionality entirely.
+    $output = $renderer->renderRoot($form);
     $message_wrapper_id = '#' . self::MESSAGE_WRAPPER_ID;
 
     $response->setAttachments($form['#attached']);
-    $response->addCommand(new ReplaceCommand(NULL, $renderer->renderRoot($form)));
+    $response->addCommand(new ReplaceCommand(NULL, $output));
     $response->addCommand(new HtmlCommand($message_wrapper_id, ''));
     $response->addCommand(new AppendCommand($message_wrapper_id, $renderer->renderRoot($status_messages)));
 
