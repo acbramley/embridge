@@ -264,7 +264,7 @@ class EmbridgeSearchFormTest extends FormTestBase {
   }
 
   /**
-   * Sets up all of our services with mock methods so it's possible buildForm().
+   * Sets up all of our services with mock methods so buildForm() is possible.
    *
    * @param string $catalog_id
    *   Catalog id.
