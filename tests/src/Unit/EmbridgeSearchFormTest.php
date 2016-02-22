@@ -29,6 +29,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * @coversClass \Drupal\embridge\Form\EmbridgeSearchForm
  */
 class EmbridgeSearchFormTest extends FormTestBase {
+  const MOCK_FIELD_SETTINGS_FILE_EXTENSIONS = 'txt,pdf,jpeg';
   /**
    * The dependency injection container.
    *
@@ -326,7 +327,7 @@ class EmbridgeSearchFormTest extends FormTestBase {
     ];
     $values = [
       'upload_validators' => [
-        'validateFileExtensions' => ['txt'],
+        'validateFileExtensions' => [self::MOCK_FIELD_SETTINGS_FILE_EXTENSIONS],
         'validateFileSize' => ['2MB'],
       ],
     ];
@@ -471,16 +472,8 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $mock_field_definitions = [];
     $field_settings = [
       'max_filesize' => '2 MB',
-      'file_extensions' => 'txt,pdf,jpeg',
+      'file_extensions' => self::MOCK_FIELD_SETTINGS_FILE_EXTENSIONS,
     ];
-    $formatted_settings = [
-      'embridge_asset_validate_file_size' => [$field_settings['max_filesize']],
-      'embridge_asset_validate_file_extensions' => [$field_settings['file_extensions']],
-    ];
-    $this->assetHelper->expects($this->once())
-      ->method('formatUploadValidators')
-      ->with($field_settings)
-      ->willReturn($formatted_settings);
     $field_def = $this->getMockBuilder(FieldDefinitionInterface::class)
       ->disableOriginalConstructor()
       ->getMock();
@@ -498,6 +491,15 @@ class EmbridgeSearchFormTest extends FormTestBase {
       ->with($entity_type, $bundle)
       ->willReturn($mock_field_definitions);
 
+    // Asset helper mocking.
+    $formatted_settings = [
+      'embridge_asset_validate_file_size' => [$field_settings['max_filesize']],
+      'embridge_asset_validate_file_extensions' => [$field_settings['file_extensions']],
+    ];
+    $this->assetHelper->expects($this->once())
+      ->method('formatUploadValidators')
+      ->with($field_settings)
+      ->willReturn($formatted_settings);
     // Client mocking.
     $search_response = $this->json->decode(
       file_get_contents('expected/search-expected-small-response.json', TRUE)
