@@ -147,76 +147,12 @@ function template_preprocess_embridge_image(&$variables) {
  *   An array containing validation error messages.
  *
  * @see hook_file_validate()
+ * @deprecated
+ *   Use EmbridgeAssetValidator::validate(),
  */
 function embridge_asset_validate(EmbridgeAssetEntityInterface $asset, $validators = array()) {
-  // Call the validation functions specified by this function's caller.
-  $errors = array();
-  foreach ($validators as $function => $args) {
-    if (function_exists($function)) {
-      array_unshift($args, $asset);
-      $errors = array_merge($errors, call_user_func_array($function, $args));
-    }
-  }
+  /** @var \Drupal\embridge\EmbridgeAssetValidator $validator */
+  $validator = \Drupal::getContainer()->get('embridge.asset_validator');
 
-  // Let other modules perform validation on the new file.
-  return array_merge($errors, \Drupal::moduleHandler()->invokeAll('embridge_asset_validate', array($asset)));
-}
-
-
-/**
- * Checks that the filename ends with an allowed extension.
- *
- * @param EmbridgeAssetEntityInterface $asset
- *   An Embridge asset entity.
- * @param string $extensions
- *   A string with a space separated list of allowed extensions.
- *
- * @return array
- *   An array. If the file extension is not allowed, it will contain an error
- *   message.
- *
- * @see hook_file_validate()
- */
-function embridge_asset_validate_file_extensions(EmbridgeAssetEntityInterface $asset, $extensions) {
-  $errors = array();
-
-  $regex = '/\.(' . preg_replace('/ +/', '|', preg_quote($extensions)) . ')$/i';
-  if (!preg_match($regex, $asset->getFilename())) {
-    $errors[] = t('Only files with the following extensions are allowed: %files-allowed.', array('%files-allowed' => $extensions));
-  }
-  return $errors;
-}
-
-/**
- * Checks that the file's size is below certain limits.
- *
- * @param EmbridgeAssetEntityInterface $file
- *   An embridge asset entity.
- * @param int $file_limit
- *   An integer specifying the maximum file size in bytes. Zero indicates that
- *   no limit should be enforced.
- * @param int $user_limit
- *   An integer specifying the maximum number of bytes the user is allowed.
- *   Zero indicates that no limit should be enforced.
- *
- * @return array
- *   An array. If the file size exceeds limits, it will contain an error
- *   message.
- *
- * @see hook_file_validate()
- */
-function embridge_asset_validate_file_size(EmbridgeAssetEntityInterface $file, $file_limit = 0, $user_limit = 0) {
-  $user = \Drupal::currentUser();
-  $errors = array();
-
-  if ($file_limit && $file->getSize() > $file_limit) {
-    $errors[] = t('The file is %filesize exceeding the maximum file size of %maxsize.', array('%filesize' => format_size($file->getSize()), '%maxsize' => format_size($file_limit)));
-  }
-
-  // Save a query by only calling spaceUsed() when a limit is provided.
-  if ($user_limit && (\Drupal::entityManager()->getStorage('file')->spaceUsed($user->id()) + $file->getSize()) > $user_limit) {
-    $errors[] = t('The file is %filesize which would exceed your disk quota of %quota.', array('%filesize' => format_size($file->getSize()), '%quota' => format_size($user_limit)));
-  }
-
-  return $errors;
+  return $validator->validate($asset, $validators);
 }
