@@ -494,7 +494,7 @@ class EmbridgeSearchFormTest extends FormTestBase {
     // Search filter always starts with the extensions OR filter.
     $extension_filter_value = str_replace(',', '|', self::MOCK_FIELD_SETTINGS_FILE_EXTENSIONS);
     $extension_filter = [
-      'name' => 'fileformat',
+      'field' => 'fileformat',
       'operator' => 'matches',
       'value' => $extension_filter_value,
     ];
