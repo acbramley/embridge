@@ -24,6 +24,7 @@ use Drupal\user\UserInterface;
  *   id = "embridge_asset_entity",
  *   label = @Translation("Embridge asset entity"),
  *   handlers = {
+ *     "storage" = "Drupal\embridge\EmbridgeAssetStorage",
  *     "views_data" = "Drupal\embridge\Entity\EmbridgeAssetEntityViewsData",
  *     "access" = "Drupal\embridge\EmbridgeAssetEntityAccessControlHandler",
  *   },
