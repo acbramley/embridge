@@ -491,30 +491,11 @@ class EmbridgeSearchFormTest extends FormTestBase {
       ->with($entity_type, $bundle)
       ->willReturn($mock_field_definitions);
 
-    // Asset helper mocking.
-    $formatted_settings = [
-      'embridge_asset_validate_file_size' => [$field_settings['max_filesize']],
-      'embridge_asset_validate_file_extensions' => [$field_settings['file_extensions']],
-    ];
-    $this->assetHelper->expects($this->once())
-      ->method('formatUploadValidators')
-      ->with($field_settings)
-      ->willReturn($formatted_settings);
     // Client mocking.
     $search_response = $this->json->decode(
       file_get_contents('expected/search-expected-small-response.json', TRUE)
     );
-    // Create mock assets.
-    foreach ($search_response['results'] as $i => $result) {
-      $mock_asset = $this->getMockBuilder(
-        '\Drupal\embridge\EmbridgeAssetEntityInterface'
-      )->disableOriginalConstructor()->getMock();
-      $mock_asset->expects($this->once())
-        ->method('id')
-        ->willReturn($i);
-      $this->mockAssets[$i]['asset'] = $mock_asset;
-      $this->mockAssets[$i]['result'] = $result;
-    }
+
     $this->client
       ->expects($this->once())
       ->method('search')
@@ -542,6 +523,17 @@ class EmbridgeSearchFormTest extends FormTestBase {
       ->with('embridge_catalog')
       ->willReturn($mock_catalog_storage);
 
+    // Create mock assets.
+    foreach ($search_response['results'] as $i => $result) {
+      $mock_asset = $this->getMockBuilder(
+        '\Drupal\embridge\EmbridgeAssetEntityInterface'
+      )->disableOriginalConstructor()->getMock();
+      $mock_asset->expects($this->once())
+        ->method('id')
+        ->willReturn($i);
+      $this->mockAssets[$i]['asset'] = $mock_asset;
+      $this->mockAssets[$i]['result'] = $result;
+    }
     // Mock up the asset helper.
     $return_map = [];
     foreach ($this->mockAssets as $id => $asset_result) {
@@ -554,6 +546,14 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $this->assetHelper->expects($this->exactly(count($this->mockAssets)))
       ->method('searchResultToAsset')
       ->will($this->returnValueMap($return_map));
+    $formatted_settings = [
+      'embridge_asset_validate_file_size' => [$field_settings['max_filesize']],
+      'embridge_asset_validate_file_extensions' => [$field_settings['file_extensions']],
+    ];
+    $this->assetHelper->expects($this->once())
+      ->method('formatUploadValidators')
+      ->with($field_settings)
+      ->willReturn($formatted_settings);
   }
 
 }
