@@ -18,6 +18,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Renderer;
 use Drupal\embridge\Ajax\EmbridgeSearchSave;
+use Drupal\embridge\EmbridgeAssetValidatorInterface;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\EnterMediaDbClientInterface;
 use Drupal\embridge\Plugin\Field\FieldType\EmbridgeAssetItem;
@@ -49,6 +50,13 @@ class EmbridgeSearchForm extends FormBase {
   protected $assetHelper;
 
   /**
+   * Our asset validator.
+   *
+   * @var \Drupal\embridge\EmbridgeAssetValidatorInterface
+   */
+  protected $assetValidator;
+
+  /**
    * Entity manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManager.
@@ -76,6 +84,8 @@ class EmbridgeSearchForm extends FormBase {
    *   The embridge client.
    * @param \Drupal\embridge\EnterMediaAssetHelper $asset_helper
    *   A helper for asset entities.
+   * @param \Drupal\embridge\EmbridgeAssetValidatorInterface $asset_validator
+   *   A validator for asset entities.
    * @param \Drupal\Core\Entity\EntityTypeManager $entity_type_manager
    *   Entity type manager service.
    * @param \Drupal\Core\Entity\EntityFieldManager $field_manager
@@ -86,11 +96,13 @@ class EmbridgeSearchForm extends FormBase {
   public function __construct(
     EnterMediaDbClientInterface $embridge_client,
     EnterMediaAssetHelper $asset_helper,
+    EmbridgeAssetValidatorInterface $asset_validator,
     EntityTypeManager $entity_type_manager,
     EntityFieldManager $field_manager,
     Renderer $renderer) {
     $this->client = $embridge_client;
     $this->assetHelper = $asset_helper;
+    $this->assetValidator = $asset_validator;
     $this->entityTypeManager = $entity_type_manager;
     $this->fieldManager = $field_manager;
     $this->renderer = $renderer;
@@ -103,6 +115,7 @@ class EmbridgeSearchForm extends FormBase {
     return new static(
       $container->get('embridge.client'),
       $container->get('embridge.asset_helper'),
+      $container->get('embridge.asset_validator'),
       $container->get('entity_type.manager'),
       $container->get('entity_field.manager'),
       $container->get('renderer')
@@ -257,7 +270,7 @@ class EmbridgeSearchForm extends FormBase {
       }
       else {
         $upload_validators = $form_state->getValue('upload_validators');
-        if ($errors = embridge_asset_validate($asset, $upload_validators)) {
+        if ($errors = $this->assetValidator->validate($asset, $upload_validators)) {
           foreach ($errors as $error) {
             $form_state->setError($form['search_results'], $error);
           }
