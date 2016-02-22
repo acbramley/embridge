@@ -491,6 +491,14 @@ class EmbridgeSearchFormTest extends FormTestBase {
       ->with($entity_type, $bundle)
       ->willReturn($mock_field_definitions);
 
+    // Search filter always starts with the extensions OR filter.
+    $extension_filter_value = str_replace(' ', '|', self::MOCK_FIELD_SETTINGS_FILE_EXTENSIONS);
+    $extension_filter = [
+      'name' => 'filetype',
+      'operator' => 'matches',
+      'value' => $extension_filter_value,
+    ];
+    array_unshift($filters, $extension_filter);
     // Client mocking.
     $search_response = $this->json->decode(
       file_get_contents('expected/search-expected-small-response.json', TRUE)
