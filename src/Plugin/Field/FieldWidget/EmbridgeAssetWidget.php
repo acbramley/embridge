@@ -229,10 +229,10 @@ class EmbridgeAssetWidget extends FileWidget {
     // Translate our custom upload validators to file ones so we can piggy
     // back off file_upload_help's themeing.
     foreach ($file_upload_help['#upload_validators'] as $func => $value) {
-      if ($func == 'embridge_asset_validate_file_extensions') {
+      if ($func == 'validateFileExtensions') {
         $file_upload_help['#upload_validators']['file_validate_extensions'] = $value;
       }
-      elseif ($func == 'embridge_asset_validate_file_size') {
+      elseif ($func == 'validateFileSize') {
         $file_upload_help['#upload_validators']['file_validate_size'] = $value;
       }
     }
