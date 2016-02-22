@@ -24,6 +24,40 @@
       },
       "#description": "Operation to apply to filename search",
       "#default_value": ""
+    },
+    "libraries": {
+      "#type": "select",
+      "#title": "Libraries",
+      "#options": {
+        "0": "-- Select --",
+        "engineering": "Engineering Courses (2)",
+        "productlaunchfall": "Product Launch Fall Quarter (2)",
+        "southamericanexpo": "South American Expo (1)",
+        "cominghome": "Coming Home (1)"
+      },
+      "#default_value": ""
+    },
+    "assettype": {
+      "#type": "select",
+      "#title": "Asset Type",
+      "#options": {
+        "0": "-- Select --",
+        "photo": "Artwork (1)",
+        "document": "Stories (1)",
+        "audio": "Audio Clips (1)"
+      },
+      "#default_value": ""
+    },
+    "fileformat": {
+      "#type": "select",
+      "#title": "File Format",
+      "#options": {
+        "0": "-- Select --",
+        "jpg": "JPG (1)",
+        "aac": "aac (1)",
+        "pdf": "PDF (1)"
+      },
+      "#default_value": ""
     }
   },
   "search": {
