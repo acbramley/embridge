@@ -182,8 +182,19 @@ class EmbridgeSearchForm extends FormBase {
         ),
       ),
     ];
+    // Get the field settings for filtering and validating files.
+    $bundle_fields = $this->fieldManager->getFieldDefinitions($entity_type, $bundle);
+    /** @var \Drupal\Core\Field\BaseFieldDefinition $field_definition */
+    $field_definition = $bundle_fields[$field_name];
+    $field_settings = $field_definition->getSettings();
+    $extension_filters = $this->massageExtensionSetting($field_settings['file_extensions']);
 
     $filters = [];
+    $filters[] = [
+      'field' => 'fileformat',
+      'operator' => 'matches',
+      'value' => $extension_filters,
+    ];
     // Static list of known search filters from EMDB.
     // TODO: Make this configurable.
     $known_search_filters = [
@@ -193,12 +204,10 @@ class EmbridgeSearchForm extends FormBase {
     ];
     // Add filename filter as this always exists.
     if (!empty($input['filename_op'])) {
-      $filters = [
-        [
-          'field' => 'name',
-          'operator' => $input['filename_op'],
-          'value' => $input['filename'],
-        ],
+      $filters[] = [
+        'field' => 'name',
+        'operator' => $input['filename_op'],
+        'value' => $input['filename'],
       ];
     }
     // Add user chosen filters.
@@ -217,6 +226,7 @@ class EmbridgeSearchForm extends FormBase {
     // Execute a search.
     $search_response = $this->getSearchResults($filters);
 
+    // Add filters from search response.
     if (!empty($search_response['filteroptions'])) {
       foreach ($search_response['filteroptions'] as $filter) {
         if (!in_array($filter['id'], $known_search_filters)) {
@@ -238,12 +248,9 @@ class EmbridgeSearchForm extends FormBase {
       }
     }
 
-    // Get the catalog id and upload validators for this field.
-    $bundle_fields = $this->fieldManager->getFieldDefinitions($entity_type, $bundle);
-    /** @var \Drupal\Core\Field\BaseFieldDefinition $field_definition */
-    $field_definition = $bundle_fields[$field_name];
+
     // Store the upload validators for the validation hook.
-    $upload_validators = $this->assetHelper->formatUploadValidators($field_definition->getSettings());
+    $upload_validators = $this->assetHelper->formatUploadValidators($field_settings);
     $form['upload_validators'] = [
       '#type' => 'value',
       '#value' => $upload_validators,
@@ -435,6 +442,23 @@ class EmbridgeSearchForm extends FormBase {
     $response->addCommand(new AppendCommand($message_wrapper_id, $messages));
 
     return $response;
+  }
+
+  /**
+   * Massages the field setting for the allowed extensions into a search filter.
+   *
+   * @param string $extensions
+   *   The field setting for allowed file extensions.
+   *
+   * @return string
+   *   The string for a search filter.
+   */
+  private function massageExtensionSetting($extensions) {
+    // Setting allows either space or comma separation, so replace both.
+    $extensions = str_replace(' ', '|', $extensions);
+    $extensions = str_replace(',', '|', $extensions);
+
+    return $extensions;
   }
 
 }
