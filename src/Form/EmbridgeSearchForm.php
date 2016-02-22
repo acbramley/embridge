@@ -282,18 +282,15 @@ class EmbridgeSearchForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitFormSelection(array &$form, FormStateInterface $form_state) {
-    $response = new AjaxResponse();
-
-    $values = $form_state->getValues();
     $errors = $form_state->getErrors();
     if ($errors) {
       return self::ajaxRenderFormAndMessages($form);
     }
+    $response = new AjaxResponse();
 
     // Hidden input value set by javascript.
-    $entity_id = $form_state->getUserInput()['result_chosen'];
-
-    $values['entity_id'] = $entity_id;
+    $values = $form_state->getValues();
+    $values['entity_id'] = $form_state->getUserInput()['result_chosen'];
     $response->addCommand(new EmbridgeSearchSave($values));
     $response->addCommand(new CloseModalDialogCommand());
 
@@ -361,13 +358,11 @@ class EmbridgeSearchForm extends FormBase {
    *   The form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state.
-   * @param \Symfony\Component\HttpFoundation\Request $request
-   *   The current request.
    *
    * @return \Drupal\Core\Ajax\AjaxResponse
    *   An ajax response to replace the form.
    */
-  public function searchAjaxCallback(array &$form, FormStateInterface $form_state, Request $request) {
+  public function searchAjaxCallback(array &$form, FormStateInterface $form_state) {
     return $this->ajaxRenderFormAndMessages($form);
   }
 
