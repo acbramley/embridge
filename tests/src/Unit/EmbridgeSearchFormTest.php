@@ -124,6 +124,8 @@ class EmbridgeSearchFormTest extends FormTestBase {
    */
   protected function tearDown() {
     parent::tearDown();
+
+    \Drupal::setContainer(new ContainerBuilder());
   }
 
   /**
