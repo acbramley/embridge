@@ -162,6 +162,7 @@ class EmbridgeSearchFormTest extends FormTestBase {
     // Assert JSON structures are similar.
     $this->assertJsonStringEqualsJsonString($expected_build, $this->json->encode($build));
 
+    // Test the search results render array is populated correctly.
     // Test this manually as json encoding clobbers the results.
     foreach ($build['search_results']['#results'] as $i => $render_result) {
       $this->assertEquals($this->mockAssets[$i]['asset'], $render_result['#asset']);

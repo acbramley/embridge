@@ -7,22 +7,24 @@
     "#type": "value",
     "#value": "field_test"
   },
-  "filename": {
-    "#type": "textfield",
-    "#title": "Search by filename",
-    "#description": "Filter the search by filename",
-    "#size": 20,
-    "#default_value": ""
-  },
-  "filename_op": {
-    "#type": "select",
-    "#title": "Operation",
-    "#options": {
-      "startswith": "Starts with",
-      "matches": "Matches"
+  "filters": {
+    "filename": {
+      "#type": "textfield",
+      "#title": "Search by filename",
+      "#description": "Filter the search by filename",
+      "#size": 20,
+      "#default_value": ""
     },
-    "#description": "Operation to apply to filename search",
-    "#default_value": ""
+    "filename_op": {
+      "#type": "select",
+      "#title": "Operation",
+      "#options": {
+        "startswith": "Starts with",
+        "matches": "Matches"
+      },
+      "#description": "Operation to apply to filename search",
+      "#default_value": ""
+    }
   },
   "search": {
     "#type": "submit",
