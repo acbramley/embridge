@@ -267,5 +267,96 @@
       "copyrightnotice": "Wild",
       "publisheds3": "false"
     }
+  ],
+  "filteroptions": [
+    {
+      "id": "libraries",
+      "name": "Libraries",
+      "children": [
+        {
+          "id": "engineering",
+          "name": "Engineering Courses",
+          "count": "2"
+        },
+        {
+          "id": "productlaunchfall",
+          "name": "Product Launch Fall Quarter",
+          "count": "2"
+        },
+        {
+          "id": "southamericanexpo",
+          "name": "South American Expo",
+          "count": "1"
+        },
+        {
+          "id": "cominghome",
+          "name": "Coming Home",
+          "count": "1"
+        }
+      ]
+    },
+    {
+      "id": "assettype",
+      "name": "Asset Type",
+      "children": [
+        {
+          "id": "photo",
+          "name": "Artwork",
+          "count": "1"
+        },
+        {
+          "id": "document",
+          "name": "Stories",
+          "count": "1"
+        },
+        {
+          "id": "audio",
+          "name": "Audio Clips",
+          "count": "1"
+        }
+      ]
+    },
+    {
+      "id": "fileformat",
+      "name": "File Format",
+      "children": [
+        {
+          "id": "jpg",
+          "name": "JPG",
+          "count": "1"
+        },
+        {
+          "id": "aac",
+          "name": "aac",
+          "count": "1"
+        },
+        {
+          "id": "pdf",
+          "name": "PDF",
+          "count": "1"
+        }
+      ]
+    },
+    {
+      "id": "editstatus",
+      "name": "Edit Status",
+      "children": [
+        {
+          "id": "1",
+          "name": "Pending Approval",
+          "count": "10"
+        },
+        {
+          "id": "rejected",
+          "name": "Rejected",
+          "count": "6"
+        },
+        {
+          "id": "6",
+          "name": "Approved",
+          "count": "5"
+        }
+      ]
+    }
   ]
 }

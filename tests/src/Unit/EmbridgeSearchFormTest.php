@@ -182,6 +182,10 @@ class EmbridgeSearchFormTest extends FormTestBase {
       'filename' => 'test',
       'filename_op' => 'matches',
       'result_chosen' => 123,
+      'fileformat' => 'jpg',
+      'libraries' => 'oceanography',
+      'assettype' => 'photo',
+      'nonexistantfilter' => 'dontaddme',
     ];
     $form_state = new FormState();
     $form_state->setUserInput($input);
@@ -193,11 +197,27 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $application_id = 'test_app';
     $delta = 0;
 
+    // Mock filters that search should receive.
     $filters = [
       [
         'field' => 'name',
         'operator' => $input['filename_op'],
         'value' => $input['filename'],
+      ],
+      [
+        'field' => 'libraries',
+        'operator' => 'matches',
+        'value' => $input['libraries'],
+      ],
+      [
+        'field' => 'assettype',
+        'operator' => 'matches',
+        'value' => $input['assettype'],
+      ],
+      [
+        'field' => 'fileformat',
+        'operator' => 'matches',
+        'value' => $input['fileformat'],
       ],
     ];
 
@@ -206,9 +226,16 @@ class EmbridgeSearchFormTest extends FormTestBase {
 
     $build = $this->form->buildForm($form, $form_state, $entity_type, $bundle, $field_name, $delta);
 
-    $this->assertEquals($input['filename'], $build['filename']['#default_value']);
-    $this->assertEquals($input['filename_op'], $build['filename_op']['#default_value']);
+    $this->assertEquals($input['filename'], $build['filters']['filename']['#default_value']);
+    $this->assertEquals($input['filename_op'], $build['filters']['filename_op']['#default_value']);
+    $this->assertEquals($input['libraries'], $build['filters']['libraries']['#default_value']);
+    $this->assertEquals($input['assettype'], $build['filters']['assettype']['#default_value']);
+    $this->assertEquals($input['fileformat'], $build['filters']['fileformat']['#default_value']);
     $this->assertEquals($input['result_chosen'], $build['result_chosen']['#value']);
+
+    // Filters that shouldn't exist.
+    $this->assertArrayNotHasKey('nonexistantfilter', $build['filters']);
+    $this->assertArrayNotHasKey('editstatus', $build['filters']);
   }
 
   /**
