@@ -111,7 +111,7 @@ function template_preprocess_embridge_image(&$variables) {
     '#theme' => 'image',
   );
 
-  /** @var EmbridgeAssetEntity  $asset */
+  /** @var EmbridgeAssetEntity $asset */
   $asset = $variables['asset'];
   $variables['image']['#width'] = $asset->getWidth();
   $variables['image']['#height'] = $asset->getHeight();
@@ -125,15 +125,6 @@ function template_preprocess_embridge_image(&$variables) {
   }
 
   $variables['image']['#uri'] = $uri;
-}
-
-/**
- * Prepares variables for rendering search results.
- *
- * @param $variables
- */
-function template_preprocess_embridge_search_results(&$variables) {
-
 }
 
 /**
