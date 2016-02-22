@@ -5,3 +5,6 @@ services:
   embridge.asset_helper:
     class: Drupal\embridge\EnterMediaAssetHelper
     arguments: ["@config.factory", "@entity_type.manager", "@file.mime_type.guesser"]
+  embridge.asset_validator:
+    class: Drupal\embridge\EmbridgeAssetValidator
+    arguments: ["@module_handler", "@entity_type.manager", "@current_user"]
