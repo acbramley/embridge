@@ -15,12 +15,12 @@ use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Render\Renderer;
+use Drupal\embridge\EmbridgeAssetValidatorInterface;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\EnterMediaDbClientInterface;
 use Drupal\embridge\Form\EmbridgeSearchForm;
 use Drupal\Tests\Core\Form\FormTestBase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DomCrawler\Form;
 
 /**
  * Class EmbridgeSearchFormTest.
@@ -50,6 +50,13 @@ class EmbridgeSearchFormTest extends FormTestBase {
    * @var \Drupal\embridge\EnterMediaAssetHelper|\PHPUnit_Framework_MockObject_MockObject.
    */
   protected $assetHelper;
+
+  /**
+   * Our asset validator.
+   *
+   * @var \Drupal\embridge\EmbridgeAssetValidatorInterface|\PHPUnit_Framework_MockObject_MockObject
+   */
+  protected $assetValidator;
 
   /**
    * Entity manager.
@@ -109,6 +116,7 @@ class EmbridgeSearchFormTest extends FormTestBase {
     // Mock up a storm.
     $this->client = $this->getMockBuilder(EnterMediaDbClientInterface::class)->disableOriginalConstructor()->getMock();
     $this->assetHelper = $this->getMockBuilder(EnterMediaAssetHelper::class)->disableOriginalConstructor()->getMock();
+    $this->assetValidator = $this->getMockBuilder(EmbridgeAssetValidatorInterface::class)->disableOriginalConstructor()->getMock();
     $this->entityTypeManager = $this->getMockBuilder(EntityTypeManager::class)->disableOriginalConstructor()->getMock();
     $this->fieldManager = $this->getMockBuilder(EntityFieldManager::class)->disableOriginalConstructor()->getMock();
     $this->renderer = $this->getMockBuilder(Renderer::class)->disableOriginalConstructor()->getMock();
@@ -116,7 +124,7 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $this->mockAssets = [];
 
     // Initialise our form.
-    $this->form = new EmbridgeSearchForm($this->client, $this->assetHelper, $this->entityTypeManager, $this->fieldManager, $this->renderer);
+    $this->form = new EmbridgeSearchForm($this->client, $this->assetHelper, $this->assetValidator, $this->entityTypeManager, $this->fieldManager, $this->renderer);
   }
 
   /**
@@ -258,6 +266,66 @@ class EmbridgeSearchFormTest extends FormTestBase {
       ->method('getStorage')
       ->with('embridge_asset_entity')
       ->willReturn($mock_asset_storage);
+
+    $this->form->validateForm($form, $form_state);
+
+    $errors = $form_state->getErrors();
+    $this->assertNotEmpty($errors);
+  }
+
+
+  /**
+   * Tests validateForm when the submit button is pressed.
+   *
+   * @covers ::validateForm
+   *
+   * @test
+   */
+  public function validateWithSubmitButtonPressedThrowsErrorForFailedAssetValidation() {
+    // Mocking for FormState::setError.
+    $form = [
+      'search_results' => [
+        '#parents' => [],
+      ],
+    ];
+    $form_state = new FormState();
+    $triggering_element = [
+      '#parents' => ['submit'],
+    ];
+    $entity_id = 34298734897;
+    $input = [
+      'result_chosen' => $entity_id,
+    ];
+    $values = [
+      'upload_validators' => [
+        'validateFileExtensions' => ['txt'],
+        'validateFileSize' => ['2MB'],
+      ],
+    ];
+    $form_state->setTriggeringElement($triggering_element);
+    $form_state->setUserInput($input);
+    $form_state->setValues($values);
+
+    $mock_asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
+    $mock_asset_storage = $this->getMock(EntityStorageInterface::class);
+    $mock_asset_storage
+      ->expects($this->once())
+      ->method('load')
+      ->with($entity_id)
+      ->willReturn($mock_asset);
+
+    $this->entityTypeManager
+      ->expects($this->once())
+      ->method('getStorage')
+      ->with('embridge_asset_entity')
+      ->willReturn($mock_asset_storage);
+
+    $errors = ['ERROR'];
+    $this->assetValidator
+      ->expects($this->once())
+      ->method('validate')
+      ->with($mock_asset, $values['upload_validators'])
+      ->willReturn($errors);
 
     $this->form->validateForm($form, $form_state);
 
