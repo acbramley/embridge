@@ -192,7 +192,7 @@ interface EmbridgeAssetEntityInterface extends ContentEntityInterface, EntityCha
   /**
    * Gets the Embridge asset file size.
    *
-   * @return string
+   * @return int
    *   File size of the Embridge asset entity.
    */
   public function getSize();
