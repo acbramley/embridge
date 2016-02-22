@@ -22,7 +22,6 @@ use Drupal\embridge\EmbridgeAssetValidatorInterface;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\EnterMediaDbClientInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class EmbridgeSearchForm.
@@ -144,7 +143,7 @@ class EmbridgeSearchForm extends FormBase {
       '#value' => $field_name,
     ];
 
-    $form['filename'] = array(
+    $form['filters']['filename'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Search by filename'),
       '#description' => $this->t('Filter the search by filename'),
@@ -156,7 +155,7 @@ class EmbridgeSearchForm extends FormBase {
       'startswith' => $this->t('Starts with'),
       'matches' => $this->t('Matches'),
     ];
-    $form['filename_op'] = array(
+    $form['filters']['filename_op'] = array(
       '#type' => 'select',
       '#title' => $this->t('Operation'),
       '#options' => $operation_options,
@@ -185,6 +184,14 @@ class EmbridgeSearchForm extends FormBase {
     ];
 
     $filters = [];
+    // Static list of known search filters from EMDB.
+    // TODO: Make this configurable.
+    $known_search_filters = [
+      'libraries',
+      'assettype',
+      'fileformat',
+    ];
+    // Add filename filter as this always exists.
     if (!empty($input['filename_op'])) {
       $filters = [
         [
@@ -194,8 +201,44 @@ class EmbridgeSearchForm extends FormBase {
         ],
       ];
     }
+    // Add user chosen filters.
+    foreach ($known_search_filters as $filter_id) {
+      if (empty($input[$filter_id])) {
+        continue;
+      }
 
-    // Get the catalog id for this field for use in the search results themeing.
+      $filters[] = [
+        'field' => $filter_id,
+        'operator' => 'matches',
+        'value' => $input[$filter_id],
+      ];
+    }
+
+    // Execute a search.
+    $search_response = $this->getSearchResults($filters);
+
+    if (!empty($search_response['filteroptions'])) {
+      foreach ($search_response['filteroptions'] as $filter) {
+        if (!in_array($filter['id'], $known_search_filters)) {
+          continue;
+        }
+        // "Empty" option.
+        $filter_options = [$this->t('-- Select --')];
+
+        // Add each option to the list.
+        foreach ($filter['children'] as $option) {
+          $filter_options[$option['id']] = $this->t('@name (@count)', ['@name' => $option['name'], '@count' => $option['count']]);
+        }
+        $form['filters'][$filter['id']] = [
+          '#type' => 'select',
+          '#title' => $this->t('@name', ['@name' => $filter['name']]),
+          '#options' => $filter_options,
+          '#default_value' => !empty($input[$filter['id']]) ? $input[$filter['id']] : '',
+        ];
+      }
+    }
+
+    // Get the catalog id and upload validators for this field.
     $bundle_fields = $this->fieldManager->getFieldDefinitions($entity_type, $bundle);
     /** @var \Drupal\Core\Field\BaseFieldDefinition $field_definition */
     $field_definition = $bundle_fields[$field_name];
@@ -208,7 +251,6 @@ class EmbridgeSearchForm extends FormBase {
 
     $catalog_id = $field_definition->getSetting('catalog_id');
 
-    $search_response = $this->getSearchResults($this->client, $filters);
     $form['search_results'] = [
       '#theme' => 'embridge_search_results',
       '#results' => $this->formatSearchResults($search_response, $this->assetHelper, $catalog_id),
@@ -300,17 +342,15 @@ class EmbridgeSearchForm extends FormBase {
   /**
    * Queries EnterMedia for assets matching search filter.
    *
-   * @param \Drupal\embridge\EnterMediaDbClientInterface $client
-   *   The EMDB Client service.
    * @param array $filters
    *   An array of filters.
    *
    * @return array
    *   A search response array.
    */
-  private function getSearchResults(EnterMediaDbClientInterface $client, array $filters = []) {
+  private function getSearchResults(array $filters = []) {
     $num_per_page = 20;
-    $search_response = $client->search(1, $num_per_page, $filters);
+    $search_response = $this->client->search(1, $num_per_page, $filters);
 
     return $search_response;
   }
