@@ -6,7 +6,6 @@
 
 namespace Drupal\Tests\embridge\Unit;
 
-
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Entity\EntityFieldManager;
@@ -140,6 +139,8 @@ class EmbridgeSearchFormTest extends FormTestBase {
    * Tests buildForm calls what we expect.
    *
    * @covers ::buildForm
+   * @covers ::getSearchResults
+   * @covers ::formatSearchResults
    *
    * @test
    */

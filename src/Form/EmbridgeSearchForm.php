@@ -21,7 +21,6 @@ use Drupal\embridge\Ajax\EmbridgeSearchSave;
 use Drupal\embridge\EmbridgeAssetValidatorInterface;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\EnterMediaDbClientInterface;
-use Drupal\embridge\Plugin\Field\FieldType\EmbridgeAssetItem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
