@@ -274,7 +274,6 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $this->assertNotEmpty($errors);
   }
 
-
   /**
    * Tests validateForm when the submit button is pressed.
    *
@@ -332,6 +331,88 @@ class EmbridgeSearchFormTest extends FormTestBase {
 
     $errors = $form_state->getErrors();
     $this->assertNotEmpty($errors);
+  }
+
+  /**
+   * Tests searchAjaxCallback().
+   *
+   * @covers ::searchAjaxCallback
+   * @covers ::ajaxRenderFormAndMessages
+   *
+   * @test
+   */
+  public function searchAjaxCallbackReturnsAjaxResponse() {
+    $form = [
+      '#attached' => ['test'],
+    ];
+    $form_state = new FormState();
+
+    $response = $this->form->searchAjaxCallback($form, $form_state);
+
+    $this->assertInstanceOf('\Drupal\Core\Ajax\AjaxResponse', $response);
+    $commands = $response->getCommands();
+    $this->assertNotEmpty($commands);
+    $this->assertCount(3, $commands);
+    $this->assertEquals('replaceWith', $commands[0]['method']);
+    $this->assertEquals('html', $commands[1]['method']);
+    $this->assertEquals('append', $commands[2]['method']);
+  }
+
+  /**
+   * Tests submitFormSelection().
+   *
+   * @covers ::submitFormSelection
+   *
+   * @test
+   */
+  public function submitFormSelectionAjaxCallbackReturnsReplaceHtmlWhenErrorsExist() {
+    $form = [
+      '#attached' => ['test'],
+    ];
+    $form_state = new FormState();
+    $form_state->setErrorByName('test', 'test error');
+
+    $response = $this->form->submitFormSelection($form, $form_state);
+
+    $this->assertInstanceOf('\Drupal\Core\Ajax\AjaxResponse', $response);
+    $commands = $response->getCommands();
+    $this->assertNotEmpty($commands);
+    $this->assertCount(3, $commands);
+    $this->assertEquals('replaceWith', $commands[0]['method']);
+    $this->assertEquals('html', $commands[1]['method']);
+    $this->assertEquals('append', $commands[2]['method']);
+  }
+
+  /**
+   * Tests submitFormSelection().
+   *
+   * @covers ::submitFormSelection
+   *
+   * @test
+   */
+  public function submitFormSelectionAjaxCallbackReturnsSaveSearchCloseDialogWithNoErrors() {
+    $form = [
+      '#attached' => ['test'],
+    ];
+    $mock_entity_id = 123456789;
+    $input = [
+      'result_chosen' => $mock_entity_id,
+    ];
+    $form_state = new FormState();
+    $form_state->setUserInput($input);
+
+    $response = $this->form->submitFormSelection($form, $form_state);
+
+    $this->assertInstanceOf('\Drupal\Core\Ajax\AjaxResponse', $response);
+    $commands = $response->getCommands();
+    $this->assertNotEmpty($commands);
+    $this->assertCount(2, $commands);
+    $this->assertEquals('embridgeSearchDialogSave', $commands[0]['command']);
+    $expected_values = [
+      'entity_id' => $mock_entity_id,
+    ];
+    $this->assertEquals($expected_values, $commands[0]['values']);
+    $this->assertEquals('closeDialog', $commands[1]['command']);
   }
 
   /**
