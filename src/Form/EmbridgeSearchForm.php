@@ -257,10 +257,18 @@ class EmbridgeSearchForm extends FormBase {
 
     $catalog_id = $field_definition->getSetting('catalog_id');
 
-    $form['search_results'] = [
-      '#theme' => 'embridge_search_results',
-      '#results' => $this->formatSearchResults($search_response, $this->assetHelper, $catalog_id),
-    ];
+    if (!empty($search_response['results'])) {
+      $form['search_results'] = [
+        '#theme' => 'embridge_search_results',
+        '#results' => $this->formatSearchResults($search_response, $this->assetHelper, $catalog_id),
+      ];
+    }
+    else {
+      $form['search_results'] = [
+        '#type' => 'markup',
+        '#markup' => $this->t('<p>No files found, please adjust your filters and try again.</p>'),
+      ];
+    }
     $form['result_chosen'] = [
       '#type' => 'hidden',
       '#value' => !empty($input['result_chosen']) ? $input['result_chosen'] : '',
