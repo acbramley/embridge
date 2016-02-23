@@ -49,6 +49,13 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
   protected $mimeGuesser;
 
   /**
+   * Logger service.
+   *
+   * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
+   */
+  protected $logger;
+
+  /**
    * Our client.
    *
    * @var \Drupal\embridge\EnterMediaAssetHelper
@@ -63,9 +70,10 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
 
     $this->configFactory = $this->getMock(ConfigFactoryInterface::class);
     $this->entityTypeManager = $this->getMockBuilder('\Drupal\Core\Entity\EntityTypeManager')->disableOriginalConstructor()->getMock();
-    $this->mimeGuesser = $this->getMockBuilder(MimeTypeGuesser::class)->disableOriginalConstructor()->getMock();;
+    $this->mimeGuesser = $this->getMockBuilder(MimeTypeGuesser::class)->disableOriginalConstructor()->getMock();
+    $this->logger = $this->getMockBuilder('\Psr\Log\LoggerInterface')->disableOriginalConstructor()->getMock();
 
-    $this->emdbHelper = new EnterMediaAssetHelper($this->configFactory, $this->entityTypeManager, $this->mimeGuesser);
+    $this->emdbHelper = new EnterMediaAssetHelper($this->configFactory, $this->entityTypeManager, $this->logger, $this->mimeGuesser);
   }
 
   /**
@@ -309,12 +317,24 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       ->willReturn($mock_query);
 
     $mock_assets = [];
+    $log_map = [];
     foreach ($mock_asset_ids as $id) {
       $mock_asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
       $mock_asset->expects($this->once())->method('delete');
+      $filename = 'Mock Asset ' . $id;
+      $mock_asset->expects($this->once())->method('getFilename')->willReturn($filename);
+      $mock_asset->expects($this->once())->method('id')->willReturn($id);
+      $log_map[] = [
+        'Embridge Asset "%filename" [%id] garbage collected during cron.',
+        ['%filename' => $filename, '%id' => $id],
+      ];
 
       $mock_assets[$id] = $mock_asset;
     }
+    $this->logger
+      ->expects($this->exactly(count($mock_asset_ids)))
+      ->method('notice')
+      ->will($this->returnValueMap($log_map));
     $mock_entity_storage
       ->expects($this->once())
       ->method('loadMultiple')
