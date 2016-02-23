@@ -146,7 +146,6 @@ function template_preprocess_embridge_image(&$variables) {
  * @return array
  *   An array containing validation error messages.
  *
- * @see hook_file_validate()
  * @deprecated
  *   Use EmbridgeAssetValidator::validate(),
  */
