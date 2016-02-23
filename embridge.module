@@ -14,15 +14,27 @@ use \Drupal\Core\Template\Attribute;
  */
 function embridge_theme() {
   return array(
-    'embridge_file_link' => array(
-      'variables' => array('asset' => NULL, 'description' => '', 'entity' => NULL, 'link_to' => ''),
-    ),
-    'embridge_image' => array(
-      'variables' => array('asset' => NULL, 'conversion' => '', 'application_id' => '', 'description' => '', 'entity' => NULL, 'link_to' => ''),
-    ),
-    'embridge_search_results' => array(
-      'variables' => array('results' => []),
-    ),
+    'embridge_file_link' => [
+      'variables' => [
+        'asset' => NULL,
+        'description' => '',
+        'entity' => NULL,
+        'link_to' => '',
+      ],
+    ],
+    'embridge_image' => [
+      'variables' => [
+        'asset' => NULL,
+        'conversion' => '',
+        'application_id' => '',
+        'description' => '',
+        'entity' => NULL,
+        'link_to' => '',
+      ],
+    ],
+    'embridge_search_results' => [
+      'variables' => ['results' => []],
+    ],
   );
 }
 
