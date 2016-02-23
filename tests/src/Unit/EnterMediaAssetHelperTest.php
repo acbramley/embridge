@@ -296,6 +296,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       ->with(0, 50)
       ->will($this->returnSelf());
     $mock_asset_ids = [123, 456, 789];
+    $mock_asset_ids = array_combine($mock_asset_ids, $mock_asset_ids);
     $mock_query
       ->expects($this->once())
       ->method('execute')
@@ -306,12 +307,12 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       ->expects($this->once())
       ->method('getQuery')
       ->willReturn($mock_query);
+
     $mock_assets = [];
     foreach ($mock_asset_ids as $id) {
       $mock_asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
-      $mock_asset
-        ->expects($this->once())
-        ->method('delete');
+      $mock_asset->expects($this->once())->method('delete');
+
       $mock_assets[$id] = $mock_asset;
     }
     $mock_entity_storage
