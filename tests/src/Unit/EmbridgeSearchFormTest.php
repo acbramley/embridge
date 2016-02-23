@@ -223,7 +223,7 @@ class EmbridgeSearchFormTest extends FormTestBase {
     ];
 
     // Mock up a whole mess of stuff.
-    $this->baseMockBuild($catalog_id, $field_name, $entity_type, $bundle, $application_id, 'expected/search-expected-small-response.json', $filters);
+    $this->baseMockBuild($catalog_id, $field_name, $entity_type, $bundle, $application_id, $filters);
 
     $build = $this->form->buildForm($form, $form_state, $entity_type, $bundle, $field_name, $delta);
 
@@ -253,16 +253,57 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $bundle = 'page';
     $field_name = 'field_test';
     $catalog_id = 'test_catalog';
-    $application_id = 'test_app';
     $delta = 0;
-    // Mock up a whole mess of stuff.
-    $this->baseMockBuild($catalog_id, $field_name, $entity_type, $bundle, $application_id, 'expected/search-expected-empty-response.json');
+
+    // Mock up specifically for empty results.
+    $mock_field_definitions = [];
+    $field_settings = [
+      'max_filesize' => '2 MB',
+      'file_extensions' => self::MOCK_FIELD_SETTINGS_FILE_EXTENSIONS,
+    ];
+    $field_def = $this->getMockBuilder(FieldDefinitionInterface::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+    $field_def->expects($this->once())
+      ->method('getSettings')
+      ->willReturn($field_settings);
+    $field_def->expects($this->once())
+      ->method('getSetting')
+      ->with('catalog_id')
+      ->willReturn($catalog_id);
+    $mock_field_definitions[$field_name] = $field_def;
+    $this->fieldManager
+      ->expects($this->once())
+      ->method('getFieldDefinitions')
+      ->with($entity_type, $bundle)
+      ->willReturn($mock_field_definitions);
+
+    // Search filter always starts with the extensions OR filter.
+    $extension_filter_value = str_replace(',', '|', self::MOCK_FIELD_SETTINGS_FILE_EXTENSIONS);
+    $extension_filter = [
+      'field' => 'fileformat',
+      'operator' => 'matches',
+      'value' => $extension_filter_value,
+    ];
+    $filters = [];
+    array_unshift($filters, $extension_filter);
+    // Client mocking.
+    $search_response = $this->json->decode(
+      file_get_contents('expected/search-expected-empty-response.json', TRUE)
+    );
+
+    $this->client
+      ->expects($this->once())
+      ->method('search')
+      ->with(1, 20, $filters)
+      ->willReturn($search_response);
 
     $build = $this->form->buildForm($form, $form_state, $entity_type, $bundle, $field_name, $delta);
 
+    $this->assertArrayHasKey('#type', $build['search_results']);
     $this->assertEquals('markup', $build['search_results']['#type']);
     $this->assertArrayNotHasKey('#results', $build['search_results']);
-    $expected_markup = '<p>No files found, please adjust your filters and try again</p>';
+    $expected_markup = '<p>No files found, please adjust your filters and try again.</p>';
     $this->assertEquals($expected_markup, $build['search_results']['#markup']);
   }
 
@@ -484,8 +525,6 @@ class EmbridgeSearchFormTest extends FormTestBase {
    *   Bundle.
    * @param string $application_id
    *   Application id.
-   * @param string $search_response_file
-   *   The json file to use for the search response.
    * @param [] $filters
    *   An optional list of filters for the client to receive.
    */
@@ -495,7 +534,6 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $entity_type,
     $bundle,
     $application_id,
-    $search_response_file = 'expected/search-expected-small-response.json',
     $filters = []
   ) {
     // Field manager mocking.
@@ -531,7 +569,7 @@ class EmbridgeSearchFormTest extends FormTestBase {
     array_unshift($filters, $extension_filter);
     // Client mocking.
     $search_response = $this->json->decode(
-      file_get_contents($search_response_file, TRUE)
+      file_get_contents('expected/search-expected-small-response.json', TRUE)
     );
 
     $this->client
