@@ -13,21 +13,11 @@ use Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\Tests\UnitTestCase;
 
-define('MOCK_TIMESTAMP', 1456192161);
+require_once 'embridge.test_functions.inc.php';
 
-// Mock time() for our namespace.
-if (!function_exists('\Drupal\embridge\time')) {
-  namespace Drupal\embridge {
-
-    /**
-     * Mock instance of the time() function.
-     *
-     * @return int
-     */
-    function time() {
-      return MOCK_TIMESTAMP;
-    }
-  }
+// Ensure this is defined.
+if (!defined('FILE_STATUS_PERMANENT')) {
+  define('FILE_STATUS_PERMANENT', 1);
 }
 
 /**
@@ -292,16 +282,14 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       ->willReturn($mock_config);
 
     $mock_query = $this->getMock('\Drupal\Core\Entity\Query\QueryInterface');
+    $map = [
+      ['status', FILE_STATUS_PERMANENT, '<>'],
+      ['changed', MOCK_TIMESTAMP - $age, '<'],
+    ];
     $mock_query
-      ->expects($this->once())
+      ->expects($this->exactly(2))
       ->method('condition')
-      ->with('status', FILE_STATUS_PERMANENT, '<>')
-      ->will($this->returnSelf());
-    $mock_query
-      ->expects($this->once())
-      ->method('condition')
-      ->with('changed', MOCK_TIMESTAMP - $age, '<')
-      ->will($this->returnSelf());
+      ->will($this->returnValueMap($map));
     $mock_query
       ->expects($this->once())
       ->method('range')
