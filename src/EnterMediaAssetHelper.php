@@ -11,6 +11,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser;
 use Drupal\embridge\Plugin\Field\FieldType\EmbridgeAssetItem;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class EnterMediaAssetHelper.
@@ -34,6 +35,13 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
   protected $entityTypeManager;
 
   /**
+   * Logger service.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
    * Mime type guesser service.
    *
    * @var \Drupal\Core\File\MimeType\MimeTypeGuesser
@@ -47,12 +55,15 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
    *   The config factory.
    * @param \Drupal\Core\Entity\EntityTypeManager $entity_type_manager
    *   The entity type manager class.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   The logger service.
    * @param \Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser $mime_guesser
    *   The mime type guesser service.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManager $entity_type_manager, MimeTypeGuesser $mime_guesser) {
+  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManager $entity_type_manager, LoggerInterface $logger, MimeTypeGuesser $mime_guesser) {
     $this->configFactory = $config_factory;
     $this->entityTypeManager = $entity_type_manager;
+    $this->logger = $logger;
     $this->mimeGuesser = $mime_guesser;
   }
 
@@ -158,6 +169,7 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
 
     foreach ($assets as $asset) {
       $asset->delete();
+      $this->logger->notice('Embridge Asset "%filename" [%id] garbage collected during cron.', ['%filename' => $asset->getFilename(), '%id' => $asset->id()]);
     }
   }
 
