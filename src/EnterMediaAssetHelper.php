@@ -134,4 +134,16 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
     return EmbridgeAssetItem::formatUploadValidators($settings);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function deleteTemporaryAssets() {
+    // TODO: Do we want our own config item?
+    $age = $this->configFactory->get('system.file')->get('temporary_maximum_age');
+
+    if (!$age) {
+      return;
+    }
+  }
+
 }

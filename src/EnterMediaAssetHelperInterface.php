@@ -40,4 +40,8 @@ interface EnterMediaAssetHelperInterface {
    */
   public function searchResultToAsset($result, $catalog_id);
 
+  /**
+   * Deletes temporary assets.
+   */
+  public function deleteTemporaryAssets();
 }
