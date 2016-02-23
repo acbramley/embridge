@@ -13,6 +13,23 @@ use Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\Tests\UnitTestCase;
 
+define('MOCK_TIMESTAMP', 1456192161);
+
+// Mock time() for our namespace.
+if (!function_exists('\Drupal\embridge\time')) {
+  namespace Drupal\embridge {
+
+    /**
+     * Mock instance of the time() function.
+     *
+     * @return int
+     */
+    function time() {
+      return MOCK_TIMESTAMP;
+    }
+  }
+}
+
 /**
  * Class EnterMediaAssetHelperTest.
  *
@@ -54,30 +71,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
   public function setUp() {
     parent::setUp();
 
-    $mock_config = $this->getMockBuilder(ImmutableConfig::class)->disableOriginalConstructor()->getMock();
-    $sample_config = [
-      'uri' => 'http://www.example.com',
-      'username' => 'admin',
-      'password' => 'admin',
-    ];
-    // Configure the stub.
-    $mock_config->expects($this->any())
-      ->method('get')
-      ->will($this->returnValueMap(
-        [
-          ['uri', $sample_config['uri']],
-          ['username', $sample_config['username']],
-          ['password', $sample_config['password']],
-        ]
-      ));
-
     $this->configFactory = $this->getMock(ConfigFactoryInterface::class);
-    $this->configFactory
-      ->expects($this->any())
-      ->method('get')
-      ->with('embridge.settings')
-      ->willReturn($mock_config);
-
     $this->entityTypeManager = $this->getMockBuilder('\Drupal\Core\Entity\EntityTypeManager')->disableOriginalConstructor()->getMock();
     $this->mimeGuesser = $this->getMockBuilder(MimeTypeGuesser::class)->disableOriginalConstructor()->getMock();;
 
@@ -99,6 +93,28 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
    * @test
    */
   public function getAssetConversionUrlReturnsExpectedUrl() {
+    $mock_config = $this->getMockBuilder(ImmutableConfig::class)->disableOriginalConstructor()->getMock();
+    $sample_config = [
+      'uri' => 'http://www.example.com',
+      'username' => 'admin',
+      'password' => 'admin',
+    ];
+    // Configure the stub.
+    $mock_config->expects($this->any())
+      ->method('get')
+      ->will($this->returnValueMap(
+        [
+          ['uri', $sample_config['uri']],
+          ['username', $sample_config['username']],
+          ['password', $sample_config['password']],
+        ]
+      ));
+    $this->configFactory
+      ->expects($this->any())
+      ->method('get')
+      ->with('embridge.settings')
+      ->willReturn($mock_config);
+
     /** @var \Drupal\embridge\EmbridgeAssetEntityInterface|\PHPUnit_Framework_MockObject_MockObject $mock_asset */
     $mock_asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
     $mock_asset
@@ -227,6 +243,102 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
       ->willReturn($mock_entity_storage);
 
     $this->assertEquals($mock_asset, $this->emdbHelper->searchResultToAsset($mock_search_result, 'testcatalog'));
+  }
+
+  /**
+   * Tests deleteTemporaryAssets() when the config item for age is 0.
+   *
+   * @covers ::deleteTemporaryAssets
+   *
+   * @test
+   */
+  public function deleteTemporaryAssetsDoesNothingWhenAgeIsZero() {
+    $mock_config = $this->getMockBuilder(ImmutableConfig::class)->disableOriginalConstructor()->getMock();
+    $mock_config
+      ->expects($this->once())
+      ->method('get')
+      ->with('temporary_maximum_age')
+      ->willReturn(0);
+
+    $this->configFactory
+      ->expects($this->once())
+      ->method('get')
+      ->with('system.file')
+      ->willReturn($mock_config);
+
+    $this->emdbHelper->deleteTemporaryAssets();
+  }
+
+  /**
+   * Tests deleteTemporaryAssets() when the config item for age is 0.
+   *
+   * @covers ::deleteTemporaryAssets
+   *
+   * @test
+   */
+  public function deleteTemporaryAssetsDeletesAssetsWhenAgeIsGreaterThanZero() {
+    $mock_config = $this->getMockBuilder(ImmutableConfig::class)->disableOriginalConstructor()->getMock();
+    $age = 123456;
+    $mock_config
+      ->expects($this->once())
+      ->method('get')
+      ->with('temporary_maximum_age')
+      ->willReturn($age);
+
+    $this->configFactory
+      ->expects($this->once())
+      ->method('get')
+      ->with('system.file')
+      ->willReturn($mock_config);
+
+    $mock_query = $this->getMock('\Drupal\Core\Entity\Query\QueryInterface');
+    $mock_query
+      ->expects($this->once())
+      ->method('condition')
+      ->with('status', FILE_STATUS_PERMANENT, '<>')
+      ->will($this->returnSelf());
+    $mock_query
+      ->expects($this->once())
+      ->method('condition')
+      ->with('changed', MOCK_TIMESTAMP - $age, '<')
+      ->will($this->returnSelf());
+    $mock_query
+      ->expects($this->once())
+      ->method('range')
+      ->with(0, 50)
+      ->will($this->returnSelf());
+    $mock_asset_ids = [123, 456, 789];
+    $mock_query
+      ->expects($this->once())
+      ->method('execute')
+      ->willReturn($mock_asset_ids);
+
+    $mock_entity_storage = $this->getMock(EntityStorageInterface::class);
+    $mock_entity_storage
+      ->expects($this->once())
+      ->method('getQuery')
+      ->willReturn($mock_query);
+    $mock_assets = [];
+    foreach ($mock_asset_ids as $id) {
+      $mock_asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
+      $mock_asset
+        ->expects($this->once())
+        ->method('delete');
+      $mock_assets[$id] = $mock_asset;
+    }
+    $mock_entity_storage
+      ->expects($this->once())
+      ->method('loadMultiple')
+      ->with($mock_asset_ids)
+      ->willReturn($mock_assets);
+
+    $this->entityTypeManager
+      ->expects($this->once())
+      ->method('getStorage')
+      ->with('embridge_asset_entity')
+      ->willReturn($mock_entity_storage);
+
+    $this->emdbHelper->deleteTemporaryAssets();
   }
 
 }
