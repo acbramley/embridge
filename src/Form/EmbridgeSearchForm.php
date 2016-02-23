@@ -248,7 +248,6 @@ class EmbridgeSearchForm extends FormBase {
       }
     }
 
-
     // Store the upload validators for the validation hook.
     $upload_validators = $this->assetHelper->formatUploadValidators($field_settings);
     $form['upload_validators'] = [

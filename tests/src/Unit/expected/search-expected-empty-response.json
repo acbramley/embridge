@@ -1,0 +1,28 @@
+{
+  "response": {
+    "status": "ok",
+    "totalhits": 0,
+    "searchtype": "asset",
+    "hitsperpage": 20,
+    "page": 1,
+    "pages": 0,
+    "hitsessionid": "hitsassetmedia/catalogs/public",
+    "query": {
+      "friendly": "Id:* and Readable:true  library_crossroads group_administrators group_visualdata user_admin",
+      "terms": [
+        {
+          "id": "id",
+          "operation": "matches",
+          "value": "*"
+        },
+        {
+          "id": "viewasset",
+          "operation": "orgroup",
+          "value": "true  library_crossroads group_administrators group_visualdata user_admin"
+        }
+      ]
+    }
+  },
+  "results": [],
+  "filteroptions": []
+}
