@@ -144,6 +144,21 @@ class EnterMediaAssetHelper implements EnterMediaAssetHelperInterface {
     if (!$age) {
       return;
     }
+
+    $storage = $this->entityTypeManager->getStorage('embridge_asset_entity');
+    $query = $storage->getQuery();
+
+    $query->condition('status', FILE_STATUS_PERMANENT, '<>');
+    $query->condition('changed', time() - $age, '<');
+    $query->range(0, 50);
+    $ids = $query->execute();
+
+    /** @var EmbridgeAssetEntityInterface[] $assets */
+    $assets = $storage->loadMultiple($ids);
+
+    foreach ($assets as $asset) {
+      $asset->delete();
+    }
   }
 
 }
