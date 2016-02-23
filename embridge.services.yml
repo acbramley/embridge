@@ -4,7 +4,11 @@ services:
     arguments: ["@config.factory", "@http_client", "@serialization.json", "@file_system"]
   embridge.asset_helper:
     class: Drupal\embridge\EnterMediaAssetHelper
-    arguments: ["@config.factory", "@entity_type.manager", "@file.mime_type.guesser"]
+    arguments: ["@config.factory", "@entity_type.manager", "@logger.channel.embridge", "@file.mime_type.guesser"]
+  logger.channel.embridge:
+    class: Drupal\Core\Logger\LoggerChannel
+    factory: logger.factory:get
+    arguments: ['embridge']
   embridge.asset_validator:
     class: Drupal\embridge\EmbridgeAssetValidator
     arguments: ["@module_handler", "@entity_type.manager", "@current_user"]
