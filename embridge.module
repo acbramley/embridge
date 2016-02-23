@@ -48,6 +48,15 @@ function embridge_cron() {
 }
 
 /**
+ * Implements hook_cron().
+ */
+function embridge_cron() {
+  /** @var Drupal\embridge\EnterMediaAssetHelper $asset_helper */
+  $asset_helper = \Drupal::getContainer()->get('embridge.asset_helper');
+  $asset_helper->deleteTemporaryAssets();
+}
+
+/**
  * Prepares variables for file link templates.
  *
  * Default template: file-link.html.twig.
