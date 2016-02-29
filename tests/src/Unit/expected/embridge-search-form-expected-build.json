@@ -62,8 +62,11 @@
   },
   "search": {
     "#type": "submit",
+    "#submit": [
+      "::searchSubmit"
+    ],
     "#ajax": {
-      "callback": "::searchAjaxCallback",
+      "callback": "::searchAjax",
       "wrapper": "embridge-results-wrapper",
       "effect": "fade",
       "progress": {
@@ -114,6 +117,32 @@
       }
     ]
   },
+  "previous": {
+    "#type": "submit",
+    "#value": "Previous",
+    "#submit": [
+      "::previousPageSubmit"
+    ],
+    "#ajax": {
+      "callback": "::searchAjax",
+      "wrapper": "embridge-results-wrapper",
+      "effect": "fade"
+    },
+    "#disabled": true
+  },
+  "next": {
+    "#type": "submit",
+    "#value": "Next",
+    "#submit": [
+      "::nextPageSubmit"
+    ],
+    "#ajax": {
+      "callback": "::searchAjax",
+      "wrapper": "embridge-results-wrapper",
+      "effect": "fade"
+    },
+    "#disabled": true
+  },
   "result_chosen": {
     "#type": "hidden",
     "#value": ""
@@ -125,7 +154,7 @@
       "#value": "Select",
       "#submit": [],
       "#ajax": {
-        "callback": "::submitFormSelection",
+        "callback": "::selectItemAjax",
         "event": "click"
       },
       "#attributes": {
