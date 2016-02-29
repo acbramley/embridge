@@ -7,6 +7,7 @@
 
 namespace Drupal\embridge\Form;
 
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\AppendCommand;
 use Drupal\Core\Ajax\CloseModalDialogCommand;
@@ -133,6 +134,14 @@ class EmbridgeSearchForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, $entity_type = '', $bundle = '', $field_name = '', $delta = 0) {
     $input = $form_state->getUserInput();
 
+    // Store field information in $form_state.
+    if (!static::getModalState($form_state)) {
+      $field_state = array(
+        'page' => 1,
+      );
+      static::setModalState($form_state, $field_state);
+    }
+
     // Store for ajax commands.
     $form['delta'] = [
       '#type' => 'value',
@@ -224,7 +233,9 @@ class EmbridgeSearchForm extends FormBase {
     }
 
     // Execute a search.
-    $search_response = $this->getSearchResults($filters);
+    $modal_state = static::getModalState($form_state);
+    $page = $modal_state['page'];
+    $search_response = $this->getSearchResults($page, $filters);
 
     // Add filters from search response.
     if (!empty($search_response['filteroptions'])) {
@@ -269,6 +280,34 @@ class EmbridgeSearchForm extends FormBase {
         '#markup' => $this->t('<p>No files found, please adjust your filters and try again.</p>'),
       ];
     }
+    // Add "previous page" pager.
+    $form['previous'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Previous'),
+      '#submit' => ['::previousPageSubmit'],
+      '#ajax' => array(
+        'callback' => '::searchAjax',
+        'wrapper' => self::AJAX_WRAPPER_ID,
+        'effect' => 'fade',
+      ),
+      // Always display it for consistency, only enable it if we can go back.
+      '#disabled' => !($page > 1),
+    ];
+
+    // Add "next page" pager.
+    $form['next'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Next'),
+      '#submit' => ['::nextPageSubmit'],
+      '#ajax' => array(
+        'callback' => '::searchAjax',
+        'wrapper' => self::AJAX_WRAPPER_ID,
+        'effect' => 'fade',
+      ),
+      // Always display it for consistency, only enable it if we can go forward.
+      '#disabled' => !($search_response['response']['pages'] > $search_response['response']['page']),
+    ];
+
     $form['result_chosen'] = [
       '#type' => 'hidden',
       '#value' => !empty($input['result_chosen']) ? $input['result_chosen'] : '',
@@ -337,34 +376,57 @@ class EmbridgeSearchForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitFormSelection(array &$form, FormStateInterface $form_state) {
-    $errors = $form_state->getErrors();
-    if ($errors) {
-      return self::ajaxRenderFormAndMessages($form);
-    }
-    $response = new AjaxResponse();
+  public function submitForm(array &$form, FormStateInterface $form_state) {
 
-    // Hidden input value set by javascript.
-    $values = $form_state->getValues();
-    $values['entity_id'] = $form_state->getUserInput()['result_chosen'];
-    $response->addCommand(new EmbridgeSearchSave($values));
-    $response->addCommand(new CloseModalDialogCommand());
+  }
+  /**
+   * Submission handler for the "Previous page" button.
+   *
+   * @param array $form
+   *   The form.
+   * @param FormStateInterface $form_state
+   *   The form state.
+   */
+  public function previousPageSubmit(array $form, FormStateInterface $form_state) {
+    // Increment the page count.
+    $modal_state = self::getModalState($form_state);
+    $modal_state['page']--;
+    self::setModalState($form_state, $modal_state);
 
-    return $response;
+    $form_state->setRebuild();
+  }
+
+  /**
+   * Submission handler for the "Next page" button.
+   *
+   * @param array $form
+   *   The form.
+   * @param FormStateInterface $form_state
+   *   The form state.
+   */
+  public function nextPageSubmit(array $form, FormStateInterface $form_state) {
+    // Increment the page count.
+    $modal_state = self::getModalState($form_state);
+    $modal_state['page']++;
+    self::setModalState($form_state, $modal_state);
+
+    $form_state->setRebuild();
   }
 
   /**
    * Queries EnterMedia for assets matching search filter.
    *
+   * @param int $page
+   *   The page to return.
    * @param array $filters
    *   An array of filters.
    *
    * @return array
    *   A search response array.
    */
-  private function getSearchResults(array $filters = []) {
+  private function getSearchResults($page, array $filters = []) {
     $num_per_page = 20;
-    $search_response = $this->client->search(1, $num_per_page, $filters);
+    $search_response = $this->client->search($page, $num_per_page, $filters);
 
     return $search_response;
   }
@@ -449,6 +511,21 @@ class EmbridgeSearchForm extends FormBase {
     $response->addCommand(new AppendCommand($message_wrapper_id, $messages));
 
     return $response;
+  }
+
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getModalState(FormStateInterface $form_state) {
+    return NestedArray::getValue($form_state->getStorage(), ['search_results']);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function setModalState(FormStateInterface $form_state, array $field_state) {
+    NestedArray::setValue($form_state->getStorage(), ['search_results'], $field_state);
   }
 
   /**
