@@ -182,6 +182,7 @@ class EmbridgeSearchForm extends FormBase {
     ];
     $form['search'] = [
       '#type' => 'submit',
+      '#submit' => ['::searchSubmit'],
       '#ajax' => $ajax_settings,
       '#value' => $this->t('Search'),
       // Hide the button.
@@ -342,13 +343,6 @@ class EmbridgeSearchForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
-
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     $clicked_button = end($form_state->getTriggeringElement()['#parents']);
     if ($clicked_button == 'submit') {
@@ -465,6 +459,23 @@ class EmbridgeSearchForm extends FormBase {
     }
 
     return $render_array;
+  }
+
+  /**
+   * Submission handler for the "Search" button.
+   *
+   * @param array $form
+   *   The form.
+   * @param FormStateInterface $form_state
+   *   The form state.
+   */
+  public function searchSubmit(array $form, FormStateInterface $form_state) {
+    // Reset the pager.
+    $modal_state = self::getModalState($form_state);
+    $modal_state['page'] = 1;
+    self::setModalState($form_state, $modal_state);
+
+    $form_state->setRebuild();
   }
 
   /**
