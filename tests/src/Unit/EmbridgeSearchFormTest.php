@@ -632,4 +632,83 @@ class EmbridgeSearchFormTest extends FormTestBase {
       ->willReturn($formatted_settings);
   }
 
+  /**
+   * Test nextPageSubmit().
+   *
+   * GIVEN the embridge search form
+   * WHEN the submit handler for the next button is run
+   * THEN the page variable in storage should be incremented by 1
+   * AND the form state should be set to rebuild.
+   *
+   * @test
+   */
+  public function nextPageSubmitIncrementsPageInStorage() {
+    $storage = [
+      'search_results' => [
+        'page' => 1,
+      ],
+    ];
+    $form_state = new FormState();
+    $form_state->setStorage($storage);
+    $form = [];
+
+    $this->form->nextPageSubmit($form, $form_state);
+
+    $this->assertTrue($form_state->isRebuilding());
+    $this->assertEquals(2, $form_state->getStorage()['search_results']['page']);
+  }
+
+  /**
+   * Test previousPageSubmit().
+   *
+   * GIVEN the embridge search form
+   * WHEN the submit handler for the previous button is run
+   * THEN the page variable in storage should be decremented by 1
+   * AND the form state should be set to rebuild.
+   *
+   * @test
+   */
+  public function previousPageSubmitDecrementsPageInStorage() {
+    $storage = [
+      'search_results' => [
+        'page' => 4,
+      ],
+    ];
+    $form_state = new FormState();
+    $form_state->setStorage($storage);
+    $form = [];
+
+    $this->form->previousPageSubmit($form, $form_state);
+
+    $this->assertTrue($form_state->isRebuilding());
+    $this->assertEquals(3, $form_state->getStorage()['search_results']['page']);
+  }
+
+
+  /**
+   * Test searchSubmit().
+   *
+   * GIVEN the embridge search form
+   * WHEN the submit handler for the search button is run
+   * THEN the page variable in storage should be reset back to 1
+   * AND the form state should be set to rebuild.
+   *
+   * @test
+   */
+  public function searchSubmitResetsPageInStorage() {
+    $storage = [
+      'search_results' => [
+        'page' => 4,
+      ],
+    ];
+    $form_state = new FormState();
+    $form_state->setStorage($storage);
+    $form = [];
+
+    $this->form->searchSubmit($form, $form_state);
+
+    $this->assertTrue($form_state->isRebuilding());
+    $this->assertEquals(1, $form_state->getStorage()['search_results']['page']);
+  }
+
 }
