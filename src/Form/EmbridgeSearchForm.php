@@ -173,7 +173,7 @@ class EmbridgeSearchForm extends FormBase {
     );
 
     $ajax_settings = [
-      'callback' => '::searchAjaxCallback',
+      'callback' => '::searchAjax',
       'wrapper' => self::AJAX_WRAPPER_ID,
       'effect' => 'fade',
       'progress' => [
@@ -320,7 +320,7 @@ class EmbridgeSearchForm extends FormBase {
       // No regular submit-handler. This form only works via JavaScript.
       '#submit' => array(),
       '#ajax' => array(
-        'callback' => '::submitFormSelection',
+        'callback' => '::selectItemAjax',
         'event' => 'click',
       ),
       // Hide the button.
@@ -478,7 +478,7 @@ class EmbridgeSearchForm extends FormBase {
    * @return \Drupal\Core\Ajax\AjaxResponse
    *   An ajax response to replace the form.
    */
-  public function searchAjaxCallback(array &$form, FormStateInterface $form_state) {
+  public function searchAjax(array &$form, FormStateInterface $form_state) {
     return $this->ajaxRenderFormAndMessages($form);
   }
 
@@ -513,6 +513,25 @@ class EmbridgeSearchForm extends FormBase {
     return $response;
   }
 
+
+  /**
+   * {@inheritdoc}
+   */
+  public function selectItemAjax(array &$form, FormStateInterface $form_state) {
+    $errors = $form_state->getErrors();
+    if ($errors) {
+      return self::ajaxRenderFormAndMessages($form);
+    }
+    $response = new AjaxResponse();
+
+    // Hidden input value set by javascript.
+    $values = $form_state->getValues();
+    $values['entity_id'] = $form_state->getUserInput()['result_chosen'];
+    $response->addCommand(new EmbridgeSearchSave($values));
+    $response->addCommand(new CloseModalDialogCommand());
+
+    return $response;
+  }
 
   /**
    * {@inheritdoc}
