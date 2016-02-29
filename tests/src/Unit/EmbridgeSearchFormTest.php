@@ -431,20 +431,20 @@ class EmbridgeSearchFormTest extends FormTestBase {
   }
 
   /**
-   * Tests searchAjaxCallback().
+   * Tests searchAjax().
    *
-   * @covers ::searchAjaxCallback
+   * @covers ::searchAjax
    * @covers ::ajaxRenderFormAndMessages
    *
    * @test
    */
-  public function searchAjaxCallbackReturnsAjaxResponse() {
+  public function searchAjaxReturnsAjaxResponse() {
     $form = [
       '#attached' => ['test'],
     ];
     $form_state = new FormState();
 
-    $response = $this->form->searchAjaxCallback($form, $form_state);
+    $response = $this->form->searchAjax($form, $form_state);
 
     $this->assertInstanceOf('\Drupal\Core\Ajax\AjaxResponse', $response);
     $commands = $response->getCommands();
@@ -456,20 +456,20 @@ class EmbridgeSearchFormTest extends FormTestBase {
   }
 
   /**
-   * Tests submitFormSelection().
+   * Tests selectItemAjax().
    *
-   * @covers ::submitFormSelection
+   * @covers ::selectItemAjax
    *
    * @test
    */
-  public function submitFormSelectionAjaxCallbackReturnsReplaceHtmlWhenErrorsExist() {
+  public function selectItemAjaxAjaxCallbackReturnsReplaceHtmlWhenErrorsExist() {
     $form = [
       '#attached' => ['test'],
     ];
     $form_state = new FormState();
     $form_state->setErrorByName('test', 'test error');
 
-    $response = $this->form->submitFormSelection($form, $form_state);
+    $response = $this->form->selectItemAjax($form, $form_state);
 
     $this->assertInstanceOf('\Drupal\Core\Ajax\AjaxResponse', $response);
     $commands = $response->getCommands();
@@ -481,13 +481,13 @@ class EmbridgeSearchFormTest extends FormTestBase {
   }
 
   /**
-   * Tests submitFormSelection().
+   * Tests selectItemAjax().
    *
-   * @covers ::submitFormSelection
+   * @covers ::selectItemAjax
    *
    * @test
    */
-  public function submitFormSelectionAjaxCallbackReturnsSaveSearchCloseDialogWithNoErrors() {
+  public function selectItemAjaxAjaxCallbackReturnsSaveSearchCloseDialogWithNoErrors() {
     $form = [
       '#attached' => ['test'],
     ];
@@ -498,7 +498,7 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $form_state = new FormState();
     $form_state->setUserInput($input);
 
-    $response = $this->form->submitFormSelection($form, $form_state);
+    $response = $this->form->selectItemAjax($form, $form_state);
 
     $this->assertInstanceOf('\Drupal\Core\Ajax\AjaxResponse', $response);
     $commands = $response->getCommands();
