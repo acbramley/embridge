@@ -139,6 +139,10 @@ class EmbridgeSearchFormTest extends FormTestBase {
   /**
    * Tests buildForm calls what we expect.
    *
+   * GIVEN the embridge search form
+   * WHEN buildForm is run
+   * THEN we should have a form structured as we expect.
+   *
    * @covers ::buildForm
    * @covers ::getSearchResults
    * @covers ::formatSearchResults
@@ -172,6 +176,10 @@ class EmbridgeSearchFormTest extends FormTestBase {
 
   /**
    * Tests buildForm defaults values from user input, passes filters to client.
+   *
+   * GIVEN the embridge search form
+   * WHEN the user has previously entered information
+   * THEN fields should be populated with that information.
    *
    * @covers ::buildForm
    *
@@ -242,6 +250,10 @@ class EmbridgeSearchFormTest extends FormTestBase {
   /**
    * Tests buildForm when the search returns no results.
    *
+   * GIVEN the embridge search form
+   * WHEN buildForm runs and the API returns no results
+   * THEN empty text markup should be displayed.
+   *
    * @covers ::buildForm
    *
    * @test
@@ -310,6 +322,10 @@ class EmbridgeSearchFormTest extends FormTestBase {
   /**
    * Tests validateForm when the submit button is pressed.
    *
+   * GIVEN the embridge search form
+   * WHEN the validateForm function is run
+   * THEN no errors should be thrown validation passes.
+   *
    * @covers ::validateForm
    *
    * @test
@@ -329,6 +345,10 @@ class EmbridgeSearchFormTest extends FormTestBase {
 
   /**
    * Tests validateForm when the submit button is pressed.
+   *
+   * GIVEN the embridge search form
+   * WHEN the validateForm function is run
+   * THEN an error should be thrown when the asset chosen doesn't exist.
    *
    * @covers ::validateForm
    *
@@ -373,6 +393,10 @@ class EmbridgeSearchFormTest extends FormTestBase {
 
   /**
    * Tests validateForm when the submit button is pressed.
+   *
+   * GIVEN the embridge search form
+   * WHEN the validateForm function is run
+   * THEN an error should be thrown when the asset chosen fails validation.
    *
    * @covers ::validateForm
    *
@@ -433,6 +457,10 @@ class EmbridgeSearchFormTest extends FormTestBase {
   /**
    * Tests searchAjax().
    *
+   * GIVEN the embridge search form
+   * WHEN the ajax handler for the search button is run
+   * THEN an ajax response should be returned with the expected commands.
+   *
    * @covers ::searchAjax
    * @covers ::ajaxRenderFormAndMessages
    *
@@ -458,6 +486,10 @@ class EmbridgeSearchFormTest extends FormTestBase {
   /**
    * Tests selectItemAjax().
    *
+   * GIVEN the embridge search form
+   * WHEN the ajax handler for the select button is run with errors
+   * THEN an ajax response should be returned with the expected commands.
+   *
    * @covers ::selectItemAjax
    *
    * @test
@@ -482,6 +514,10 @@ class EmbridgeSearchFormTest extends FormTestBase {
 
   /**
    * Tests selectItemAjax().
+   *
+   * GIVEN the embridge search form
+   * WHEN the ajax handler for the select button is run
+   * THEN an ajax response should be returned with the expected commands.
    *
    * @covers ::selectItemAjax
    *
