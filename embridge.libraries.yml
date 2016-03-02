@@ -1,5 +1,7 @@
 embridge.lib:
   version: VERSION
+  css:
+      css/asset_search.css: {}
   js:
     js/embridge.js: {}
   dependencies:
