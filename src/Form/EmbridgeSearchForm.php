@@ -152,24 +152,23 @@ class EmbridgeSearchForm extends FormBase {
       '#value' => $field_name,
     ];
 
+    $operation_options = [
+        'startswith' => $this->t('Starts with'),
+        'matches' => $this->t('Matches'),
+    ];
+    $form['filters']['filename_op'] = array(
+        '#type' => 'select',
+        '#title' => $this->t('Operation'),
+        '#options' => $operation_options,
+        '#default_value' => !empty($input['filename_op']) ? $input['filename_op'] : '',
+    );
+
     $form['filters']['filename'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Search by filename'),
       '#description' => $this->t('Filter the search by filename'),
       '#size' => 20,
       '#default_value' => !empty($input['filename']) ? $input['filename'] : '',
-    );
-
-    $operation_options = [
-      'startswith' => $this->t('Starts with'),
-      'matches' => $this->t('Matches'),
-    ];
-    $form['filters']['filename_op'] = array(
-      '#type' => 'select',
-      '#title' => $this->t('Operation'),
-      '#options' => $operation_options,
-      '#description' => $this->t('Operation to apply to filename search'),
-      '#default_value' => !empty($input['filename_op']) ? $input['filename_op'] : '',
     );
 
     $ajax_settings = [
