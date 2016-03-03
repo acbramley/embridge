@@ -156,6 +156,10 @@ class EmbridgeSearchForm extends FormBase {
         'startswith' => $this->t('Starts with'),
         'matches' => $this->t('Matches'),
     ];
+    $form['filters'] = array (
+      //Opens div containing search form
+      '#prefix' => '<div class="searchForm"><span class="searchTitle">Search by filename</span>',
+    );
     $form['filters']['filename_op'] = array(
         '#type' => 'select',
         '#title' => $this->t('Operation'),
@@ -166,9 +170,10 @@ class EmbridgeSearchForm extends FormBase {
     $form['filters']['filename'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Search by filename'),
-      '#description' => $this->t('Filter the search by filename'),
       '#size' => 20,
       '#default_value' => !empty($input['filename']) ? $input['filename'] : '',
+      // Start the 'More search options' wrapper
+      '#suffix' => '<div class="moreOptions"><a href="#options" data-toggle="collapse">More search options</a><div id="options" class="collapse">',
     );
 
     $ajax_settings = [
@@ -184,6 +189,10 @@ class EmbridgeSearchForm extends FormBase {
       '#submit' => ['::searchSubmit'],
       '#ajax' => $ajax_settings,
       '#value' => $this->t('Search'),
+      //Closes div containing 'More search options' wrapper
+      '#prefix' => '</div></div>',
+      //Closes div cotaining search form
+      '#suffix' => '</div>',
       // Hide the button.
       '#attributes' => array(
         'class' => array(

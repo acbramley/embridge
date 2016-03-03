@@ -51,4 +51,27 @@
     jQuery('input[name="' + field_name + '_' + delta + '_upload_button"]').trigger('mousedown');
   };
 
+  /**
+   * Enables bootstrap collapse for 'more options'
+   */
+  Drupal.behaviors.embridge_search_ui = {
+    attach: function (context, settings) {
+      //Hide collapsed sections on load
+      $(".collapse").each(function() {
+        $(this).hide();
+      });
+
+      //Switch the "Open" and "Close" state per click then slide up/down (depending on open/close state)
+      $('a[data-toggle="collapse"]').click(function(){
+        $(this).next('.collapse').toggleClass("active").slideToggle();
+        if($(this).next('.collapse').filter(".active").length){
+          $(this).text("Hide search options")
+        } else {
+          $(this).text("More search options")
+        }
+        return false;
+      });
+    }
+  };
+
 })(jQuery, Drupal);
