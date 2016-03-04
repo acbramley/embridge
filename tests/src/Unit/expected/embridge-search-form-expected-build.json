@@ -8,12 +8,14 @@
     "#value": "field_test"
   },
   "filters": {
-    "filename": {
-      "#type": "textfield",
-      "#title": "Search by filename",
-      "#description": "Filter the search by filename",
-      "#size": 20,
-      "#default_value": ""
+    "#type": "container",
+    "#attributes": {
+      "class": [
+        "search-form"
+      ]
+    },
+    "title": {
+      "#markup": "\u003Cspan class=\u0022search-title\u0022\u003ESearch by filename\u003C\/span\u003E"
     },
     "filename_op": {
       "#type": "select",
@@ -22,62 +24,73 @@
         "startswith": "Starts with",
         "matches": "Matches"
       },
-      "#description": "Operation to apply to filename search",
       "#default_value": ""
     },
-    "libraries": {
-      "#type": "select",
-      "#title": "Libraries",
-      "#options": {
-        "0": "-- Select --",
-        "engineering": "Engineering Courses (2)",
-        "productlaunchfall": "Product Launch Fall Quarter (2)",
-        "southamericanexpo": "South American Expo (1)",
-        "cominghome": "Coming Home (1)"
-      },
+    "filename": {
+      "#type": "textfield",
+      "#title": "Search by filename",
+      "#size": 20,
       "#default_value": ""
     },
-    "assettype": {
-      "#type": "select",
-      "#title": "Asset Type",
-      "#options": {
-        "0": "-- Select --",
-        "photo": "Artwork (1)",
-        "document": "Stories (1)",
-        "audio": "Audio Clips (1)"
+    "search": {
+      "#type": "submit",
+      "#submit": [
+        "::searchSubmit"
+      ],
+      "#ajax": {
+        "callback": "::searchAjax",
+        "wrapper": "embridge-results-wrapper",
+        "effect": "fade",
+        "progress": {
+          "type": "throbber"
+        }
       },
-      "#default_value": ""
-    },
-    "fileformat": {
-      "#type": "select",
-      "#title": "File Format",
-      "#options": {
-        "0": "-- Select --",
-        "jpg": "JPG (1)",
-        "aac": "aac (1)",
-        "pdf": "PDF (1)"
-      },
-      "#default_value": ""
-    }
-  },
-  "search": {
-    "#type": "submit",
-    "#submit": [
-      "::searchSubmit"
-    ],
-    "#ajax": {
-      "callback": "::searchAjax",
-      "wrapper": "embridge-results-wrapper",
-      "effect": "fade",
-      "progress": {
-        "type": "throbber"
+      "#value": "Search",
+      "#attributes": {
+        "class": [
+          "embridge-ajax-search-submit"
+        ]
       }
     },
-    "#value": "Search",
-    "#attributes": {
-      "class": [
-        "embridge-ajax-search-submit"
-      ]
+    "extra_filters": {
+      "#markup": "\u003Cdiv class=\u0022moreOptions\u0022\u003E\u003Ca href=\u0022#options\u0022 data-toggle=\u0022collapse\u0022\u003EMore search options\u003C\/a\u003E\u003Cdiv id=\u0022options\u0022 class=\u0022collapse\u0022\u003E",
+      "libraries": {
+        "#type": "select",
+        "#title": "Libraries",
+        "#options": {
+          "0": "-- Select --",
+          "engineering": "Engineering Courses (2)",
+          "productlaunchfall": "Product Launch Fall Quarter (2)",
+          "southamericanexpo": "South American Expo (1)",
+          "cominghome": "Coming Home (1)"
+        },
+        "#default_value": ""
+      },
+      "assettype": {
+        "#type": "select",
+        "#title": "Asset Type",
+        "#options": {
+          "0": "-- Select --",
+          "photo": "Artwork (1)",
+          "document": "Stories (1)",
+          "audio": "Audio Clips (1)"
+        },
+        "#default_value": ""
+      },
+      "fileformat": {
+        "#type": "select",
+        "#title": "File Format",
+        "#options": {
+          "0": "-- Select --",
+          "jpg": "JPG (1)",
+          "aac": "aac (1)",
+          "pdf": "PDF (1)"
+        },
+        "#default_value": ""
+      }
+    },
+    "close_extra_filters": {
+      "#markup": "\u003C\/div\u003E\u003C\/div\u003E"
     }
   },
   "upload_validators": {
