@@ -237,9 +237,9 @@ class EmbridgeSearchFormTest extends FormTestBase {
 
     $this->assertEquals($input['filename'], $build['filters']['filename']['#default_value']);
     $this->assertEquals($input['filename_op'], $build['filters']['filename_op']['#default_value']);
-    $this->assertEquals($input['libraries'], $build['filters']['libraries']['#default_value']);
-    $this->assertEquals($input['assettype'], $build['filters']['assettype']['#default_value']);
-    $this->assertEquals($input['fileformat'], $build['filters']['fileformat']['#default_value']);
+    $this->assertEquals($input['libraries'], $build['filters']['extra_filters']['libraries']['#default_value']);
+    $this->assertEquals($input['assettype'], $build['filters']['extra_filters']['assettype']['#default_value']);
+    $this->assertEquals($input['fileformat'], $build['filters']['extra_filters']['fileformat']['#default_value']);
     $this->assertEquals($input['result_chosen'], $build['result_chosen']['#value']);
 
     // Filters that shouldn't exist.
@@ -304,10 +304,12 @@ class EmbridgeSearchFormTest extends FormTestBase {
       file_get_contents('expected/search-expected-empty-response.json', TRUE)
     );
 
+    $page = 1;
+    $per_page = 8;
     $this->client
       ->expects($this->once())
       ->method('search')
-      ->with(1, 20, $filters)
+      ->with($page, $per_page, $filters)
       ->willReturn($search_response);
 
     $build = $this->form->buildForm($form, $form_state, $entity_type, $bundle, $field_name, $delta);
@@ -608,10 +610,12 @@ class EmbridgeSearchFormTest extends FormTestBase {
       file_get_contents('expected/search-expected-small-response.json', TRUE)
     );
 
+    $per_page = 8;
+    $page = 1;
     $this->client
       ->expects($this->once())
       ->method('search')
-      ->with(1, 20, $filters)
+      ->with($page, $per_page, $filters)
       ->willReturn($search_response);
 
     // Entity type storage mocking.
