@@ -62,7 +62,7 @@
       });
 
       //Switch the "Open" and "Close" state per click then slide up/down (depending on open/close state)
-      $('a[data-toggle="collapse"]').click(function(){
+      $('a[data-toggle="collapse"]', context).once('embridge').click(function(){
         $(this).next('.collapse').toggleClass("active").slideToggle();
         if($(this).next('.collapse').filter(".active").length){
           $(this).text("Hide search options")
