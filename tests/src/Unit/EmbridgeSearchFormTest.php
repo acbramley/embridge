@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  *
  * @package Drupal\Tests\embridge\Unit
  *
- * @coversClass \Drupal\embridge\Form\EmbridgeSearchForm
+ * @coversDefaultClass \Drupal\embridge\Form\EmbridgeSearchForm
  */
 class EmbridgeSearchFormTest extends FormTestBase {
   const MOCK_FIELD_SETTINGS_FILE_EXTENSIONS = 'txt,pdf,jpeg';

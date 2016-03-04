@@ -24,6 +24,8 @@ if (!defined('FILE_STATUS_PERMANENT')) {
  * Class EnterMediaAssetHelperTest.
  *
  * @package Drupal\Tests\embridge\Unit
+ * 
+ * @coversDefaultClass \Drupal\embridge\EnterMediaAssetHelper
  */
 class EnterMediaAssetHelperTest extends UnitTestCase {
   /**
@@ -128,7 +130,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
    * Tests searchResultToAsset().
    *
    * @covers ::searchResultToAsset
-   * @covers ::assetFromAssetId
+   * @covers ::loadFromAssetId
    *
    * @test
    */
@@ -178,7 +180,7 @@ class EnterMediaAssetHelperTest extends UnitTestCase {
    * Tests searchResultToAsset().
    *
    * @covers ::searchResultToAsset
-   * @covers ::assetFromAssetId
+   * @covers ::loadFromAssetId
    *
    * @test
    */
