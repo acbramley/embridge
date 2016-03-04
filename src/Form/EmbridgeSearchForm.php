@@ -158,7 +158,7 @@ class EmbridgeSearchForm extends FormBase {
     ];
     $form['filters'] = array (
       //Opens div containing search form
-      '#prefix' => '<div class="searchForm"><span class="searchTitle">Search by filename</span>',
+      '#prefix' => '<div class="search-form"><span class="search-title">Search by filename</span>',
     );
     $form['filters']['filename_op'] = array(
         '#type' => 'select',

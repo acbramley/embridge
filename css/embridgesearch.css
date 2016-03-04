@@ -4,7 +4,7 @@
  */
 
 /* Basic layout */
-.embridge-search-form .searchForm {
+.embridge-search-form .search-form {
     position: relative;
     display: block;
     overflow: hidden;
@@ -16,7 +16,7 @@
     border-radius: 2px 2px 0 0;
 }
 
-.embridge-search-form .searchForm span {
+.embridge-search-form .search-form span {
     display: block;
     font-weight: bold;
 }
@@ -55,7 +55,7 @@
 }
 
 /* Search button */
-.embridge-search-form .searchForm .form-submit {
+.embridge-search-form .search-form .form-submit {
     width: 12%;
     position: absolute;
     right: 0.5rem;
@@ -65,8 +65,33 @@
 }
 
 /* More options */
-.embridge-search-form .searchForm .collapse {
+.embridge-search-form .search-form .collapse {
     margin: 0.5rem 0 0;
     padding: 0.5rem 0 0;
     border-top: 2px solid #d6d6d6;
+}
+
+/* Search result tiles */
+.embridge-choose-file {
+    display: inline-block;
+    height: 200px;
+    width: 200px;
+    margin: 0 0.25rem 0.5rem 0;
+    padding: 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    border: 2px solid #d6d6d6;
+    border-radius: 4px;
+    box-shadow: 1px 2px 3px #d6d6d6;
+}
+.embridge-choose-file:hover,
+.embridge-choose-file:focus,
+.embridge-choose-file:active {
+    margin: 0.1rem 0.15rem 0.4rem 0.1rem;
+    box-shadow: none;
+    background: #eeeeee;
+}
+.embridge-choose-file:focus,
+.embridge-choose-file:active {
+    background: #0074bd;
 }
