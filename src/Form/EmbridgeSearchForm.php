@@ -152,24 +152,31 @@ class EmbridgeSearchForm extends FormBase {
       '#value' => $field_name,
     ];
 
-    $form['filters']['filename'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('Search by filename'),
-      '#description' => $this->t('Filter the search by filename'),
-      '#size' => 20,
-      '#default_value' => !empty($input['filename']) ? $input['filename'] : '',
-    );
-
     $operation_options = [
       'startswith' => $this->t('Starts with'),
       'matches' => $this->t('Matches'),
+    ];
+
+    $form['filters'] = [
+      // Opens div containing search form.
+      '#type' => 'container',
+      '#attributes' => [
+        'class' => ['search-form'],
+      ],
+      'title' => ['#markup' => '<span class="search-title">' . $this->t('Search by filename') . '</span>'],
     ];
     $form['filters']['filename_op'] = array(
       '#type' => 'select',
       '#title' => $this->t('Operation'),
       '#options' => $operation_options,
-      '#description' => $this->t('Operation to apply to filename search'),
       '#default_value' => !empty($input['filename_op']) ? $input['filename_op'] : '',
+    );
+
+    $form['filters']['filename'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('Search by filename'),
+      '#size' => 20,
+      '#default_value' => !empty($input['filename']) ? $input['filename'] : '',
     );
 
     $ajax_settings = [
@@ -180,7 +187,7 @@ class EmbridgeSearchForm extends FormBase {
         'type' => 'throbber',
       ],
     ];
-    $form['search'] = [
+    $form['filters']['search'] = [
       '#type' => 'submit',
       '#submit' => ['::searchSubmit'],
       '#ajax' => $ajax_settings,
@@ -238,6 +245,10 @@ class EmbridgeSearchForm extends FormBase {
     $page = $modal_state['page'];
     $search_response = $this->getSearchResults($page, $filters);
 
+    $title = $this->t('More search options');
+    $form['filters']['extra_filters'] = [
+      '#markup' => '<div class="moreOptions"><a href="#options" data-toggle="collapse">' . $title . '</a><div id="options" class="collapse">',
+    ];
     // Add filters from search response.
     if (!empty($search_response['filteroptions'])) {
       foreach ($search_response['filteroptions'] as $filter) {
@@ -251,7 +262,7 @@ class EmbridgeSearchForm extends FormBase {
         foreach ($filter['children'] as $option) {
           $filter_options[$option['id']] = $this->t('@name (@count)', ['@name' => $option['name'], '@count' => $option['count']]);
         }
-        $form['filters'][$filter['id']] = [
+        $form['filters']['extra_filters'][$filter['id']] = [
           '#type' => 'select',
           '#title' => $this->t('@name', ['@name' => $filter['name']]),
           '#options' => $filter_options,
@@ -259,6 +270,10 @@ class EmbridgeSearchForm extends FormBase {
         ];
       }
     }
+    $form['filters']['close_extra_filters'] = [
+      // Start the 'More search options' wrapper.
+      '#markup' => '</div></div>',
+    ];
 
     // Store the upload validators for the validation hook.
     $upload_validators = $this->assetHelper->formatUploadValidators($field_settings);
@@ -419,7 +434,7 @@ class EmbridgeSearchForm extends FormBase {
    *   A search response array.
    */
   private function getSearchResults($page, array $filters = []) {
-    $num_per_page = 20;
+    $num_per_page = 8;
     $search_response = $this->client->search($page, $num_per_page, $filters);
 
     return $search_response;

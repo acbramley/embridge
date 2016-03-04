@@ -1,5 +1,8 @@
 embridge.lib:
   version: VERSION
+  css:
+    theme:
+      css/embridgesearch.css: {}
   js:
     js/embridge.js: {}
   dependencies:
