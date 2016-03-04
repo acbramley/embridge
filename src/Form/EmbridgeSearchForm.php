@@ -434,7 +434,7 @@ class EmbridgeSearchForm extends FormBase {
    *   A search response array.
    */
   private function getSearchResults($page, array $filters = []) {
-    $num_per_page = 20;
+    $num_per_page = 8;
     $search_response = $this->client->search($page, $num_per_page, $filters);
 
     return $search_response;
