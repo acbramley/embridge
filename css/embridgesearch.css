@@ -95,3 +95,7 @@
 .embridge-choose-file:active {
     background: #0074bd;
 }
+
+.hidden-button.button {
+    display: none;
+}
