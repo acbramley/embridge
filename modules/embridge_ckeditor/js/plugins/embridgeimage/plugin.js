@@ -8,6 +8,7 @@
  *   like any other) instead of CKEditor's own dialogs.
  *
  * @see \Drupal\embridge_ckeditor\Form\EmbridgeCkeditorImageDialog
+ * @see core/modules/ckeditor/js/plugins/drupalimage/plugin.js
  *
  * @ignore
  */
@@ -21,7 +22,7 @@
 
     beforeInit: function (editor) {
       // Override the image2 widget definition to require and handle the
-      // additional data-entity-type and data-entity-uuid attributes.
+      // additional data-entity-type, data-entity-uuid, and data-align attributes.
       editor.on('widgetDefinition', function (event) {
         var widgetDefinition = event.data;
         if (widgetDefinition.name !== 'image') {
