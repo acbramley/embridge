@@ -375,7 +375,7 @@ class EmbridgeAsset extends FormElement {
     ];
 
     // Build link for dialog.
-    if (\Drupal::currentUser()->hasPermission('search embridge assets')) {
+    if ($element['#allow_search'] && \Drupal::currentUser()->hasPermission('search embridge assets')) {
       $url_options = [
         'entity_type' => $element['#entity_type'],
         'bundle' => $element['#bundle'],
