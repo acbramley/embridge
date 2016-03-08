@@ -9,6 +9,7 @@ namespace Drupal\embridge\Plugin\Field\FieldType;
 use Drupal\Component\Utility\Bytes;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\embridge\Entity\EmbridgeCatalog;
 use Drupal\file\Plugin\Field\FieldType\FileItem;
 
 /**
@@ -87,11 +88,7 @@ class EmbridgeAssetItem extends FileItem {
     $element = array();
     $settings = $this->getSettings();
 
-    /** @var ConfigEntityStorage $catalog_storage */
-    $catalog_storage = \Drupal::entityTypeManager()->getStorage('embridge_catalog');
-    $catalog_query = $catalog_storage->getQuery();
-    $entity_ids = array_keys($catalog_query->execute());
-    $entities = $catalog_storage->loadMultiple($entity_ids);
+    $entities = EmbridgeCatalog::loadMultiple();
 
     $options = [];
     foreach ($entities as $entity) {
