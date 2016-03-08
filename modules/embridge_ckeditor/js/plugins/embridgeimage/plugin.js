@@ -1,14 +1,13 @@
 /**
  * @file
- * Drupal Image plugin.
+ * Embridge Image plugin.
  *
  * This alters the existing CKEditor image2 widget plugin to:
- * - require a data-entity-type and a data-entity-uuid attribute (which Drupal
- *   uses to track where images are being used)
+ * - Upload images to EMDB and allow altering of various data attributes.
  * - use a Drupal-native dialog (that is in fact just an alterable Drupal form
  *   like any other) instead of CKEditor's own dialogs.
  *
- * @see \Drupal\editor\Form\EditorImageDialog
+ * @see \Drupal\embridge_ckeditor\Form\EmbridgeCkeditorImageDialog
  *
  * @ignore
  */
@@ -259,9 +258,9 @@
         exec: function (editor, data) {
           var dialogSettings = {
             title: data.dialogTitle,
-            dialogClass: 'editor-image-dialog'
+            dialogClass: 'embridge-ckeditor-image-dialog'
           };
-          Drupal.ckeditor.openDialog(editor, Drupal.url('editor/dialog/image/' + editor.config.drupal.format), data.existingValues, data.saveCallback, dialogSettings);
+          Drupal.ckeditor.openDialog(editor, Drupal.url('embridge_ckeditor/dialog/embridge_image/' + editor.config.drupal.format), data.existingValues, data.saveCallback, dialogSettings);
         }
       });
 
@@ -346,7 +345,7 @@
   function getFocusedWidget(editor) {
     var widget = editor.widgets.focused;
 
-    if (widget && widget.name === 'image') {
+    if (widget && widget.name === 'embridgeimage') {
       return widget;
     }
 
