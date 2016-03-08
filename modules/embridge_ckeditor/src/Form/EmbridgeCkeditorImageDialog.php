@@ -142,7 +142,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     // offer the ability to change the alignment.
     if ($filter_format->filters('filter_align')->status) {
       $data_align = !empty($image_element['data-align']) ? $image_element['data-align'] : '';
-      $form['attributes']['align'] = array(
+      $form['attributes']['data-align'] = array(
         '#title' => $this->t('Align'),
         '#type' => 'select',
         '#options' => array(
@@ -151,7 +151,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
           'center' => $this->t('Center'),
           'right' => $this->t('Right'),
         ),
-        '#default_value' => $data_align === '' ? 'none' : $data_align,
+        '#default_value' => $data_align,
       );
     }
 

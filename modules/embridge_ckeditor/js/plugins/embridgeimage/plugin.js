@@ -71,6 +71,7 @@
         widgetDefinition.requiredContent = new CKEDITOR.style(requiredContent);
         widgetDefinition.allowedContent.img.attributes['!data-entity-type'] = true;
         widgetDefinition.allowedContent.img.attributes['!data-entity-uuid'] = true;
+        widgetDefinition.allowedContent.img.attributes['!data-align'] = true;
 
         // Override downcast(): since we only accept <img> in our upcast method,
         // the element is already correct. We only need to update the element's
@@ -78,6 +79,7 @@
         widgetDefinition.downcast = function (element) {
           element.attributes['data-entity-type'] = this.data['data-entity-type'];
           element.attributes['data-entity-uuid'] = this.data['data-entity-uuid'];
+          element.attributes['data-align'] = this.data['data-align'];
         };
 
         // We want to upcast <img> elements to a DOM structure required by the
@@ -96,6 +98,8 @@
           data['data-entity-type'] = element.attributes['data-entity-type'];
           // Parse the data-entity-uuid attribute.
           data['data-entity-uuid'] = element.attributes['data-entity-uuid'];
+          // Parse the data-align attribute.
+          data['data-align'] = element.attributes['data-align'];
 
           return element;
         };
@@ -135,7 +139,8 @@
           'width': 'width',
           'height': 'height',
           'data-entity-type': 'data-entity-type',
-          'data-entity-uuid': 'data-entity-uuid'
+          'data-entity-uuid': 'data-entity-uuid',
+          'data-align': 'data-align'
         };
 
         // Protected; transforms widget's data object to the format used by the
@@ -251,8 +256,8 @@
       // Register the "editembridgeimage" command, which essentially just replaces
       // the "image" command's CKEditor dialog with a Drupal-native dialog.
       editor.addCommand('editembridgeimage', {
-        allowedContent: 'img[alt,!src,width,height,!data-entity-type,!data-entity-uuid]',
-        requiredContent: 'img[alt,src,width,height,data-entity-type,data-entity-uuid]',
+        allowedContent: 'img[alt,!src,width,height,!data-entity-type,!data-entity-uuid,!data-align]',
+        requiredContent: 'img[alt,src,width,height,data-entity-type,data-entity-uuid,data-align]',
         modes: {wysiwyg: 1},
         canUndo: true,
         exec: function (editor, data) {
