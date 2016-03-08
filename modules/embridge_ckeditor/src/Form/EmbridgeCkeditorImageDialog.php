@@ -8,6 +8,10 @@
 namespace Drupal\embridge_ckeditor\Form;
 
 use Drupal\Component\Utility\Bytes;
+use Drupal\Core\Entity\EntityRepository;
+use Drupal\Core\Entity\EntityRepositoryInterface;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\embridge\EnterMediaAssetHelperInterface;
@@ -28,11 +32,18 @@ class EmbridgeCkeditorImageDialog extends FormBase {
   const AJAX_WRAPPER_ID = 'embridge-ckeditor-image-dialog-form';
 
   /**
-   * The asset storage service.
+   * The entity type manager service.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $assetStorage;
+  protected $entityTypeManager;
+
+  /**
+   * The entity repository service.
+   *
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
+   */
+  protected $entityRepository;
 
   /**
    * The asset helper service.
@@ -44,13 +55,16 @@ class EmbridgeCkeditorImageDialog extends FormBase {
   /**
    * Constructs a form object for image dialog.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $asset_storage
-   *   The embridge asset entity storage service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager service.
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
+   *   The entity repository service.
    * @param \Drupal\embridge\EnterMediaAssetHelperInterface $asset_helper
    *   The asset helper service.
    */
-  public function __construct(EntityStorageInterface $asset_storage, EnterMediaAssetHelperInterface $asset_helper) {
-    $this->assetStorage = $asset_storage;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityRepositoryInterface $entity_repository, EnterMediaAssetHelperInterface $asset_helper) {
+    $this->entityTypeManager = $entity_type_manager;
+    $this->entityRepository = $entity_repository;
     $this->assetHelper = $asset_helper;
   }
 
@@ -59,7 +73,8 @@ class EmbridgeCkeditorImageDialog extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity.manager')->getStorage('embridge_asset_entity'),
+      $container->get('entity_type.manager'),
+      $container->get('entity.repository'),
       $container->get('embridge.asset_helper')
     );
   }
@@ -101,14 +116,14 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     $form['#prefix'] = '<div id="' . self::AJAX_WRAPPER_ID . '">';
     $form['#suffix'] = '</div>';
 
-    $editor = editor_load($filter_format->id());
-
+    /** @var \Drupal\editor\Entity\Editor $editor */
+    $editor = $this->entityTypeManager->getStorage('editor')->load($filter_format->id());
 
     // Construct strings to use in the upload validators.
     $embridge_image_settings = $editor->getSettings()['plugins']['embridgeimage']['embridge_image_upload'];
     $max_filesize = min(Bytes::toInt($embridge_image_settings['max_size']), file_upload_max_size());
 
-    $existing_asset = isset($image_element['data-entity-uuid']) ? \Drupal::entityManager()->loadEntityByUuid('embridge_asset_entity', $image_element['data-entity-uuid']) : NULL;
+    $existing_asset = isset($image_element['data-entity-uuid']) ? $this->entityRepository->loadEntityByUuid('embridge_asset_entity', $image_element['data-entity-uuid']) : NULL;
     $asset_id = $existing_asset ? $existing_asset->id() : NULL;
 
     $form['fid'] = array(
@@ -183,9 +198,9 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     $fid = $form_state->getValue(array('fid', 0));
     if (!empty($fid)) {
       /** @var \Drupal\embridge\EmbridgeAssetEntityInterface $asset */
-      $asset = $this->assetStorage->load($fid);
-      /** @var EmbridgeCatalog $catalog */
-      $catalog = EmbridgeCatalog::load($form['fid']['#catalog_id']);
+      $asset = $this->entityTypeManager->getStorage('embridge_asset_entity')->load($fid);
+      /** @var \Drupal\embridge\EmbridgeCatalogInterface $catalog */
+      $catalog = $this->entityTypeManager->getStorage('embridge_catalog')->load($form['fid']['#catalog_id']);
       $source_url = $this->assetHelper->getAssetConversionUrl($asset, $catalog->getApplicationId(), 'thumb');
 
       $form_state->setValue(array('attributes', 'src'), $source_url);
