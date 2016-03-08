@@ -43,6 +43,7 @@ class EmbridgeAssetItem extends FileItem {
   public static function defaultFieldSettings() {
     return array(
       'catalog_id' => '',
+      'allow_search' => 0,
     ) + parent::defaultFieldSettings();
   }
 
@@ -86,7 +87,7 @@ class EmbridgeAssetItem extends FileItem {
    */
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
     $element = array();
-    $settings = $this->getSettings();
+    $field_settings = $this->getSettings();
 
     /** @var EmbridgeCatalog[] $entities */
     $entities = EmbridgeCatalog::loadMultiple();
@@ -99,10 +100,18 @@ class EmbridgeAssetItem extends FileItem {
     $element['catalog_id'] = array(
       '#type' => 'select',
       '#title' => t('Catalog'),
-      '#default_value' => !empty($settings['catalog_id']) ? $settings['catalog_id'] : '',
+      '#default_value' => $field_settings['catalog_id'],
       '#options' => $options,
       '#description' => t("Select the Catalog to source media from for this field."),
       '#required' => TRUE,
+      '#weight' => 6,
+    );
+
+    $element['allow_search'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Allow search'),
+      '#default_value' => $field_settings['allow_search'],
+      '#description' => t("Check this to allow users to search EMDB for existing assets, requires <em>search embridge assets</em> permission."),
       '#weight' => 6,
     );
 
