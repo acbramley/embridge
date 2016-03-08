@@ -88,6 +88,7 @@ class EmbridgeAssetItem extends FileItem {
     $element = array();
     $settings = $this->getSettings();
 
+    /** @var EmbridgeCatalog[] $entities */
     $entities = EmbridgeCatalog::loadMultiple();
 
     $options = [];
