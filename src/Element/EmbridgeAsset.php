@@ -655,7 +655,6 @@ class EmbridgeAsset extends FormElement {
       $values = array(
         'uid' => $user->id(),
         'filename' => $file_info->getClientOriginalName(),
-        'uri' => $file_info->getRealPath(),
         'filesize' => $file_info->getSize(),
         'catalog_id' => $catalog_id,
       );
@@ -761,7 +760,7 @@ class EmbridgeAsset extends FormElement {
       $asset->setSourcePath($asset_destination);
       if (!drupal_move_uploaded_file($file_info->getRealPath(), $asset->getSourcePath())) {
         drupal_set_message(t('File upload error. Could not move uploaded file.'), 'error');
-        \Drupal::logger('file')->notice('Upload error. Could not move uploaded file %file to destination %destination.', array('%file' => $asset->getFilename(), '%destination' => $asset->getFileUri()));
+        \Drupal::logger('file')->notice('Upload error. Could not move uploaded file %file to destination %destination.', array('%file' => $asset->getFilename(), '%destination' => $asset->getSourcePath()));
         $assets[$i] = FALSE;
         continue;
       }
