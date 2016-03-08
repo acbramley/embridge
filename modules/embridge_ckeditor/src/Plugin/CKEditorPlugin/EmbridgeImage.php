@@ -54,10 +54,10 @@ class EmbridgeImage extends CKEditorPluginBase implements CKEditorPluginConfigur
    */
   public function getButtons() {
     return array(
-      'EmbridgeImage' => array(
+      'EmbridgeImage' => [
         'label' => t('EMBridge Image'),
         'image' => drupal_get_path('module', 'embridge_ckeditor') . '/js/plugins/embridgeimage/image.png',
-      ),
+      ],
     );
   }
 
@@ -76,22 +76,26 @@ class EmbridgeImage extends CKEditorPluginBase implements CKEditorPluginConfigur
     ];
     $sub_form = [];
 
-    $sub_form['directory'] = array(
+    $sub_form['warning'] = [
+      '#markup' => $this->t("<strong>Warning: This plugin is not compatible with core's image dialog.</strong>"),
+    ];
+    $sub_form['directory'] = [
       '#type' => 'textfield',
       '#default_value' => $plugin_settings['directory'],
-      '#title' => t('Upload directory'),
-      '#description' => t("A temporary directory to upload images into before sending to EMDB."),
-    );
+      '#title' => $this->t('Upload directory'),
+      '#description' => $this->t("A temporary directory to upload images into before sending to EMDB."),
+    ];
     $default_max_size = format_size(file_upload_max_size());
-    $sub_form['max_size'] = array(
+    $sub_form['max_size'] = [
       '#type' => 'textfield',
       '#default_value' => $plugin_settings['max_size'],
-      '#title' => t('Maximum file size'),
-      '#description' => t('If this is left empty, then the file size will be limited by the PHP maximum upload size of @size.', array('@size' => $default_max_size)),
+      '#title' => $this->t('Maximum file size'),
+      '#description' => $this->t('If this is left empty, then the file size will be limited by the PHP maximum upload size of @size.', ['@size' => $default_max_size]
+      ),
       '#maxlength' => 20,
       '#size' => 10,
       '#placeholder' => $default_max_size,
-    );
+    ];
     /** @var EmbridgeCatalog[] $entities */
     $entities = EmbridgeCatalog::loadMultiple();
 
@@ -100,15 +104,15 @@ class EmbridgeImage extends CKEditorPluginBase implements CKEditorPluginConfigur
       $options[$entity->id()] = $entity->label();
     }
 
-    $sub_form['catalog_id'] = array(
+    $sub_form['catalog_id'] = [
       '#type' => 'select',
       '#title' => t('Catalog'),
       '#default_value' => $plugin_settings['catalog'],
       '#options' => $options,
-      '#description' => t("Select the Catalog to source media from for this field."),
+      '#description' => $this->t("Select the Catalog to source media from for this field."),
       '#required' => TRUE,
       '#weight' => 6,
-    );
+    ];
 
     $sub_form['#attached']['library'][] = 'embridge_ckeditor/drupal.embridge_ckeditor.embridgeimage.admin';
 
