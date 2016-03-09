@@ -123,63 +123,67 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     $existing_asset = isset($image_element['data-entity-uuid']) ? $this->entityRepository->loadEntityByUuid('embridge_asset_entity', $image_element['data-entity-uuid']) : NULL;
     $asset_id = $existing_asset ? $existing_asset->id() : NULL;
 
-    $form['asset'] = array(
+    $form['asset'] = [
       '#title' => $this->t('Image'),
       '#type' => 'embridge_asset',
       '#catalog_id' => $embridge_image_settings['catalog_id'],
       '#upload_location' => 'public://' . $embridge_image_settings['directory'],
-      '#default_value' => $asset_id ? array($asset_id) : NULL,
-      '#upload_validators' => array(
-        'validateFileExtensions' => array('gif png jpg jpeg'),
-        'validateFileSize' => array($max_filesize),
-      ),
+      '#default_value' => $asset_id ? [$asset_id] : NULL,
+      '#upload_validators' => [
+        'validateFileExtensions' => ['gif png jpg jpeg'],
+        'validateFileSize' => [$max_filesize],
+      ],
       '#allow_search' => FALSE,
       '#required' => TRUE,
-    );
+    ];
 
-    $form['attributes']['src'] = array(
+    $form['attributes']['src'] = [
       '#type' => 'value',
-    );
+    ];
 
     $alt = isset($image_element['alt']) ? $image_element['alt'] : '';
-    $form['attributes']['alt'] = array(
+    $form['attributes']['alt'] = [
       '#title' => $this->t('Alternative text'),
       '#description' => $this->t('If the image imparts meaning, describe it in teh alt text. If the image is purely decorative, the alt text can remain blank.'),
       '#type' => 'textfield',
       '#default_value' => $alt,
       '#maxlength' => 2048,
-    );
+    ];
+
+    $form['attributes']['conversion'] = [
+
+    ]
 
     // When Drupal core's filter_align is being used, the text editor may
     // offer the ability to change the alignment.
     if ($filter_format->filters('filter_align')->status) {
       $data_align = !empty($image_element['data-align']) ? $image_element['data-align'] : '';
-      $form['attributes']['data-align'] = array(
+      $form['attributes']['data-align'] = [
         '#title' => $this->t('Align'),
         '#type' => 'select',
-        '#options' => array(
+        '#options' => [
           'none' => $this->t('None'),
           'left' => $this->t('Left'),
           'center' => $this->t('Center'),
           'right' => $this->t('Right'),
-        ),
+        ],
         '#default_value' => $data_align,
-      );
+      ];
     }
 
-    $form['actions'] = array(
+    $form['actions'] = [
       '#type' => 'actions',
-    );
-    $form['actions']['save_modal'] = array(
+    ];
+    $form['actions']['save_modal'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save'),
       // No regular submit-handler. This form only works via JavaScript.
-      '#submit' => array(),
-      '#ajax' => array(
+      '#submit' => [],
+      '#ajax' => [
         'callback' => '::submitForm',
         'event' => 'click',
-      ),
-    );
+      ],
+    ];
 
     return $form;
   }
@@ -200,9 +204,9 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       $catalog = $this->entityTypeManager->getStorage('embridge_catalog')->load($form['asset']['#catalog_id']);
       $source_url = $this->assetHelper->getAssetConversionUrl($asset, $catalog->getApplicationId(), 'thumb');
 
-      $form_state->setValue(array('attributes', 'src'), $source_url);
-      $form_state->setValue(array('attributes', 'data-entity-uuid'), $asset->uuid());
-      $form_state->setValue(array('attributes', 'data-entity-type'), 'embridge_asset_entity');
+      $form_state->setValue(['attributes', 'src'], $source_url);
+      $form_state->setValue(['attributes', 'data-entity-uuid'], $asset->uuid());
+      $form_state->setValue(['attributes', 'data-entity-type'], 'embridge_asset_entity');
     }
 
     if ($form_state->getErrors()) {
