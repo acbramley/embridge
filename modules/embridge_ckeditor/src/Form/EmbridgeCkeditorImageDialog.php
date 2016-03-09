@@ -94,11 +94,12 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     // this data in form state, because when the form is rebuilt, we will be
     // receiving values from the form, instead of the values from the text
     // editor. If we don't cache it, this data will be lost.
-    if (isset($form_state->getUserInput()['editor_object'])) {
+    $user_input = $form_state->getUserInput();
+    if (isset($user_input['editor_object'])) {
       // By convention, the data that the text editor sends to any dialog is in
       // the 'editor_object' key. And the image dialog for text editors expects
       // that data to be the attributes for an <img> element.
-      $image_element = $form_state->getUserInput()['editor_object'];
+      $image_element = $user_input['editor_object'];
       $form_state->set('image_element', $image_element);
       $form_state->setCached(TRUE);
     }
