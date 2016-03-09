@@ -192,10 +192,10 @@ class EmbridgeCkeditorImageDialog extends FormBase {
 
     // Convert any uploaded files from the FID values to data-entity-uuid
     // attributes and set data-entity-type to 'file'.
-    $fid = $form_state->getValue(array('asset', 0));
-    if (!empty($fid)) {
+    $asset_id = $form_state->getValue(array('asset', 0));
+    if (!empty($asset_id)) {
       /** @var \Drupal\embridge\EmbridgeAssetEntityInterface $asset */
-      $asset = $this->entityTypeManager->getStorage('embridge_asset_entity')->load($fid);
+      $asset = $this->entityTypeManager->getStorage('embridge_asset_entity')->load($asset_id);
       /** @var \Drupal\embridge\EmbridgeCatalogInterface $catalog */
       $catalog = $this->entityTypeManager->getStorage('embridge_catalog')->load($form['asset']['#catalog_id']);
       $source_url = $this->assetHelper->getAssetConversionUrl($asset, $catalog->getApplicationId(), 'thumb');
