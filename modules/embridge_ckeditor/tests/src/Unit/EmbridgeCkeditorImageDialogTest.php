@@ -12,6 +12,7 @@ use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Form\FormState;
+use Drupal\Core\Render\Renderer;
 use Drupal\editor\Entity\Editor;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\Entity\EmbridgeAssetEntity;
@@ -90,6 +91,13 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
       ->reveal();
     $this->container->set('cache_contexts_manager', $cache_contexts_manager);
     $translation = $this->getStringTranslationStub();
+
+    // In the error state of submitForm, HtmlCommand uses the renderer...egh.
+    $renderer = $this->getMockBuilder(Renderer::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+    $renderer->expects($this->any())->method('renderRoot');
+    $this->container->set('renderer', $renderer);
     $this->container->set('string_translation', $translation);
     \Drupal::setContainer($this->container);
 
@@ -282,6 +290,25 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
     $this->assertEquals('closeDialog', $commands[1]['command']);
   }
 
+  /**
+   * Test submitForm with errors.
+   *
+   * @test
+   */
+  public function submitFormWithErrorsReturnsHtmlCommand() {
+    // #attached required for CommandWithAttachedAssetsTrait checks.
+    $form = ['#attached' => []];
+    $form_state = new FormState();
+    $form_state->setErrorByName('test', 'ERROR ERROR!!');
+
+    $response = $this->form->submitForm($form, $form_state);
+
+    $this->assertInstanceOf('\Drupal\Core\Ajax\AjaxResponse', $response);
+    $commands = $response->getCommands();
+    $this->assertNotEmpty($commands);
+    $this->assertCount(1, $commands);
+    $this->assertEquals('insert', $commands[0]['command']);
+  }
 
   /**
    * Test submitForm with an fid, ensures values are set correctly.
