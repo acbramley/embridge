@@ -200,6 +200,9 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     if (!empty($asset_id)) {
       /** @var \Drupal\embridge\EmbridgeAssetEntityInterface $asset */
       $asset = $this->entityTypeManager->getStorage('embridge_asset_entity')->load($asset_id);
+      $asset->setPermanent();
+      $asset->save();
+
       /** @var \Drupal\embridge\EmbridgeCatalogInterface $catalog */
       $catalog = $this->entityTypeManager->getStorage('embridge_catalog')->load($form['asset']['#catalog_id']);
       $source_url = $this->assetHelper->getAssetConversionUrl($asset, $catalog->getApplicationId(), 'thumb');
