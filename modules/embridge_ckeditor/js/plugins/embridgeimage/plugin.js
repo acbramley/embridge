@@ -355,8 +355,7 @@
    */
   function getFocusedWidget(editor) {
     var widget = editor.widgets.focused;
-
-    if (widget && widget.name === 'embridgeimage') {
+    if (widget && widget.name === 'image') {
       return widget;
     }
 
