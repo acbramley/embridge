@@ -1,0 +1,62 @@
+{
+  "#tree": true,
+  "#attached": {
+    "library": [
+      "editor\/drupal.editor.dialog"
+    ]
+  },
+  "#prefix": "\u003Cdiv id=\u0022embridge-ckeditor-image-dialog-form\u0022\u003E",
+  "#suffix": "\u003C\/div\u003E",
+  "fid": {
+    "#title": "Image",
+    "#type": "embridge_asset",
+    "#catalog_id": "test_catalog",
+    "#upload_location": "public:\/\/test-directory",
+    "#default_value": null,
+    "#upload_validators": {
+      "validateFileExtensions": [
+        "gif png jpg jpeg"
+      ],
+      "validateFileSize": [
+        2097152
+      ]
+    },
+    "#allow_search": false,
+    "#required": true
+  },
+  "attributes": {
+    "src": {
+      "#type": "value"
+    },
+    "alt": {
+      "#title": "Alternative text",
+      "#description": "If the image imparts meaning, describe it in teh alt text. If the image is purely decorative, the alt text can remain blank.",
+      "#type": "textfield",
+      "#default_value": "",
+      "#maxlength": 2048
+    },
+    "data-align": {
+      "#title": "Align",
+      "#type": "select",
+      "#options": {
+        "none": "None",
+        "left": "Left",
+        "center": "Center",
+        "right": "Right"
+      },
+      "#default_value": ""
+    }
+  },
+  "actions": {
+    "#type": "actions",
+    "save_modal": {
+      "#type": "submit",
+      "#value": "Save",
+      "#submit": [],
+      "#ajax": {
+        "callback": "::submitForm",
+        "event": "click"
+      }
+    }
+  }
+}
