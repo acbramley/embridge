@@ -139,9 +139,10 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
       ->with('filter_align')
       ->willReturn($filter_align);
 
+    $catalog_id = 'test_catalog';
     $editor_settings['plugins']['embridgeimage']['embridge_image_upload'] = [
       'max_size' => '2 MB',
-      'catalog_id' => 'test_catalog',
+      'catalog_id' => $catalog_id,
       'directory' => 'test-directory',
     ];
     $mock_editor = $this->getMockBuilder(Editor::class)
@@ -151,18 +152,35 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
       ->method('getSettings')
       ->willReturn($editor_settings);
 
-    $mock_storage = $this->getMockBuilder(EntityStorageInterface::class)
+    $mock_editor_storage = $this->getMockBuilder(EntityStorageInterface::class)
       ->disableOriginalConstructor()
       ->getMock();
-    $mock_storage->expects($this->once())
+    $mock_editor_storage->expects($this->once())
       ->method('load')
       ->with(self::MOCK_FILTER_ID)
       ->willReturn($mock_editor);
 
-    $this->entityTypeManager->expects($this->once())
+    $mock_catalog = $this->getMockBuilder(EmbridgeCatalog::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+    $mock_catalog->expects($this->once())
+      ->method('getConversionsArray')
+      ->willReturn(['thumb', 'medium', 'large']);
+
+    $mock_catalog_storage = $this->getMockBuilder(EntityStorageInterface::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+    $mock_catalog_storage->expects($this->once())
+      ->method('load')
+      ->with($catalog_id)
+      ->willReturn($mock_catalog);
+
+    $this->entityTypeManager->expects($this->exactly(2))
       ->method('getStorage')
-      ->with('editor')
-      ->willReturn($mock_storage);
+      ->will($this->returnValueMap([
+        ['editor', $mock_editor_storage],
+        ['embridge_catalog', $mock_catalog_storage],
+      ]));
   }
 
   /**
@@ -233,6 +251,7 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
       'data-entity-type' => 'embridge_asset_entity',
       'data-entity-uuid' => self::MOCK_ASSET_UUID,
       'data-align' => 'right',
+      'data-conversion' => 'center',
     ];
     // Have to mock this because of:
     // LogicException: Form state caching on GET requests is not allowed.
@@ -327,6 +346,9 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
     $form_state = new FormState();
     $intial_values = [
       'asset' => [self::MOCK_ASSET_ID],
+      'attributes' => [
+        'data-conversion' => 'thumb',
+      ],
     ];
     $form_state->setValues($intial_values);
 
@@ -336,6 +358,10 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
     $mock_asset->expects($this->once())
       ->method('uuid')
       ->willReturn(self::MOCK_ASSET_UUID);
+    $mock_asset->expects($this->once())
+      ->method('setPermanent');
+    $mock_asset->expects($this->once())
+      ->method('save');
 
     $mock_asset_storage = $this->getMockBuilder(EntityStorageInterface::class)
       ->disableOriginalConstructor()
@@ -360,11 +386,6 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
       ->with($catalog_id)
       ->willReturn($mock_catalog);
 
-    $this->assetHelper->expects($this->once())
-      ->method('getAssetConversionUrl')
-      ->with($mock_asset, $app_id, 'thumb')
-      ->willReturn($source_url);
-
     $this->entityTypeManager->expects($this->exactly(2))
       ->method('getStorage')
       ->will($this->returnValueMap([
@@ -372,14 +393,21 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
         ['embridge_catalog', $mock_catalog_storage],
       ]));
 
+    $this->assetHelper->expects($this->once())
+      ->method('getAssetConversionUrl')
+      ->with($mock_asset, $app_id, 'thumb')
+      ->willReturn($source_url);
+
     $this->form->submitForm($form, $form_state);
-    $expected_values = [
-      'attributes' => [
-        'src' => $source_url,
-        'data-entity-uuid' => self::MOCK_ASSET_UUID,
-        'data-entity-type' => 'embridge_asset_entity',
+    $expected_values = array_merge_recursive(
+      [
+        'attributes' => [
+          'src' => $source_url,
+          'data-entity-uuid' => self::MOCK_ASSET_UUID,
+          'data-entity-type' => 'embridge_asset_entity',
+        ],
       ],
-    ] + $intial_values;
+      $intial_values);
 
     $actual_values = $form_state->getValues();
     $this->assertEquals($expected_values, $actual_values);

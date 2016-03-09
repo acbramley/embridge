@@ -37,6 +37,17 @@
       "#default_value": "test image",
       "#maxlength": 2048
     },
+    "data-conversion": {
+      "#title": "Conversion",
+      "#description": "Choose the conversion to display",
+      "#type": "select",
+      "#options": {
+        "thumb": "thumb",
+        "medium": "medium",
+        "large": "large"
+      },
+      "#default_value": "center"
+    },
     "data-align": {
       "#title": "Align",
       "#type": "select",
