@@ -14,6 +14,7 @@ use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Form\FormState;
 use Drupal\editor\Entity\Editor;
 use Drupal\embridge\EnterMediaAssetHelper;
+use Drupal\embridge\Entity\EmbridgeAssetEntity;
 use Drupal\embridge_ckeditor\Form\EmbridgeCkeditorImageDialog;
 use Drupal\filter\Entity\FilterFormat;
 use Drupal\Tests\Core\Form\FormTestBase;
@@ -32,6 +33,8 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
 
   // A mock filter ID.
   const MOCK_FILTER_ID = 21342342342;
+  const MOCK_ASSET_UUID = '71b7fcda-bc37-4c72-931a-84f21fccfd69';
+  const MOCK_ASSET_ID = 78931279123987312;
 
   /**
    * The dependency injection container.
@@ -189,6 +192,60 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
 
     $actual = $this->form->buildForm($form, $form_state, $this->mockFilter);
     $expected = file_get_contents('expected/image-dialog-empty-image-expected-build.json', TRUE);
+
+    // Test form builds correctly.
+    $this->assertJsonStringEqualsJsonString($expected, Json::encode($actual));
+  }
+
+
+  /**
+   * Tests buildForm() with existing element input.
+   *
+   * @covers ::buildForm()
+   *
+   * @test
+   */
+  public function buildFormWithExistingImageElementReturnsExpectedForm() {
+    $form = [];
+    // This is what the form recevies from ckeditor.
+    $user_input['editor_object'] = [
+      'src' => 'www.example.com/test_catalog/views/modules/asset/downloads/preview/thumb/2016/03/113/test.jpg/thumb.jpg',
+      'alt' => 'test image',
+      'width' => '100',
+      'height' => '100',
+      'data-entity-type' => 'embridge_asset_entity',
+      'data-entity-uuid' => self::MOCK_ASSET_UUID,
+      'data-align' => 'right',
+    ];
+    // Have to mock this because of:
+    // LogicException: Form state caching on GET requests is not allowed.
+    /** @var FormState|\PHPUnit_Framework_MockObject_MockObject $form_state */
+    $form_state = $this->getMockBuilder(FormState::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+    $form_state->expects($this->once())
+      ->method('getUserInput')
+      ->willReturn($user_input);
+    $form_state->expects($this->once())
+      ->method('setCached');
+    $form_state->expects($this->once())
+      ->method('set')
+      ->with('image_element', $user_input['editor_object']);
+
+    $mock_asset = $this->getMockBuilder(EmbridgeAssetEntity::class)
+      ->disableOriginalConstructor()
+      ->getMock();
+    $mock_asset->expects($this->once())
+      ->method('id')
+      ->willReturn(self::MOCK_ASSET_ID);
+
+    $this->entityRepository->expects($this->once())
+      ->method('loadEntityByUuid')
+      ->with('embridge_asset_entity', self::MOCK_ASSET_UUID)
+      ->willReturn($mock_asset);
+
+    $actual = $this->form->buildForm($form, $form_state, $this->mockFilter);
+    $expected = file_get_contents('expected/image-dialog-existing-image-expected-build.json', TRUE);
 
     // Test form builds correctly.
     $this->assertJsonStringEqualsJsonString($expected, Json::encode($actual));

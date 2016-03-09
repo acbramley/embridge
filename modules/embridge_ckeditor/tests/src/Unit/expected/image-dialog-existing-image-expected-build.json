@@ -12,7 +12,9 @@
     "#type": "embridge_asset",
     "#catalog_id": "test_catalog",
     "#upload_location": "public:\/\/test-directory",
-    "#default_value": null,
+    "#default_value": [
+      78931279123987312
+    ],
     "#upload_validators": {
       "validateFileExtensions": [
         "gif png jpg jpeg"
@@ -32,7 +34,7 @@
       "#title": "Alternative text",
       "#description": "If the image imparts meaning, describe it in teh alt text. If the image is purely decorative, the alt text can remain blank.",
       "#type": "textfield",
-      "#default_value": "",
+      "#default_value": "test image",
       "#maxlength": 2048
     },
     "data-align": {
@@ -44,7 +46,7 @@
         "center": "Center",
         "right": "Right"
       },
-      "#default_value": ""
+      "#default_value": "right"
     }
   },
   "actions": {
