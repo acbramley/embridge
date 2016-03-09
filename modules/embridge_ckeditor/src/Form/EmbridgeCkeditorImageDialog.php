@@ -150,9 +150,17 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       '#maxlength' => 2048,
     ];
 
-    $form['attributes']['conversion'] = [
-
-    ]
+    /** @var \Drupal\embridge\EmbridgeCatalogInterface $catalog */
+    $catalog = $this->entityTypeManager->getStorage('embridge_catalog')->load($embridge_image_settings['catalog_id']);
+    $conversion = isset($image_element['data-conversion']) ? $image_element['data-conversion'] : '';
+    $conversions_array = $catalog->getConversionsArray();
+    $form['attributes']['data-conversion'] = [
+      '#title' => $this->t('Conversion'),
+      '#description' => $this->t('Choose the conversion to display'),
+      '#type' => 'select',
+      '#default_value' => $conversion,
+      '#options' => array_combine($conversions_array, $conversions_array),
+    ];
 
     // When Drupal core's filter_align is being used, the text editor may
     // offer the ability to change the alignment.
@@ -205,7 +213,8 @@ class EmbridgeCkeditorImageDialog extends FormBase {
 
       /** @var \Drupal\embridge\EmbridgeCatalogInterface $catalog */
       $catalog = $this->entityTypeManager->getStorage('embridge_catalog')->load($form['asset']['#catalog_id']);
-      $source_url = $this->assetHelper->getAssetConversionUrl($asset, $catalog->getApplicationId(), 'thumb');
+      $conversion = $form_state->getValue(['attributes', 'data-conversion']);
+      $source_url = $this->assetHelper->getAssetConversionUrl($asset, $catalog->getApplicationId(), $conversion);
 
       $form_state->setValue(['attributes', 'src'], $source_url);
       $form_state->setValue(['attributes', 'data-entity-uuid'], $asset->uuid());
