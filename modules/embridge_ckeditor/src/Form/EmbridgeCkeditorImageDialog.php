@@ -8,24 +8,20 @@
 namespace Drupal\embridge_ckeditor\Form;
 
 use Drupal\Component\Utility\Bytes;
-use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Entity\EntityRepositoryInterface;
-use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\embridge\EnterMediaAssetHelperInterface;
-use Drupal\embridge\Entity\EmbridgeCatalog;
 use Drupal\filter\Entity\FilterFormat;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\editor\Ajax\EditorDialogSave;
 use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
- * Provides an image dialog for text editors.
+ * Provides an embridge image dialog for text editors.
  */
 class EmbridgeCkeditorImageDialog extends FormBase {
 
