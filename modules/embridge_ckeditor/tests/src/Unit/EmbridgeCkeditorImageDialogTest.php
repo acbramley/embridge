@@ -359,6 +359,9 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
       ->method('uuid')
       ->willReturn(self::MOCK_ASSET_UUID);
     $mock_asset->expects($this->once())
+      ->method('isTemporary')
+      ->willReturn(TRUE);
+    $mock_asset->expects($this->once())
       ->method('setPermanent');
     $mock_asset->expects($this->once())
       ->method('save');
