@@ -108,6 +108,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       $image_element = $form_state->get('image_element') ?: [];
     }
 
+    // Add libraries and wrap the form in ajax wrappers.
     $form['#tree'] = TRUE;
     $form['#attached']['library'][] = 'editor/drupal.editor.dialog';
     $form['#prefix'] = '<div id="' . self::AJAX_WRAPPER_ID . '">';
@@ -120,10 +121,53 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     $embridge_image_settings = $editor->getSettings()['plugins']['embridgeimage']['embridge_image_upload'];
     $max_filesize = min(Bytes::toInt($embridge_image_settings['max_size']), file_upload_max_size());
 
+    /** @var \Drupal\embridge\EmbridgeAssetEntityInterface $existing_asset */
     $existing_asset = isset($image_element['data-entity-uuid']) ? $this->entityRepository->loadEntityByUuid('embridge_asset_entity', $image_element['data-entity-uuid']) : NULL;
     $asset_id = $existing_asset ? $existing_asset->id() : NULL;
 
+    /** @var \Drupal\embridge\EmbridgeCatalogInterface $catalog */
+    $catalog = $this->entityTypeManager->getStorage('embridge_catalog')->load($embridge_image_settings['catalog_id']);
+
+    // Create a preview image.
+    $preview = FALSE;
+    if (!empty($form_state->getUserInput()['_triggering_element_name'])) {
+      $triggering_element = $form_state->getUserInput()['_triggering_element_name'];
+    }
+
+    // If we are editing an existing asset, use that thumbnail.
+    if (empty($form_state->getValues()) && $existing_asset) {
+      $preview = $this->assetHelper->getAssetConversionUrl(
+        $existing_asset,
+        $catalog->getApplicationId(),
+        'thumb'
+      );
+    }
+    // Form state values are still populated when an existing image is edited,
+    // then the remove button is clicked. So ensure we haven't clicked the
+    // button before loading that as well.
+    elseif (isset($triggering_element) && $triggering_element != 'asset_remove_button' && $uploaded_id = $form_state->getValue(['asset', 0])) {
+      /** @var \Drupal\embridge\EmbridgeAssetEntityInterface $uploaded_asset */
+      $uploaded_asset = $this->entityTypeManager->getStorage('embridge_asset_entity')->load($uploaded_id);
+
+      if ($uploaded_asset) {
+        $preview = $this->assetHelper->getAssetConversionUrl(
+          $uploaded_asset,
+          $catalog->getApplicationId(),
+          'thumb'
+        );
+      }
+    }
+
+    // Use a stock image for preview.
+    if (!$preview) {
+      $preview = drupal_get_path('module', 'embridge_ckeditor') . '/images/preview-image.png';
+    }
+
     $form['asset'] = [
+      'preview' => [
+        '#theme' => 'image',
+        '#uri' => $preview,
+      ],
       '#title' => $this->t('Image'),
       '#type' => 'embridge_asset',
       '#catalog_id' => $embridge_image_settings['catalog_id'],
@@ -150,8 +194,6 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       '#maxlength' => 2048,
     ];
 
-    /** @var \Drupal\embridge\EmbridgeCatalogInterface $catalog */
-    $catalog = $this->entityTypeManager->getStorage('embridge_catalog')->load($embridge_image_settings['catalog_id']);
     $conversion = isset($image_element['data-conversion']) ? $image_element['data-conversion'] : '';
     $conversions_array = $catalog->getConversionsArray();
     $form['attributes']['data-conversion'] = [
