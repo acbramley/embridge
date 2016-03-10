@@ -8,6 +8,11 @@
   "#prefix": "\u003Cdiv id=\u0022embridge-ckeditor-image-dialog-form\u0022\u003E",
   "#suffix": "\u003C\/div\u003E",
   "asset": {
+    "preview": {
+      "#theme": "image",
+      "#uri": "www.example.com/test_application/path/to/preview/thumb.png",
+      "#weight": "-100"
+    },
     "#title": "Image",
     "#type": "embridge_asset",
     "#catalog_id": "test_catalog",
