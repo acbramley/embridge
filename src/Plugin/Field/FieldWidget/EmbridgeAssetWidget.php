@@ -88,10 +88,10 @@ class EmbridgeAssetWidget extends FileWidget {
       // Allows this field to return an array instead of a single value.
       '#extended' => TRUE,
       // Add properties needed by value() and process() methods.
-      '#field_name' => $this->fieldDefinition->getName(),
-      '#allow_search' => $field_settings['allow_search'],
       '#entity_type' => $items->getEntity()->getEntityTypeId(),
-      '#bundle' => $items->getEntity()->bundle(),
+      '#field_name' => $this->fieldDefinition->getName(),
+      '#field_config' => $this->fieldDefinition->id(),
+      '#allow_search' => $field_settings['allow_search'],
       '#display_field' => (bool) $field_settings['display_field'],
       '#display_default' => $field_settings['display_default'],
       '#description_field' => $field_settings['description_field'],

@@ -15,6 +15,7 @@ use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Entity\EntityFieldManager;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Renderer;
@@ -22,6 +23,7 @@ use Drupal\embridge\Ajax\EmbridgeSearchSave;
 use Drupal\embridge\EmbridgeAssetValidatorInterface;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\EnterMediaDbClientInterface;
+use Drupal\field\FieldConfigInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -63,13 +65,6 @@ class EmbridgeSearchForm extends FormBase {
   protected $entityTypeManager;
 
   /**
-   * Entity field manager.
-   *
-   * @var \Drupal\Core\Entity\EntityFieldManager
-   */
-  protected $fieldManager;
-
-  /**
    * Renderer service.
    *
    * @var \Drupal\Core\Render\Renderer
@@ -87,8 +82,6 @@ class EmbridgeSearchForm extends FormBase {
    *   A validator for asset entities.
    * @param \Drupal\Core\Entity\EntityTypeManager $entity_type_manager
    *   Entity type manager service.
-   * @param \Drupal\Core\Entity\EntityFieldManager $field_manager
-   *   The field manager service.
    * @param \Drupal\Core\Render\Renderer $renderer
    *   The renderer service.
    */
@@ -97,13 +90,11 @@ class EmbridgeSearchForm extends FormBase {
     EnterMediaAssetHelper $asset_helper,
     EmbridgeAssetValidatorInterface $asset_validator,
     EntityTypeManager $entity_type_manager,
-    EntityFieldManager $field_manager,
     Renderer $renderer) {
     $this->client = $embridge_client;
     $this->assetHelper = $asset_helper;
     $this->assetValidator = $asset_validator;
     $this->entityTypeManager = $entity_type_manager;
-    $this->fieldManager = $field_manager;
     $this->renderer = $renderer;
   }
 
@@ -116,7 +107,6 @@ class EmbridgeSearchForm extends FormBase {
       $container->get('embridge.asset_helper'),
       $container->get('embridge.asset_validator'),
       $container->get('entity_type.manager'),
-      $container->get('entity_field.manager'),
       $container->get('renderer')
     );
   }
@@ -131,7 +121,7 @@ class EmbridgeSearchForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $entity_type = '', $bundle = '', $field_name = '', $delta = 0) {
+  public function buildForm(array $form, FormStateInterface $form_state, FieldDefinitionInterface $field_config = NULL, $delta = 0) {
     $input = $form_state->getUserInput();
 
     // Store field information in $form_state.
@@ -149,7 +139,7 @@ class EmbridgeSearchForm extends FormBase {
     ];
     $form['field_name'] = [
       '#type' => 'value',
-      '#value' => $field_name,
+      '#value' => $field_config->getName(),
     ];
 
     $operation_options = [
@@ -200,10 +190,7 @@ class EmbridgeSearchForm extends FormBase {
       ),
     ];
     // Get the field settings for filtering and validating files.
-    $bundle_fields = $this->fieldManager->getFieldDefinitions($entity_type, $bundle);
-    /** @var \Drupal\Core\Field\BaseFieldDefinition $field_definition */
-    $field_definition = $bundle_fields[$field_name];
-    $field_settings = $field_definition->getSettings();
+    $field_settings = $field_config->getSettings();
     $extension_filters = $this->massageExtensionSetting($field_settings['file_extensions']);
 
     $filters = [];
@@ -282,12 +269,10 @@ class EmbridgeSearchForm extends FormBase {
       '#value' => $upload_validators,
     ];
 
-    $catalog_id = $field_definition->getSetting('catalog_id');
-
     if (!empty($search_response['results'])) {
       $form['search_results'] = [
         '#theme' => 'embridge_search_results',
-        '#results' => $this->formatSearchResults($search_response, $this->assetHelper, $catalog_id),
+        '#results' => $this->formatSearchResults($search_response, $this->assetHelper, $field_settings['catalog_id']),
       ];
     }
     else {
