@@ -380,7 +380,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->with('POST', self::EXAMPLE_UPLOAD_URL, $options)
       ->willReturn($mock_upload_response);
 
-    /** @var EmbridgeAssetEntityInterface|\PHPUnit_Framework_MockObject_MockObject $mock_asset */
+    /** @var \Drupal\embridge\EmbridgeAssetEntityInterface|\PHPUnit_Framework_MockObject_MockObject $mock_asset */
     $mock_asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
     $mock_asset
       ->expects($this->once())

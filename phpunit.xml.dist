@@ -10,15 +10,17 @@
   <testsuites>
     <testsuite name="Embridge Test Suite">
       <directory>./tests</directory>
+      <directory>./modules/embridge_ckeditor/tests</directory>
     </testsuite>
   </testsuites>
   <!-- Filter for coverage reports. -->
   <filter>
     <blacklist>
-      <directory>./src/Tests</directory>
+      <directory>./src/tests</directory>
     </blacklist>
     <whitelist>
       <directory>./src</directory>
+      <directory>./modules/embridge_ckeditor/src</directory>
      </whitelist>
   </filter>
 </phpunit>

@@ -1,0 +1,10 @@
+
+embridge_ckeditor.embridge_image_dialog:
+  path: '/embridge_ckeditor/dialog/embridge_image/{filter_format}'
+  defaults:
+    _form: '\Drupal\embridge_ckeditor\Form\EmbridgeCkeditorImageDialog'
+    _title: 'Add image'
+  options:
+    _theme: ajax_base_page
+  requirements:
+    _entity_access: 'filter_format.use'

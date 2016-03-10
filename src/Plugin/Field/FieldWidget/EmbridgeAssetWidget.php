@@ -89,6 +89,7 @@ class EmbridgeAssetWidget extends FileWidget {
       '#extended' => TRUE,
       // Add properties needed by value() and process() methods.
       '#field_name' => $this->fieldDefinition->getName(),
+      '#allow_search' => $field_settings['allow_search'],
       '#entity_type' => $items->getEntity()->getEntityTypeId(),
       '#bundle' => $items->getEntity()->bundle(),
       '#display_field' => (bool) $field_settings['display_field'],

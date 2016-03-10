@@ -1,0 +1,8 @@
+name: EMBridge Ckeditor
+type: module
+description: Module to integrate EMBridge with the CKEditor module.
+core: 8.x
+package: EMBridge
+dependencies:
+  - embridge
+  - ckeditor

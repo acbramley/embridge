@@ -9,6 +9,7 @@ namespace Drupal\embridge\Plugin\Field\FieldType;
 use Drupal\Component\Utility\Bytes;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\embridge\Entity\EmbridgeCatalog;
 use Drupal\file\Plugin\Field\FieldType\FileItem;
 
 /**
@@ -42,6 +43,7 @@ class EmbridgeAssetItem extends FileItem {
   public static function defaultFieldSettings() {
     return array(
       'catalog_id' => '',
+      'allow_search' => 0,
     ) + parent::defaultFieldSettings();
   }
 
@@ -85,13 +87,10 @@ class EmbridgeAssetItem extends FileItem {
    */
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
     $element = array();
-    $settings = $this->getSettings();
+    $field_settings = $this->getSettings();
 
-    /** @var ConfigEntityStorage $catalog_storage */
-    $catalog_storage = \Drupal::entityTypeManager()->getStorage('embridge_catalog');
-    $catalog_query = $catalog_storage->getQuery();
-    $entity_ids = array_keys($catalog_query->execute());
-    $entities = $catalog_storage->loadMultiple($entity_ids);
+    /** @var EmbridgeCatalog[] $entities */
+    $entities = EmbridgeCatalog::loadMultiple();
 
     $options = [];
     foreach ($entities as $entity) {
@@ -101,10 +100,18 @@ class EmbridgeAssetItem extends FileItem {
     $element['catalog_id'] = array(
       '#type' => 'select',
       '#title' => t('Catalog'),
-      '#default_value' => !empty($settings['catalog_id']) ? $settings['catalog_id'] : '',
+      '#default_value' => $field_settings['catalog_id'],
       '#options' => $options,
       '#description' => t("Select the Catalog to source media from for this field."),
       '#required' => TRUE,
+      '#weight' => 6,
+    );
+
+    $element['allow_search'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Allow search'),
+      '#default_value' => $field_settings['allow_search'],
+      '#description' => t("Check this to allow users to search EMDB for existing assets, requires <em>search embridge assets</em> permission."),
       '#weight' => 6,
     );
 
