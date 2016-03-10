@@ -206,7 +206,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
 
     $mock_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
     $mock_response
-      ->expects($this->once())
+      ->expects($this->exactly(2))
       ->method('getStatusCode')
       ->willReturn(403);
 
@@ -216,7 +216,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
       ->willReturn($mock_response);
 
-    $this->setExpectedException('Exception', 'An unexpected response was returned from the Enter Media backend');
+    $this->setExpectedExceptionRegExp('Exception', '/Unexpected response: \[\d+] .*/');
     $this->emdbClient->login();
   }
 
