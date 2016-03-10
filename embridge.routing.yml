@@ -10,7 +10,7 @@ embridge.embridge_settings_form:
     _admin_route: TRUE
 
 embridge.search.modal:
-  path: '/embridge/search/modal/{entity_type}/{bundle}/{field_name}/{delta}'
+  path: '/embridge/search/modal/{field_config}/{delta}'
   options:
     _theme: ajax_base_page
   defaults:
