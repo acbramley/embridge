@@ -130,8 +130,8 @@ class EmbridgeCkeditorImageDialog extends FormBase {
 
     // Create a preview image.
     $preview = FALSE;
-    if (!empty($form_state->getUserInput()['_triggering_element_name'])) {
-      $triggering_element = $form_state->getUserInput()['_triggering_element_name'];
+    if (!empty($user_input['_triggering_element_name'])) {
+      $triggering_element = $user_input['_triggering_element_name'];
     }
 
     // If we are editing an existing asset, use that thumbnail.
@@ -167,6 +167,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       'preview' => [
         '#theme' => 'image',
         '#uri' => $preview,
+        '#weight' => -100,
       ],
       '#title' => $this->t('Image'),
       '#type' => 'embridge_asset',
