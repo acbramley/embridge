@@ -8,9 +8,9 @@ namespace Drupal\Tests\embridge\Unit;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Cache\Context\CacheContextsManager;
-use Drupal\Core\Entity\EntityFieldManager;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Field\FieldConfigInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Render\Renderer;
@@ -66,13 +66,6 @@ class EmbridgeSearchFormTest extends FormTestBase {
   protected $entityTypeManager;
 
   /**
-   * Entity field manager.
-   *
-   * @var \Drupal\Core\Entity\EntityFieldManager|\PHPUnit_Framework_MockObject_MockObject.
-   */
-  protected $fieldManager;
-
-  /**
    * Renderer service.
    *
    * @var \Drupal\Core\Render\Renderer|\PHPUnit_Framework_MockObject_MockObject.
@@ -85,6 +78,13 @@ class EmbridgeSearchFormTest extends FormTestBase {
    * @var \Drupal\embridge\Form\EmbridgeSearchForm.
    */
   protected $form;
+
+  /**
+   * Mock field config.
+   *
+   * @var FieldConfigInterface|\PHPUnit_Framework_MockObject_MockObject.
+   */
+  protected $fieldConfig;
 
   /**
    * Json decoder.
@@ -118,13 +118,13 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $this->assetHelper = $this->getMockBuilder(EnterMediaAssetHelper::class)->disableOriginalConstructor()->getMock();
     $this->assetValidator = $this->getMockBuilder(EmbridgeAssetValidatorInterface::class)->disableOriginalConstructor()->getMock();
     $this->entityTypeManager = $this->getMockBuilder(EntityTypeManager::class)->disableOriginalConstructor()->getMock();
-    $this->fieldManager = $this->getMockBuilder(EntityFieldManager::class)->disableOriginalConstructor()->getMock();
     $this->renderer = $this->getMockBuilder(Renderer::class)->disableOriginalConstructor()->getMock();
+    $this->fieldConfig = $this->getMockBuilder(FieldConfigInterface::class)->disableOriginalConstructor()->getMock();
     $this->json = new Json();
     $this->mockAssets = [];
 
     // Initialise our form.
-    $this->form = new EmbridgeSearchForm($this->client, $this->assetHelper, $this->assetValidator, $this->entityTypeManager, $this->fieldManager, $this->renderer);
+    $this->form = new EmbridgeSearchForm($this->client, $this->assetHelper, $this->assetValidator, $this->entityTypeManager, $this->renderer);
   }
 
   /**
@@ -152,16 +152,13 @@ class EmbridgeSearchFormTest extends FormTestBase {
   public function buildFormArrayIsReturnedAsExpected() {
     $form = [];
     $form_state = new FormState();
-    $entity_type = 'node';
-    $bundle = 'page';
-    $field_name = 'field_test';
     $catalog_id = 'test_catalog';
     $application_id = 'test_app';
     $delta = 0;
     // Mock up a whole mess of stuff.
-    $this->baseMockBuild($catalog_id, $field_name, $entity_type, $bundle, $application_id);
+    $this->baseMockBuild($catalog_id, $application_id);
 
-    $build = $this->form->buildForm($form, $form_state, $entity_type, $bundle, $field_name, $delta);
+    $build = $this->form->buildForm($form, $form_state, $this->fieldConfig, $delta);
     $expected_build = file_get_contents('expected/embridge-search-form-expected-build.json', TRUE);
 
     // Assert JSON structures are similar.
@@ -199,9 +196,6 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $form_state = new FormState();
     $form_state->setUserInput($input);
 
-    $entity_type = 'node';
-    $bundle = 'page';
-    $field_name = 'field_test';
     $catalog_id = 'test_catalog';
     $application_id = 'test_app';
     $delta = 0;
@@ -231,9 +225,9 @@ class EmbridgeSearchFormTest extends FormTestBase {
     ];
 
     // Mock up a whole mess of stuff.
-    $this->baseMockBuild($catalog_id, $field_name, $entity_type, $bundle, $application_id, $filters);
+    $this->baseMockBuild($catalog_id, $application_id, $filters);
 
-    $build = $this->form->buildForm($form, $form_state, $entity_type, $bundle, $field_name, $delta);
+    $build = $this->form->buildForm($form, $form_state, $this->fieldConfig, $delta);
 
     $this->assertEquals($input['filename'], $build['filters']['filename']['#default_value']);
     $this->assertEquals($input['filename_op'], $build['filters']['filename_op']['#default_value']);
@@ -261,34 +255,24 @@ class EmbridgeSearchFormTest extends FormTestBase {
   public function buildFormWithEmptySearchResultsRendersEmptyText() {
     $form = [];
     $form_state = new FormState();
-    $entity_type = 'node';
-    $bundle = 'page';
-    $field_name = 'field_test';
     $catalog_id = 'test_catalog';
     $delta = 0;
 
     // Mock up specifically for empty results.
-    $mock_field_definitions = [];
     $field_settings = [
       'max_filesize' => '2 MB',
       'file_extensions' => self::MOCK_FIELD_SETTINGS_FILE_EXTENSIONS,
+      'catalog_id' => $catalog_id,
     ];
     $field_def = $this->getMockBuilder(FieldDefinitionInterface::class)
       ->disableOriginalConstructor()
       ->getMock();
     $field_def->expects($this->once())
+      ->method('getName')
+      ->willReturn('field_test');
+    $field_def->expects($this->once())
       ->method('getSettings')
       ->willReturn($field_settings);
-    $field_def->expects($this->once())
-      ->method('getSetting')
-      ->with('catalog_id')
-      ->willReturn($catalog_id);
-    $mock_field_definitions[$field_name] = $field_def;
-    $this->fieldManager
-      ->expects($this->once())
-      ->method('getFieldDefinitions')
-      ->with($entity_type, $bundle)
-      ->willReturn($mock_field_definitions);
 
     // Search filter always starts with the extensions OR filter.
     $extension_filter_value = str_replace(',', '|', self::MOCK_FIELD_SETTINGS_FILE_EXTENSIONS);
@@ -312,7 +296,7 @@ class EmbridgeSearchFormTest extends FormTestBase {
       ->with($page, $per_page, $filters)
       ->willReturn($search_response);
 
-    $build = $this->form->buildForm($form, $form_state, $entity_type, $bundle, $field_name, $delta);
+    $build = $this->form->buildForm($form, $form_state, $field_def, $delta);
 
     $this->assertArrayHasKey('#type', $build['search_results']);
     $this->assertEquals('markup', $build['search_results']['#type']);
@@ -555,12 +539,6 @@ class EmbridgeSearchFormTest extends FormTestBase {
    *
    * @param string $catalog_id
    *   Catalog id.
-   * @param string $field_name
-   *   Field name.
-   * @param string $entity_type
-   *   Entity type.
-   * @param string $bundle
-   *   Bundle.
    * @param string $application_id
    *   Application id.
    * @param [] $filters
@@ -568,34 +546,21 @@ class EmbridgeSearchFormTest extends FormTestBase {
    */
   protected function baseMockBuild(
     $catalog_id,
-    $field_name,
-    $entity_type,
-    $bundle,
     $application_id,
     $filters = []
   ) {
     // Field manager mocking.
-    $mock_field_definitions = [];
     $field_settings = [
       'max_filesize' => '2 MB',
       'file_extensions' => self::MOCK_FIELD_SETTINGS_FILE_EXTENSIONS,
+      'catalog_id' => $catalog_id,
     ];
-    $field_def = $this->getMockBuilder(FieldDefinitionInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $field_def->expects($this->once())
+    $this->fieldConfig->expects($this->once())
+      ->method('getName')
+      ->willReturn('field_test');
+    $this->fieldConfig->expects($this->once())
       ->method('getSettings')
       ->willReturn($field_settings);
-    $field_def->expects($this->once())
-      ->method('getSetting')
-      ->with('catalog_id')
-      ->willReturn($catalog_id);
-    $mock_field_definitions[$field_name] = $field_def;
-    $this->fieldManager
-      ->expects($this->once())
-      ->method('getFieldDefinitions')
-      ->with($entity_type, $bundle)
-      ->willReturn($mock_field_definitions);
 
     // Search filter always starts with the extensions OR filter.
     $extension_filter_value = str_replace(',', '|', self::MOCK_FIELD_SETTINGS_FILE_EXTENSIONS);
