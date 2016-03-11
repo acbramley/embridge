@@ -12,18 +12,23 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\AppendCommand;
 use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\HtmlCommand;
+use Drupal\Core\Ajax\OpenModalDialogCommand;
+use Drupal\Core\Ajax\RedirectCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Entity\EntityFieldManager;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Renderer;
 use Drupal\embridge\Ajax\EmbridgeSearchSave;
 use Drupal\embridge\EmbridgeAssetValidatorInterface;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\EnterMediaDbClientInterface;
+use Drupal\embridge\Entity\EmbridgeAssetEntity;
 use Drupal\field\FieldConfigInterface;
+use Drupal\filter\Entity\FilterFormat;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -538,8 +543,27 @@ class EmbridgeSearchForm extends FormBase {
     // Hidden input value set by javascript.
     $values = $form_state->getValues();
     $values['entity_id'] = $form_state->getUserInput()['result_chosen'];
-    $response->addCommand(new EmbridgeSearchSave($values));
+    //$response->addCommand(new EmbridgeSearchSave($values));
     $response->addCommand(new CloseModalDialogCommand());
+
+    $asset = EmbridgeAssetEntity::load($values['entity_id']);
+    $state = new FormState();
+    $image_element = [
+      'src' => $this->assetHelper->getAssetConversionUrl($asset, 'emshare', 'thumb'),
+      'data-entity-uuid' => $asset->uuid(),
+      'data-entity-type' => 'embridge_asset_entity',
+      'alt' => '',
+      'width' => '',
+      'height' => '',
+    ];
+    $state->set('image_element', $image_element);
+    $state->setBuildInfo(['args' => [FilterFormat::load('rtf')]]);
+    $state->setUserInput([
+      'form_id' => 'embridge_ckeditor_image_dialog',
+    ]);
+    $content = \Drupal::formBuilder()->buildForm('Drupal\embridge_ckeditor\Form\EmbridgeCkeditorImageDialog', $state);
+    $rendered_content = \Drupal::service('renderer')->renderRoot($content);
+    $response->addCommand(new OpenModalDialogCommand('', $rendered_content, ['width' => 700]));
 
     return $response;
   }

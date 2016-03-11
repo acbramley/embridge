@@ -178,7 +178,9 @@ class EmbridgeCkeditorImageDialog extends FormBase {
         'validateFileExtensions' => ['gif png jpg jpeg'],
         'validateFileSize' => [$max_filesize],
       ],
-      '#allow_search' => FALSE,
+      '#field_config' => 'node.general.field_emdb_files',
+      '#delta' => 0,
+      '#allow_search' => TRUE,
       '#required' => TRUE,
     ];
 
