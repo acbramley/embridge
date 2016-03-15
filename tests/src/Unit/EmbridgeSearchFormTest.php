@@ -378,69 +378,6 @@ class EmbridgeSearchFormTest extends FormTestBase {
   }
 
   /**
-   * Tests validateForm when the submit button is pressed.
-   *
-   * GIVEN the embridge search form
-   * WHEN the validateForm function is run
-   * THEN an error should be thrown when the asset chosen fails validation.
-   *
-   * @covers ::validateForm
-   *
-   * @test
-   */
-  public function validateWithSubmitButtonPressedThrowsErrorForFailedAssetValidation() {
-    // Mocking for FormState::setError.
-    $form = [
-      'search_results' => [
-        '#parents' => [],
-      ],
-    ];
-    $form_state = new FormState();
-    $triggering_element = [
-      '#parents' => ['submit'],
-    ];
-    $entity_id = 34298734897;
-    $input = [
-      'result_chosen' => $entity_id,
-    ];
-    $values = [
-      'upload_validators' => [
-        'validateFileExtensions' => [self::MOCK_FIELD_SETTINGS_FILE_EXTENSIONS],
-        'validateFileSize' => ['2MB'],
-      ],
-    ];
-    $form_state->setTriggeringElement($triggering_element);
-    $form_state->setUserInput($input);
-    $form_state->setValues($values);
-
-    $mock_asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
-    $mock_asset_storage = $this->getMock(EntityStorageInterface::class);
-    $mock_asset_storage
-      ->expects($this->once())
-      ->method('load')
-      ->with($entity_id)
-      ->willReturn($mock_asset);
-
-    $this->entityTypeManager
-      ->expects($this->once())
-      ->method('getStorage')
-      ->with('embridge_asset_entity')
-      ->willReturn($mock_asset_storage);
-
-    $errors = ['ERROR'];
-    $this->assetValidator
-      ->expects($this->once())
-      ->method('validate')
-      ->with($mock_asset, $values['upload_validators'])
-      ->willReturn($errors);
-
-    $this->form->validateForm($form, $form_state);
-
-    $errors = $form_state->getErrors();
-    $this->assertNotEmpty($errors);
-  }
-
-  /**
    * Tests searchAjax().
    *
    * GIVEN the embridge search form
@@ -627,14 +564,6 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $this->assetHelper->expects($this->exactly(count($this->mockAssets)))
       ->method('searchResultToAsset')
       ->will($this->returnValueMap($return_map));
-    $formatted_settings = [
-      'embridge_asset_validate_file_size' => [$field_settings['max_filesize']],
-      'embridge_asset_validate_file_extensions' => [$field_settings['file_extensions']],
-    ];
-    $this->assetHelper->expects($this->once())
-      ->method('formatUploadValidators')
-      ->with($field_settings)
-      ->willReturn($formatted_settings);
   }
 
   /**

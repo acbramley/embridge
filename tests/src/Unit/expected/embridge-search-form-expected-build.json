@@ -35,10 +35,16 @@
     "search": {
       "#type": "submit",
       "#submit": [
-        "::searchSubmit"
+        [
+          {},
+          "searchSubmit"
+        ]
       ],
       "#ajax": {
-        "callback": "::searchAjax",
+        "callback": [
+          {},
+          "searchAjax"
+        ],
         "wrapper": "embridge-results-wrapper",
         "effect": "fade",
         "progress": {
@@ -93,17 +99,6 @@
       "#markup": "\u003C\/div\u003E\u003C\/div\u003E"
     }
   },
-  "upload_validators": {
-    "#type": "value",
-    "#value": {
-      "embridge_asset_validate_file_size": [
-        "2 MB"
-      ],
-      "embridge_asset_validate_file_extensions": [
-        "txt,pdf,jpeg"
-      ]
-    }
-  },
   "search_results": {
     "#theme": "embridge_search_results",
     "#results": [
@@ -130,27 +125,39 @@
       }
     ]
   },
-  "previous": {
+  "page_previous": {
     "#type": "submit",
-    "#value": "Previous",
+    "#value": "Previous page",
     "#submit": [
-      "::previousPageSubmit"
+      [
+        {},
+        "previousPageSubmit"
+      ]
     ],
     "#ajax": {
-      "callback": "::searchAjax",
+      "callback": [
+        {},
+        "searchAjax"
+      ],
       "wrapper": "embridge-results-wrapper",
       "effect": "fade"
     },
     "#disabled": true
   },
-  "next": {
+  "page_next": {
     "#type": "submit",
-    "#value": "Next",
+    "#value": "Next page",
     "#submit": [
-      "::nextPageSubmit"
+      [
+        {},
+        "nextPageSubmit"
+      ]
     ],
     "#ajax": {
-      "callback": "::searchAjax",
+      "callback": [
+        {},
+        "searchAjax"
+      ],
       "wrapper": "embridge-results-wrapper",
       "effect": "fade"
     },
@@ -167,7 +174,10 @@
       "#value": "Select",
       "#submit": [],
       "#ajax": {
-        "callback": "::selectItemAjax",
+        "callback": [
+          {},
+          "selectItemAjax"
+        ],
         "event": "click"
       },
       "#attributes": {
