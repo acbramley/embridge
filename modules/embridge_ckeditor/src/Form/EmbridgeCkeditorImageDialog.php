@@ -7,11 +7,14 @@
 
 namespace Drupal\embridge_ckeditor\Form;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Bytes;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\embridge\EnterMediaAssetHelperInterface;
 use Drupal\filter\Entity\FilterFormat;
 use Drupal\Core\Ajax\AjaxResponse;
@@ -162,6 +165,24 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     if (!$preview) {
       $preview = drupal_get_path('module', 'embridge_ckeditor') . '/images/preview-image.png';
     }
+    $allowed_extensions = 'gif png jpg jpeg';
+
+    $url_options = [
+      'filter_format' => $filter_format->id(),
+      'extensions' => $allowed_extensions,
+      'catalog_id' => $embridge_image_settings['catalog_id'],
+    ];
+    $link_url = Url::fromRoute('embridge_ckeditor.image.wizard', $url_options);
+    $link_url->setOptions(
+      [
+        'attributes' => [
+          'class' => ['use-ajax', 'button'],
+          'data-accepts' => 'application/vnd.drupal-modal',
+          'data-dialog-type' => 'modal',
+          'data-dialog-options' => Json::encode(['width' => 1000]),
+        ],
+      ]
+    );
 
     $form['asset'] = [
       'preview' => [
@@ -175,13 +196,15 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       '#upload_location' => 'public://' . $embridge_image_settings['directory'],
       '#default_value' => $asset_id ? [$asset_id] : NULL,
       '#upload_validators' => [
-        'validateFileExtensions' => ['gif png jpg jpeg'],
+        'validateFileExtensions' => [$allowed_extensions],
         'validateFileSize' => [$max_filesize],
       ],
-      '#field_config' => 'node.general.field_emdb_files',
       '#delta' => 0,
-      '#allow_search' => TRUE,
+      '#allow_search' => FALSE,
       '#required' => TRUE,
+      'search_link' => [
+        '#markup' => Link::fromTextAndUrl('Search existing', $link_url)->toString(),
+      ],
     ];
 
     $form['attributes']['src'] = [
