@@ -543,27 +543,8 @@ class EmbridgeSearchForm extends FormBase {
     // Hidden input value set by javascript.
     $values = $form_state->getValues();
     $values['entity_id'] = $form_state->getUserInput()['result_chosen'];
-    //$response->addCommand(new EmbridgeSearchSave($values));
+    $response->addCommand(new EmbridgeSearchSave($values));
     $response->addCommand(new CloseModalDialogCommand());
-
-    $asset = EmbridgeAssetEntity::load($values['entity_id']);
-    $state = new FormState();
-    $image_element = [
-      'src' => $this->assetHelper->getAssetConversionUrl($asset, 'emshare', 'thumb'),
-      'data-entity-uuid' => $asset->uuid(),
-      'data-entity-type' => 'embridge_asset_entity',
-      'alt' => '',
-      'width' => '',
-      'height' => '',
-    ];
-    $state->set('image_element', $image_element);
-    $state->setBuildInfo(['args' => [FilterFormat::load('rtf')]]);
-    $state->setUserInput([
-      'form_id' => 'embridge_ckeditor_image_dialog',
-    ]);
-    $content = \Drupal::formBuilder()->buildForm('Drupal\embridge_ckeditor\Form\EmbridgeCkeditorImageDialog', $state);
-    $rendered_content = \Drupal::service('renderer')->renderRoot($content);
-    $response->addCommand(new OpenModalDialogCommand('', $rendered_content, ['width' => 700]));
 
     return $response;
   }
