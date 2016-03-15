@@ -10,7 +10,7 @@ embridge_ckeditor.embridge_image_dialog:
     _entity_access: 'filter_format.use'
 
 embridge_ckeditor.image.wizard:
-  path: '/embridge_ckeditor/wizard/{filter_format}/{field_config}'
+  path: '/embridge_ckeditor/wizard/{filter_format}'
   defaults:
     _wizard: '\Drupal\embridge_ckeditor\Wizard\EmbridgeCkeditorImageWizard'
     tempstore_id: 'embridge_ckeditor.image.wizard'
@@ -20,14 +20,12 @@ embridge_ckeditor.image.wizard:
     parameters:
       filter_format:
         type: entity:filter_format
-      field_config:
-        type: entity:field_config
     _theme: ajax_base_page
   requirements:
     _entity_access: 'filter_format.use'
 
 embridge_ckeditor.image.wizard.step:
-  path: '/embridge_ckeditor/wizard/{filter_format}/{field_config}/{step}'
+  path: '/embridge_ckeditor/wizard/{filter_format}/{step}'
   defaults:
     _wizard: '\Drupal\embridge_ckeditor\Wizard\EmbridgeCkeditorImageWizard'
     tempstore_id: 'embridge_ckeditor.image.wizard'
@@ -37,8 +35,6 @@ embridge_ckeditor.image.wizard.step:
     parameters:
       filter_format:
         type: entity:filter_format
-      field_config:
-        type: entity:field_config
     _theme: ajax_base_page
   requirements:
     _entity_access: 'filter_format.use'
