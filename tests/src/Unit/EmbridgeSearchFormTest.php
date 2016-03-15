@@ -52,13 +52,6 @@ class EmbridgeSearchFormTest extends FormTestBase {
   protected $assetHelper;
 
   /**
-   * Our asset validator.
-   *
-   * @var \Drupal\embridge\EmbridgeAssetValidatorInterface|\PHPUnit_Framework_MockObject_MockObject
-   */
-  protected $assetValidator;
-
-  /**
    * Entity manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManager|\PHPUnit_Framework_MockObject_MockObject.
@@ -116,7 +109,6 @@ class EmbridgeSearchFormTest extends FormTestBase {
     // Mock up a storm.
     $this->client = $this->getMockBuilder(EnterMediaDbClientInterface::class)->disableOriginalConstructor()->getMock();
     $this->assetHelper = $this->getMockBuilder(EnterMediaAssetHelper::class)->disableOriginalConstructor()->getMock();
-    $this->assetValidator = $this->getMockBuilder(EmbridgeAssetValidatorInterface::class)->disableOriginalConstructor()->getMock();
     $this->entityTypeManager = $this->getMockBuilder(EntityTypeManager::class)->disableOriginalConstructor()->getMock();
     $this->renderer = $this->getMockBuilder(Renderer::class)->disableOriginalConstructor()->getMock();
     $this->fieldConfig = $this->getMockBuilder(FieldConfigInterface::class)->disableOriginalConstructor()->getMock();
@@ -124,7 +116,7 @@ class EmbridgeSearchFormTest extends FormTestBase {
     $this->mockAssets = [];
 
     // Initialise our form.
-    $this->form = new EmbridgeSearchForm($this->client, $this->assetHelper, $this->assetValidator, $this->entityTypeManager, $this->renderer);
+    $this->form = new EmbridgeSearchForm($this->client, $this->assetHelper, $this->entityTypeManager, $this->renderer);
   }
 
   /**

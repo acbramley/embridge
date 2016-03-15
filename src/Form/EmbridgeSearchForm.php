@@ -49,13 +49,6 @@ class EmbridgeSearchForm extends FormBase {
   protected $assetHelper;
 
   /**
-   * Our asset validator.
-   *
-   * @var \Drupal\embridge\EmbridgeAssetValidatorInterface
-   */
-  protected $assetValidator;
-
-  /**
    * Entity manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManager.
@@ -76,8 +69,6 @@ class EmbridgeSearchForm extends FormBase {
    *   The embridge client.
    * @param \Drupal\embridge\EnterMediaAssetHelper $asset_helper
    *   A helper for asset entities.
-   * @param \Drupal\embridge\EmbridgeAssetValidatorInterface $asset_validator
-   *   A validator for asset entities.
    * @param \Drupal\Core\Entity\EntityTypeManager $entity_type_manager
    *   Entity type manager service.
    * @param \Drupal\Core\Render\Renderer $renderer
@@ -86,12 +77,10 @@ class EmbridgeSearchForm extends FormBase {
   public function __construct(
     EnterMediaDbClientInterface $embridge_client,
     EnterMediaAssetHelper $asset_helper,
-    EmbridgeAssetValidatorInterface $asset_validator,
     EntityTypeManager $entity_type_manager,
     Renderer $renderer) {
     $this->client = $embridge_client;
     $this->assetHelper = $asset_helper;
-    $this->assetValidator = $asset_validator;
     $this->entityTypeManager = $entity_type_manager;
     $this->renderer = $renderer;
   }
@@ -103,7 +92,6 @@ class EmbridgeSearchForm extends FormBase {
     return new static(
       $container->get('embridge.client'),
       $container->get('embridge.asset_helper'),
-      $container->get('embridge.asset_validator'),
       $container->get('entity_type.manager'),
       $container->get('renderer')
     );
