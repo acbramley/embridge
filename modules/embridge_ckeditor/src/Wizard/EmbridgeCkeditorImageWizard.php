@@ -9,12 +9,10 @@ namespace Drupal\embridge_ckeditor\Wizard;
 
 
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\ctools\Ajax\OpenModalWizardCommand;
 use Drupal\ctools\Wizard\FormWizardBase;
 use Drupal\embridge\Entity\EmbridgeAssetEntity;
-use Drupal\field\Entity\FieldConfig;
 use Drupal\filter\Entity\FilterFormat;
 
 /**
@@ -93,7 +91,7 @@ class EmbridgeCkeditorImageWizard extends FormWizardBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, FilterFormat $filter_format = NULL, FieldDefinitionInterface $field_config = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, FilterFormat $filter_format = NULL) {
     $cached_values = $form_state->getTemporaryValue('wizard');
     // Get the current form operation.
     $operation = $this->getOperation($cached_values);
@@ -104,7 +102,7 @@ class EmbridgeCkeditorImageWizard extends FormWizardBase {
     // Build the form, pass arguments in based on which form we are rendering.
     $args = $form_state->getBuildInfo()['args'];
     if ($operation['form'] == 'Drupal\embridge\Form\EmbridgeSearchForm') {
-      $form = $form_class->buildForm($form, $form_state, $args[1]);
+      $form = $form_class->buildForm($form, $form_state);
     }
     else {
       $form = $form_class->buildForm($form, $form_state, $args[0]);
@@ -156,7 +154,6 @@ class EmbridgeCkeditorImageWizard extends FormWizardBase {
     $response = new AjaxResponse();
     $parameters = $this->getNextParameters($cached_values);
     $parameters['filter_format'] = FilterFormat::load($parameters['filter_format']);
-    $parameters['field_config'] = FieldConfig::load($parameters['field_config']);
     $response->addCommand(new OpenModalWizardCommand($this, $this->getTempstoreId(), $parameters));
     return $response;
   }
@@ -169,7 +166,6 @@ class EmbridgeCkeditorImageWizard extends FormWizardBase {
     $response = new AjaxResponse();
     $parameters = $this->getPreviousParameters($cached_values);
     $parameters['filter_format'] = FilterFormat::load($parameters['filter_format']);
-    $parameters['field_config'] = FieldConfig::load($parameters['field_config']);
     $response->addCommand(new OpenModalWizardCommand($this, $this->getTempstoreId(), $parameters));
     return $response;
   }
