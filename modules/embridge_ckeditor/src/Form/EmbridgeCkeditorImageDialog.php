@@ -169,6 +169,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     if (!$preview) {
       $preview = drupal_get_path('module', 'embridge_ckeditor') . '/images/preview-image.png';
     }
+    // TODO: Make this configurable.
     $allowed_extensions = 'gif png jpg jpeg';
 
     $url_options = [
