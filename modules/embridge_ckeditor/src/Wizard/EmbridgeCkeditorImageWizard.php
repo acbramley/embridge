@@ -137,7 +137,9 @@ class EmbridgeCkeditorImageWizard extends FormWizardBase {
     $cached_values = $form_state->getTemporaryValue('wizard');
     $parameters = $this->getNextParameters($cached_values);
 
-    $asset = EmbridgeAssetEntity::load($form_state->getValue('result_chosen'));
+    // This is validated in EmbridgeSearchForm::validateForm().
+    $result_chosen = $form_state->getUserInput()['result_chosen'];
+    $asset = EmbridgeAssetEntity::load($result_chosen);
 
     $image_element = [
       'src' => \Drupal::getContainer()->get('embridge.asset_helper')->getAssetConversionUrl($asset, 'emshare', 'thumb'),
