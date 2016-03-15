@@ -260,13 +260,6 @@ class EmbridgeSearchForm extends FormBase {
       '#markup' => '</div></div>',
     ];
 
-    // Store the upload validators for the validation hook.
-    $upload_validators = $this->assetHelper->formatUploadValidators($field_settings);
-    $form['upload_validators'] = [
-      '#type' => 'value',
-      '#value' => $upload_validators,
-    ];
-
     if (!empty($search_response['results'])) {
       $form['search_results'] = [
         '#theme' => 'embridge_search_results',
@@ -353,14 +346,6 @@ class EmbridgeSearchForm extends FormBase {
       // Ensure the data attributes haven't been tampered with.
       if (!$asset) {
         $form_state->setError($form['search_results'], $this->t('Invalid choice, please try again.'));
-      }
-      else {
-        $upload_validators = $form_state->getValue('upload_validators');
-        if ($errors = $this->assetValidator->validate($asset, $upload_validators)) {
-          foreach ($errors as $error) {
-            $form_state->setError($form['search_results'], $error);
-          }
-        }
       }
     }
   }
