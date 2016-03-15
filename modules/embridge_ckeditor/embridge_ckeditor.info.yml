@@ -6,3 +6,4 @@ package: EMBridge
 dependencies:
   - embridge
   - ckeditor
+  - ctools
