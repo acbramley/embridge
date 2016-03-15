@@ -106,6 +106,10 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       $form_state->set('image_element', $image_element);
       $form_state->setCached(TRUE);
     }
+    // Coming from the wizard? Look in temporary storage.
+    elseif ($form_state->getTemporaryValue('wizard')) {
+      $image_element = $form_state->getTemporaryValue('wizard')['image_element'];
+    }
     else {
       // Retrieve the image element's attributes from form state.
       $image_element = $form_state->get('image_element') ?: [];
