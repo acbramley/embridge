@@ -144,6 +144,7 @@ class EmbridgeSearchForm extends FormBase {
       ];
       $field_settings = $field_config->getSettings();
       $extensions = $field_settings['file_extensions'];
+      $catalog_id = $field_settings['catalog_id'];
     }
     else {
       // If we are coming from the ckeditor image dialog, we don't have field
@@ -151,6 +152,7 @@ class EmbridgeSearchForm extends FormBase {
       // TODO: Think of a better way to do this.
       $query = \Drupal::request()->query->all();
       $extensions = $query['extensions'];
+      $catalog_id = $query['catalog_id'];
     }
 
     $operation_options = [
@@ -274,7 +276,7 @@ class EmbridgeSearchForm extends FormBase {
     if (!empty($search_response['results'])) {
       $form['search_results'] = [
         '#theme' => 'embridge_search_results',
-        '#results' => $this->formatSearchResults($search_response, $this->assetHelper, $field_settings['catalog_id']),
+        '#results' => $this->formatSearchResults($search_response, $this->assetHelper, $catalog_id),
       ];
     }
     else {
