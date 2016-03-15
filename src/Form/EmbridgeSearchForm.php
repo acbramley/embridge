@@ -12,23 +12,16 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\AppendCommand;
 use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\HtmlCommand;
-use Drupal\Core\Ajax\OpenModalDialogCommand;
-use Drupal\Core\Ajax\RedirectCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
-use Drupal\Core\Entity\EntityFieldManager;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormBase;
-use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Renderer;
 use Drupal\embridge\Ajax\EmbridgeSearchSave;
 use Drupal\embridge\EmbridgeAssetValidatorInterface;
 use Drupal\embridge\EnterMediaAssetHelper;
 use Drupal\embridge\EnterMediaDbClientInterface;
-use Drupal\embridge\Entity\EmbridgeAssetEntity;
-use Drupal\field\FieldConfigInterface;
-use Drupal\filter\Entity\FilterFormat;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -175,7 +168,7 @@ class EmbridgeSearchForm extends FormBase {
     );
 
     $ajax_settings = [
-      'callback' => '::searchAjax',
+      'callback' => [$this, 'searchAjax'],
       'wrapper' => self::AJAX_WRAPPER_ID,
       'effect' => 'fade',
       'progress' => [
@@ -184,7 +177,7 @@ class EmbridgeSearchForm extends FormBase {
     ];
     $form['filters']['search'] = [
       '#type' => 'submit',
-      '#submit' => ['::searchSubmit'],
+      '#submit' => [[$this, 'searchSubmit']],
       '#ajax' => $ajax_settings,
       '#value' => $this->t('Search'),
       // Hide the button.
@@ -287,12 +280,12 @@ class EmbridgeSearchForm extends FormBase {
       ];
     }
     // Add "previous page" pager.
-    $form['previous'] = [
+    $form['page_previous'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Previous'),
-      '#submit' => ['::previousPageSubmit'],
+      '#value' => $this->t('Previous page'),
+      '#submit' => [[$this, 'previousPageSubmit']],
       '#ajax' => array(
-        'callback' => '::searchAjax',
+        'callback' => [$this, 'searchAjax'],
         'wrapper' => self::AJAX_WRAPPER_ID,
         'effect' => 'fade',
       ),
@@ -301,12 +294,12 @@ class EmbridgeSearchForm extends FormBase {
     ];
 
     // Add "next page" pager.
-    $form['next'] = [
+    $form['page_next'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Next'),
-      '#submit' => ['::nextPageSubmit'],
+      '#value' => $this->t('Next page'),
+      '#submit' => [[$this, 'nextPageSubmit']],
       '#ajax' => array(
-        'callback' => '::searchAjax',
+        'callback' => [$this, 'searchAjax'],
         'wrapper' => self::AJAX_WRAPPER_ID,
         'effect' => 'fade',
       ),
@@ -326,7 +319,7 @@ class EmbridgeSearchForm extends FormBase {
       // No regular submit-handler. This form only works via JavaScript.
       '#submit' => array(),
       '#ajax' => array(
-        'callback' => '::selectItemAjax',
+        'callback' => [$this, 'selectItemAjax'],
         'event' => 'click',
       ),
       // Hide the button.
