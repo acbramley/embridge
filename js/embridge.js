@@ -20,7 +20,7 @@
   Drupal.behaviors.embridge_search_choose_asset = {
     attach: function (context, settings) {
       // Tie click events for choosing an image to clicking the submission button.
-      $('.embridge-choose-file').on('click', function (event) {
+      $('.embridge-choose-file').once().on('click', function (event) {
         event.preventDefault();
         // Set the result that was chosen.
         var asset_id = $(this).attr('data-asset-entity-id');
@@ -65,9 +65,9 @@
       $('a[data-toggle="collapse"]', context).once('embridge').click(function(){
         $(this).next('.collapse').toggleClass("active").slideToggle();
         if($(this).next('.collapse').filter(".active").length){
-          $(this).text("Hide search options")
+          $(this).text(Drupal.t("Hide search options"));
         } else {
-          $(this).text("More search options")
+          $(this).text(Drupal.t("More search options"));
         }
         return false;
       });
