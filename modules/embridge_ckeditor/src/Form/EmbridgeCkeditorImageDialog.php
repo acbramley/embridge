@@ -233,7 +233,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       // No regular submit-handler. This form only works via JavaScript.
       '#submit' => [],
       '#ajax' => [
-        'callback' => '::submitForm',
+        'callback' => [$this, 'ajaxSave'],
         'event' => 'click',
       ],
     ];
@@ -245,6 +245,13 @@ class EmbridgeCkeditorImageDialog extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function ajaxSave(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
 
     // Convert any uploaded files from the FID values to data-entity-uuid
