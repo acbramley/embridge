@@ -135,10 +135,23 @@ class EmbridgeSearchForm extends FormBase {
       '#type' => 'value',
       '#value' => $delta,
     ];
-    $form['field_name'] = [
-      '#type' => 'value',
-      '#value' => $field_config->getName(),
-    ];
+
+    // Get the field settings for filtering and validating files.
+    if ($field_config) {
+      $form['field_name'] = [
+        '#type' => 'value',
+        '#value' => $field_config->getName(),
+      ];
+      $field_settings = $field_config->getSettings();
+      $extensions = $field_settings['file_extensions'];
+    }
+    else {
+      // If we are coming from the ckeditor image dialog, we don't have field
+      // config, look for extensions in the query string instead.
+      // TODO: Think of a better way to do this.
+      $query = \Drupal::request()->query->all();
+      $extensions = $query['extensions'];
+    }
 
     $operation_options = [
       'startswith' => $this->t('Starts with'),
@@ -187,15 +200,12 @@ class EmbridgeSearchForm extends FormBase {
         ),
       ),
     ];
-    // Get the field settings for filtering and validating files.
-    $field_settings = $field_config->getSettings();
-    $extension_filters = $this->massageExtensionSetting($field_settings['file_extensions']);
 
     $filters = [];
     $filters[] = [
       'field' => 'fileformat',
       'operator' => 'matches',
-      'value' => $extension_filters,
+      'value' => $this->massageExtensionSetting($extensions),
     ];
     // Static list of known search filters from EMDB.
     // TODO: Make this configurable.
@@ -212,6 +222,7 @@ class EmbridgeSearchForm extends FormBase {
         'value' => $input['filename'],
       ];
     }
+
     // Add user chosen filters.
     foreach ($known_search_filters as $filter_id) {
       if (empty($input[$filter_id])) {
