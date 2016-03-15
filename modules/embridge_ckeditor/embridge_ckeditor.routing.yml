@@ -8,3 +8,37 @@ embridge_ckeditor.embridge_image_dialog:
     _theme: ajax_base_page
   requirements:
     _entity_access: 'filter_format.use'
+
+embridge_ckeditor.image.wizard:
+  path: '/embridge_ckeditor/wizard/{filter_format}/{field_config}'
+  defaults:
+    _wizard: '\Drupal\embridge_ckeditor\Wizard\EmbridgeCkeditorImageWizard'
+    tempstore_id: 'embridge_ckeditor.image.wizard'
+    machine_name: 'EmbridgeCkeditorImageWizard'
+    js: 'ajax'
+  options:
+    parameters:
+      filter_format:
+        type: entity:filter_format
+      field_config:
+        type: entity:field_config
+    _theme: ajax_base_page
+  requirements:
+    _entity_access: 'filter_format.use'
+
+embridge_ckeditor.image.wizard.step:
+  path: '/embridge_ckeditor/wizard/{filter_format}/{field_config}/{step}'
+  defaults:
+    _wizard: '\Drupal\embridge_ckeditor\Wizard\EmbridgeCkeditorImageWizard'
+    tempstore_id: 'embridge_ckeditor.image.wizard'
+    machine_name: 'EmbridgeCkeditorImageWizard'
+    js: 'ajax'
+  options:
+    parameters:
+      filter_format:
+        type: entity:filter_format
+      field_config:
+        type: entity:field_config
+    _theme: ajax_base_page
+  requirements:
+    _entity_access: 'filter_format.use'
