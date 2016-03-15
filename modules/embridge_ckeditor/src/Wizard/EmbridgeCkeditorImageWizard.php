@@ -113,11 +113,12 @@ class EmbridgeCkeditorImageWizard extends FormWizardBase {
     }
     $form['actions'] = $this->actions($form_class, $form_state);
 
-    if ($operation['form'] != 'Drupal\embridge\Form\EmbridgeSearchForm') {
+    if ($this->step == 'two') {
       $form['actions']['submit']['#ajax']['callback'] = [
         $form_class,
         'ajaxSave',
       ];
+      unset($form['actions']['previous']);
     }
 
     return $form;
