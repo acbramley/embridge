@@ -207,9 +207,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       '#delta' => 0,
       '#allow_search' => FALSE,
       '#required' => TRUE,
-      'search_link' => [
-        '#markup' => Link::fromTextAndUrl('Search existing', $link_url)->toString(),
-      ],
+      'search_link' => Link::fromTextAndUrl('Search existing', $link_url)->toRenderable(),
     ];
 
     $form['attributes']['src'] = [
