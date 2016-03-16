@@ -204,7 +204,6 @@ class EmbridgeCkeditorImageDialog extends FormBase {
         'validateFileExtensions' => [$allowed_extensions],
         'validateFileSize' => [$max_filesize],
       ],
-      '#delta' => 0,
       '#allow_search' => FALSE,
       '#required' => TRUE,
       'search_link' => Link::fromTextAndUrl('Search existing', $link_url)->toRenderable(),
