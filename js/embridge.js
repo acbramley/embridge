@@ -52,21 +52,22 @@
   };
 
   /**
-   * Enables bootstrap collapse for 'more options'
+   * Enables bootstrap collapse for 'more options'.
    */
   Drupal.behaviors.embridge_search_ui = {
     attach: function (context, settings) {
-      //Hide collapsed sections on load
+      // Hide collapsed sections on load.
       $(".collapse").each(function() {
         $(this).hide();
       });
 
-      //Switch the "Open" and "Close" state per click then slide up/down (depending on open/close state)
-      $('a[data-toggle="collapse"]', context).once('embridge').click(function(){
+      // Switch the "Open" and "Close" state per click then slide up/down (depending on open/close state).
+      $('a[data-toggle="collapse"]', context).once('embridge').click(function() {
         $(this).next('.collapse').toggleClass("active").slideToggle();
-        if($(this).next('.collapse').filter(".active").length){
+        if ($(this).next('.collapse').filter(".active").length) {
           $(this).text(Drupal.t("Hide search options"));
-        } else {
+        }
+        else {
           $(this).text(Drupal.t("More search options"));
         }
         return false;

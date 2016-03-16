@@ -44,4 +44,5 @@ interface EnterMediaAssetHelperInterface {
    * Deletes temporary assets.
    */
   public function deleteTemporaryAssets();
+
 }
