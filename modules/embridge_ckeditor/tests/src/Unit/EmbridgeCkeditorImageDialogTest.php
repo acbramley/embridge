@@ -130,7 +130,7 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
    *   An asset to load from the entity type manager.
    */
   private function setUpBuildForm($asset = NULL) {
-    $this->mockFilter->expects($this->once())
+    $this->mockFilter->expects($this->exactly(2))
       ->method('id')
       ->willReturn(self::MOCK_FILTER_ID);
 
