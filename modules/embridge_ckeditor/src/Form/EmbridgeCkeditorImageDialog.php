@@ -274,7 +274,18 @@ class EmbridgeCkeditorImageDialog extends FormBase {
   }
 
   /**
-   * {@inheritdoc}
+   * Ajax callback for save button.
+   *
+   * Sets attributes for the image and return an ajax response in order to
+   * save the data into the editor.
+   *
+   * @param array $form
+   *   The form array.
+   * @param FormStateInterface $form_state
+   *   The form state object.
+   *
+   * @return AjaxResponse
+   *   An ajax response to add the image to the editor.
    */
   public function ajaxSave(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
