@@ -29,7 +29,12 @@
       ]
     },
     "#allow_search": false,
-    "#required": true
+    "#required": true,
+    "search_link": {
+      "#type": "link",
+      "#url": {},
+      "#title": "Search existing"
+    }
   },
   "attributes": {
     "src": {
@@ -72,7 +77,7 @@
       "#value": "Save",
       "#submit": [],
       "#ajax": {
-        "callback": "::submitForm",
+        "callback": [{}, "ajaxSave"],
         "event": "click"
       }
     }

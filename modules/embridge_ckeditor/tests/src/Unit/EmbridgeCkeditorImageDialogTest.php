@@ -382,15 +382,15 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
   /**
    * Test submitForm with empty fid.
    *
-   * @covers ::submitForm
+   * @covers ::ajaxSave
    *
    * @test
    */
-  public function submitFormWithEmptyFidDoesNotLoadEntities() {
+  public function ajaxSaveWithEmptyFidDoesNotLoadEntities() {
     $form = [];
     $form_state = new FormState();
 
-    $response = $this->form->submitForm($form, $form_state);
+    $response = $this->form->ajaxSave($form, $form_state);
 
     $this->assertInstanceOf('\Drupal\Core\Ajax\AjaxResponse', $response);
     $commands = $response->getCommands();
@@ -404,15 +404,17 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
   /**
    * Test submitForm with errors.
    *
+   * @covers ::ajaxSave
+   *
    * @test
    */
-  public function submitFormWithErrorsReturnsHtmlCommand() {
+  public function ajaxSaveWithErrorsReturnsHtmlCommand() {
     // #attached required for CommandWithAttachedAssetsTrait checks.
     $form = ['#attached' => []];
     $form_state = new FormState();
     $form_state->setErrorByName('test', 'ERROR ERROR!!');
 
-    $response = $this->form->submitForm($form, $form_state);
+    $response = $this->form->ajaxSave($form, $form_state);
 
     $this->assertInstanceOf('\Drupal\Core\Ajax\AjaxResponse', $response);
     $commands = $response->getCommands();
@@ -424,11 +426,11 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
   /**
    * Test submitForm with an fid, ensures values are set correctly.
    *
-   * @covers ::submitForm
+   * @covers ::ajaxSave
    *
    * @test
    */
-  public function submitFormWithAndFidLoadsEntitiesAndSetsFormStateValues() {
+  public function ajaxSaveWithFidLoadsEntitiesAndSetsFormStateValues() {
     $form = [];
     $catalog_id = 'test_catalog';
     $app_id = 'test_application_id';
@@ -493,7 +495,7 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
       ->with($mock_asset, $app_id, 'thumb')
       ->willReturn($source_url);
 
-    $this->form->submitForm($form, $form_state);
+    $this->form->ajaxSave($form, $form_state);
     $expected_values = array_merge_recursive(
       [
         'attributes' => [
