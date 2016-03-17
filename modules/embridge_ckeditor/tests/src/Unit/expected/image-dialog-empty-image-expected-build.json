@@ -40,7 +40,7 @@
     },
     "alt": {
       "#title": "Alternative text",
-      "#description": "If the image imparts meaning, describe it in teh alt text. If the image is purely decorative, the alt text can remain blank.",
+      "#description": "If the image imparts meaning, describe it in the alt text. If the image is purely decorative, the alt text can remain blank.",
       "#type": "textfield",
       "#default_value": "",
       "#maxlength": 2048
