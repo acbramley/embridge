@@ -173,17 +173,22 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   /**
    * {@inheritdoc}
    */
-  public function upload(EmbridgeAssetEntityInterface $asset) {
+  public function upload(EmbridgeAssetEntityInterface $asset, array $metadata) {
     $this->login();
 
     $file_path = $this->fileSystem->realpath($asset->getSourcePath());
     $filename = $asset->getFilename();
-    $json_request = $this->jsonEncoder->encode(
-      [
-        "id" => $asset->getOriginalId(),
-        "description" => $filename,
-      ]
-    );
+
+    // Build the main request data.
+    $json_values = [
+      'id' => $asset->getOriginalId(),
+      'description' => $filename,
+    ];
+    // Ensure only scalar values in the metadata.
+    $metadata = array_filter($metadata, 'is_scalar');
+    $json_values = array_merge($json_values, $metadata);
+    $json_request = $this->jsonEncoder->encode($json_values);
+
     $body = [
       'multipart' => [
         [

@@ -28,11 +28,14 @@ interface EnterMediaDbClientInterface {
    *
    * @param EmbridgeAssetEntityInterface $asset
    *   An asset entity with a file reference to send to the server.
+   * @param array $metadata
+   *   Additional properties that can be passed into EMDB and stored as metadata
+   *   on the file. These values are not stored locally in Drupal.
    *
    * @return EmbridgeAssetEntityInterface
    *   The updated and saved asset.
    */
-  public function upload(EmbridgeAssetEntityInterface $asset);
+  public function upload(EmbridgeAssetEntityInterface $asset, array $metadata);
 
   /**
    * Searches the EMDB instance for assets, given a set of filters.
