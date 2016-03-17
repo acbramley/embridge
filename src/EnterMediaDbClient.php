@@ -173,7 +173,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   /**
    * {@inheritdoc}
    */
-  public function upload(EmbridgeAssetEntityInterface $asset, array $metadata) {
+  public function upload(EmbridgeAssetEntityInterface $asset, array $metadata = []) {
     $this->login();
 
     $file_path = $this->fileSystem->realpath($asset->getSourcePath());
