@@ -179,13 +179,18 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     $file_path = $this->fileSystem->realpath($asset->getSourcePath());
     $filename = $asset->getFilename();
 
+    // Sanitize metadata values.
+    $metadata = array_filter($metadata, 'is_scalar');
+    if (isset($metadata['libraries'])) {
+      // The libraries value won't stick unless it is a string.
+      $metadata['libraries'] = (string) $metadata['libraries'];
+    }
+
     // Build the main request data.
     $json_values = [
       'id' => $asset->getOriginalId(),
       'description' => $filename,
     ];
-    // Ensure only scalar values in the metadata.
-    $metadata = array_filter($metadata, 'is_scalar');
     $json_values = array_merge($json_values, $metadata);
     $json_request = $this->jsonEncoder->encode($json_values);
 

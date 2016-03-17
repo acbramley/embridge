@@ -536,7 +536,7 @@ class EmbridgeAsset extends FormElement {
     if ($element['#library_id']) {
       // EMDB technically stores 'libraries' plural, but the field settings
       // is for one library. Ensure it is case to a string or it won't stick.
-      $metadata['libraries'] = (string) $element['#library_id'];
+      $metadata['libraries'] = $element['#library_id'];
     }
 
     // Save attached files to the database.
