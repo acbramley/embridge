@@ -111,7 +111,7 @@ class EmbridgeAssetItem extends FileItem {
       '#weight' => 6,
     );
 
-    $libraries_admin = Link::fromTextAndUrl('libraries admin', Url::fromUri($embridge_settings->get('uri') . '/emshare/views/modules/library/index.html'));
+    $libraries_admin = Link::fromTextAndUrl('libraries admin', Url::fromUri($embridge_settings->get('uri') . '/' . $field_settings['catalog_id'] . '/views/modules/library/index.html'));
     $element['library_id'] = array(
       '#type' => 'textfield',
       '#title' => t('Library'),
