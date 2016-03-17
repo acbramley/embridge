@@ -116,7 +116,7 @@ class EmbridgeCkeditorImageWizard extends FormWizardBase {
     // $this->actions does what we want most of the time, except for the final
     // step. Overwrite the ajax callback and remove the previous button. Users
     // can click search again if they need to "go back".
-    if ($this->step === 1) {
+    if ($this->step == 1) {
       $form['actions']['submit']['#ajax']['callback'] = [
         $form_class,
         'ajaxSave',
