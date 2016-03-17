@@ -50,7 +50,7 @@ class EmbridgeImage extends PluginBase implements CKEditorPluginInterface, CKEdi
    * {@inheritdoc}
    */
   public function getLibraries(Editor $editor) {
-    return [];
+    return ['embridge_ckeditor/embridge_ckeditor.dialog.lib'];
   }
 
   /**

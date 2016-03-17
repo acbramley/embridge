@@ -8,3 +8,9 @@ drupal.embridge_ckeditor.embridgeimage.admin:
     - core/jquery.once
     - core/drupal.vertical-tabs
     - core/drupalSettings
+
+embridge_ckeditor.dialog.lib:
+  version: VERSION
+  css:
+    theme:
+      css/embridgeckeditor.css: {}

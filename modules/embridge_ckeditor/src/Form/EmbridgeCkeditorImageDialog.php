@@ -118,7 +118,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     // Add libraries and wrap the form in ajax wrappers.
     $form['#tree'] = TRUE;
     $form['#attached']['library'][] = 'editor/drupal.editor.dialog';
-    $form['#prefix'] = '<div id="' . self::AJAX_WRAPPER_ID . '">';
+    $form['#prefix'] = '<div class="ajax-wrapper" id="' . self::AJAX_WRAPPER_ID . '">';
     $form['#suffix'] = '</div>';
 
     /** @var \Drupal\editor\Entity\Editor $editor */
@@ -220,6 +220,8 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       '#type' => 'textfield',
       '#default_value' => $alt,
       '#maxlength' => 2048,
+      // Open wrapper div for left column.
+      '#prefix' => '<div class="image-attributes">',
     ];
 
     $conversion = isset($image_element['data-conversion']) ? $image_element['data-conversion'] : '';
@@ -246,6 +248,8 @@ class EmbridgeCkeditorImageDialog extends FormBase {
           'right' => $this->t('Right'),
         ],
         '#default_value' => $data_align,
+        // Close wrapper div for left column.
+        '#suffix' => '</div>',
       ];
     }
 

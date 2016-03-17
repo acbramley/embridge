@@ -1,0 +1,16 @@
+/* CKEditor plugin dialog */
+
+.embridge-ckeditor-image-dialog {
+    width: 700px;
+}
+
+
+.form-type-embridge-asset {
+    display: inline-block;
+    width: 40%;
+    margin-right: 5%;
+}
+.image-attributes {
+    display: inline-block;
+    width: 55%;
+}
