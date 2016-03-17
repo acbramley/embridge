@@ -216,7 +216,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     $alt = isset($image_element['alt']) ? $image_element['alt'] : '';
     $form['attributes']['alt'] = [
       '#title' => $this->t('Alternative text'),
-      '#description' => $this->t('If the image imparts meaning, describe it in teh alt text. If the image is purely decorative, the alt text can remain blank.'),
+      '#description' => $this->t('If the image imparts meaning, describe it in the alt text. If the image is purely decorative, the alt text can remain blank.'),
       '#type' => 'textfield',
       '#default_value' => $alt,
       '#maxlength' => 2048,
