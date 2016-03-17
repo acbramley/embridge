@@ -76,12 +76,12 @@ class EmbridgeCkeditorImageWizard extends FormWizardBase {
    */
   public function getOperations($cached_values) {
     return array(
-      'one' => [
+      [
         'form' => 'Drupal\embridge\Form\EmbridgeSearchForm',
         'title' => $this->t('Search assets'),
         'submit' => ['::stepOneSubmit'],
       ],
-      'two' => [
+      [
         'form' => 'Drupal\embridge_ckeditor\Form\EmbridgeCkeditorImageDialog',
         'title' => $this->t('Add Image'),
       ],
@@ -116,7 +116,7 @@ class EmbridgeCkeditorImageWizard extends FormWizardBase {
     // $this->actions does what we want most of the time, except for the final
     // step. Overwrite the ajax callback and remove the previous button. Users
     // can click search again if they need to "go back".
-    if ($this->step == 'two') {
+    if ($this->step === 1) {
       $form['actions']['submit']['#ajax']['callback'] = [
         $form_class,
         'ajaxSave',
@@ -132,7 +132,7 @@ class EmbridgeCkeditorImageWizard extends FormWizardBase {
    */
   public function stepOneSubmit($form, FormStateInterface $form_state) {
     // Increment the internal step counter.
-    $this->step = 'two';
+    $this->step++;
 
     $cached_values = $form_state->getTemporaryValue('wizard');
     $parameters = $this->getNextParameters($cached_values);
