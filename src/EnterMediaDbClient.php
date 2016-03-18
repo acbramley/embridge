@@ -108,7 +108,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     $uri = $settings->get('uri');
     $uri = sprintf('%s/%s', $uri, $path);
     $options = [
-      'timeout' => 5,
+      'timeout' => 20,
       'cookies' => $this->cookieJar,
     ];
     if (!empty($body['json'])) {

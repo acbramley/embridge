@@ -126,7 +126,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->emdbClient = new EnterMediaDbClient($this->configFactory, $this->client, $this->serializer, $this->fileSystem);
 
     $this->defaultOptions = [
-      'timeout' => 5,
+      'timeout' => 20,
       'cookies' => new SessionCookieJar('SESSION_STORAGE', TRUE),
     ];
     $this->defaultLoginOptions = $this->defaultOptions + [
