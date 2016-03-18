@@ -284,6 +284,7 @@ class EmbridgeSearchForm extends FormBase {
       ),
       // Always display it for consistency, only enable it if we can go back.
       '#disabled' => !($page > 1),
+      '#prefix' => '<div class="pagination">',
     ];
 
     // Add "next page" pager.
@@ -298,6 +299,7 @@ class EmbridgeSearchForm extends FormBase {
       ),
       // Always display it for consistency, only enable it if we can go forward.
       '#disabled' => !($search_response['response']['pages'] > $search_response['response']['page']),
+      '#suffix' => '</div>',
     ];
 
     $form['result_chosen'] = [
