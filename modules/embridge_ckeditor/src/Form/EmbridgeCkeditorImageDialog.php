@@ -208,6 +208,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       '#required' => TRUE,
       'search_link' => Link::fromTextAndUrl('Search asset library', $link_url)->toRenderable(),
     ];
+    $form['asset']['search_link']['#weight'] = 100;
 
     $form['attributes']['src'] = [
       '#type' => 'value',
@@ -269,8 +270,6 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       '#attributes' => [
         'class' => ['button--primary'],
       ],
-      '#prefix' => '<div class="button-wrapper">',
-      '#suffix' => '</div>',
     ];
 
     return $form;
