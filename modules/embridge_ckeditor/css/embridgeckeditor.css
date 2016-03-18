@@ -1,16 +1,53 @@
 /* CKEditor plugin dialog */
 
-.embridge-ckeditor-image-dialog {
-    width: 700px;
+.ui-dialog.embridge-ckeditor-image-dialog {
+  max-width: 750px;
 }
 
-
-.form-type-embridge-asset {
-    display: inline-block;
-    width: 40%;
-    margin-right: 5%;
+form > [id^="ajax-wrapper"] {
+  display: inline-block;
+  width: 250px;
+  margin-right: 30px;
+  padding-bottom: 1.5rem;
+  vertical-align: top;
+  position: relative;
 }
+.form-type-embridge-asset .form-file {
+  margin: 0.5rem 0 0.75rem;
+  border: none;
+}
+
+.form-type-embridge-asset [id^="edit-asset-search"] {
+  position: absolute;
+  bottom: -1.5rem;
+  left: 0;
+  margin-left: 0;
+}
+.form-type-embridge-asset .js-hide + [id^="edit-asset-search"] {
+  position: relative;
+  bottom: 0;
+}
+
+.form-type-embridge-asset img {
+  display: block;
+  margin: 0 0.25rem 0.5rem 0;
+  padding: 0.75rem;
+  text-align: center;
+  vertical-align: middle;
+  border: 2px solid #d6d6d6;
+  border-radius: 4px;
+  box-shadow: 1px 2px 3px #d6d6d6;
+}
+.form-type-embridge-asset span.file {
+  display: inline-block;
+}
+
 .image-attributes {
-    display: inline-block;
-    width: 55%;
+  display: inline-block;
+  max-width: 670px;
+  vertical-align: top;
+}
+
+.form-type-embridge-asset .button-wrapper {
+  clear: both;
 }

@@ -118,7 +118,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     // Add libraries and wrap the form in ajax wrappers.
     $form['#tree'] = TRUE;
     $form['#attached']['library'][] = 'editor/drupal.editor.dialog';
-    $form['#prefix'] = '<div class="ajax-wrapper" id="' . self::AJAX_WRAPPER_ID . '">';
+    $form['#prefix'] = '<div id="' . self::AJAX_WRAPPER_ID . '">';
     $form['#suffix'] = '</div>';
 
     /** @var \Drupal\editor\Entity\Editor $editor */
@@ -206,7 +206,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       ],
       '#allow_search' => FALSE,
       '#required' => TRUE,
-      'search_link' => Link::fromTextAndUrl('Search existing', $link_url)->toRenderable(),
+      'search_link' => Link::fromTextAndUrl('Search asset library', $link_url)->toRenderable(),
     ];
 
     $form['attributes']['src'] = [
@@ -216,7 +216,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     $alt = isset($image_element['alt']) ? $image_element['alt'] : '';
     $form['attributes']['alt'] = [
       '#title' => $this->t('Alternative text'),
-      '#description' => $this->t('If the image imparts meaning, describe it in the alt text. If the image is purely decorative, the alt text can remain blank.'),
+      '#description' => $this->t('The alt text describes the image for non-sighted users. <br/>The alt text can remain empty only if the image conveys no meaning (is decorative only).'),
       '#type' => 'textfield',
       '#default_value' => $alt,
       '#maxlength' => 2048,
@@ -227,8 +227,8 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     $conversion = isset($image_element['data-conversion']) ? $image_element['data-conversion'] : '';
     $conversions_array = $catalog->getConversionsArray();
     $form['attributes']['data-conversion'] = [
-      '#title' => $this->t('Conversion'),
-      '#description' => $this->t('Choose the conversion to display'),
+      '#title' => $this->t('Image size'),
+      '#description' => $this->t('Choose the image size conversion to display.'),
       '#type' => 'select',
       '#default_value' => $conversion,
       '#options' => array_combine($conversions_array, $conversions_array),
@@ -240,6 +240,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       $data_align = !empty($image_element['data-align']) ? $image_element['data-align'] : '';
       $form['attributes']['data-align'] = [
         '#title' => $this->t('Align'),
+        '#description' => $this->t('How the image will align within the content.'),
         '#type' => 'select',
         '#options' => [
           'none' => $this->t('None'),
@@ -265,6 +266,11 @@ class EmbridgeCkeditorImageDialog extends FormBase {
         'callback' => [$this, 'ajaxSave'],
         'event' => 'click',
       ],
+      '#attributes' => [
+        'class' => ['button--primary'],
+      ],
+      '#prefix' => '<div class="button-wrapper">',
+      '#suffix' => '</div>',
     ];
 
     return $form;
