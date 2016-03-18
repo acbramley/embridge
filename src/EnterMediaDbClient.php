@@ -124,7 +124,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     catch (RequestException $e) {
       $response = $e->getResponse();
       if ($response === NULL) {
-        throw new \Exception('Error connecting to EMDB backend');
+        throw new \Exception('Error connecting to EMDB backend: ' . $e->getMessage());
       }
       if ($response->getStatusCode() == 403) {
         throw new \Exception('Failed to authenticate with EMDB, please check your settings.');

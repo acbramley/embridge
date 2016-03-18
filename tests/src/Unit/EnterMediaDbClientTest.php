@@ -237,7 +237,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->with($method, self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
       ->willThrowException(new RequestException('', new Request($method, self::EXAMPLE_LOGIN_URL), NULL));
 
-    $this->setExpectedException('Exception', 'Error connecting to EMDB backend');
+    $this->setExpectedExceptionRegExp('Exception', '/Error connecting to EMDB backend: .*/');
     $this->emdbClient->login();
   }
 
