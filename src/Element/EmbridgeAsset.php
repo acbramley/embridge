@@ -527,11 +527,19 @@ class EmbridgeAsset extends FormElement {
       return FALSE;
     }
 
+    // Prepare any asset properties to pass to the server.
+    $metadata = [];
+    if ($element['#library_id']) {
+      // EMDB technically stores 'libraries' plural, but the field settings
+      // is for one library. Ensure it is case to a string or it won't stick.
+      $metadata['libraries'] = $element['#library_id'];
+    }
+
     // Save attached files to the database.
     $files_uploaded = $element['#multiple'] && count(array_filter($file_upload)) > 0;
     $files_uploaded |= !$element['#multiple'] && !empty($file_upload);
     if ($files_uploaded) {
-      if (!$assets = self::saveUpload($upload_name, $element['#catalog_id'], $element['#upload_validators'], $destination)) {
+      if (!$assets = self::saveUpload($upload_name, $element['#catalog_id'], $metadata, $element['#upload_validators'], $destination)) {
         \Drupal::logger('file')->notice('The file upload failed. %upload', array('%upload' => $upload_name));
         $form_state->setError($element, t('Files in the @name field were unable to be uploaded.', array('@name' => $element['#title'])));
         return array();
@@ -557,6 +565,9 @@ class EmbridgeAsset extends FormElement {
    *   the form array.
    * @param string $catalog_id
    *   The catalog id for the catalog we are uploading to.
+   * @param array $metadata
+   *   Additional properties that can be passed into EMDB and stored as metadata
+   *   on the file. These values are not stored locally in Drupal.
    * @param array $validators
    *   An optional, associative array of callback functions used to validate the
    *   file.
@@ -586,7 +597,7 @@ class EmbridgeAsset extends FormElement {
    *   - source: Path to the file before it is moved.
    *   - destination: Path to the file after it is moved (same as 'uri').
    */
-  public static function saveUpload($form_field_name, $catalog_id, $validators = array(), $destination_dir = FALSE, $delta = NULL, $replace = FILE_EXISTS_RENAME) {
+  public static function saveUpload($form_field_name, $catalog_id, $metadata = array(), $validators = array(), $destination_dir = FALSE, $delta = NULL, $replace = FILE_EXISTS_RENAME) {
     $user = \Drupal::currentUser();
     static $upload_cache;
 
@@ -777,7 +788,7 @@ class EmbridgeAsset extends FormElement {
       $embridge_client = \Drupal::getContainer()->get('embridge.client');
 
       try {
-        $embridge_client->upload($asset);
+        $embridge_client->upload($asset, $metadata);
       }
       catch (\Exception $e) {
         $message = $e->getMessage();

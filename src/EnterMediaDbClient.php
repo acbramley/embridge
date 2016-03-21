@@ -124,7 +124,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     catch (RequestException $e) {
       $response = $e->getResponse();
       if ($response === NULL) {
-        throw new \Exception('Error connecting to EMDB backend');
+        throw new \Exception('Error connecting to EMDB backend: ' . $e->getMessage());
       }
       if ($response->getStatusCode() == 403) {
         throw new \Exception('Failed to authenticate with EMDB, please check your settings.');
@@ -173,17 +173,27 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   /**
    * {@inheritdoc}
    */
-  public function upload(EmbridgeAssetEntityInterface $asset) {
+  public function upload(EmbridgeAssetEntityInterface $asset, array $metadata = []) {
     $this->login();
 
     $file_path = $this->fileSystem->realpath($asset->getSourcePath());
     $filename = $asset->getFilename();
-    $json_request = $this->jsonEncoder->encode(
-      [
-        "id" => $asset->getOriginalId(),
-        "description" => $filename,
-      ]
-    );
+
+    // Sanitize metadata values.
+    $metadata = array_filter($metadata, 'is_scalar');
+    if (isset($metadata['libraries'])) {
+      // The libraries value won't stick unless it is a string.
+      $metadata['libraries'] = (string) $metadata['libraries'];
+    }
+
+    // Build the main request data.
+    $json_values = [
+      'id' => $asset->getOriginalId(),
+      'description' => $filename,
+    ];
+    $json_values = array_merge($json_values, $metadata);
+    $json_request = $this->jsonEncoder->encode($json_values);
+
     $body = [
       'multipart' => [
         [
