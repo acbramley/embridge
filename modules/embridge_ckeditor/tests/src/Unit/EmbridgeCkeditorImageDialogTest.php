@@ -211,7 +211,7 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
   /**
    * Tests buildForm() with empty element input.
    *
-   * @covers ::buildForm()
+   * @covers ::buildForm
    *
    * @test
    */
@@ -251,7 +251,7 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
   /**
    * Tests buildForm() with existing element input.
    *
-   * @covers ::buildForm()
+   * @covers ::buildForm
    *
    * @test
    */
@@ -314,7 +314,7 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
   /**
    * Tests buildForm() with existing element input, with a new image being ULd.
    *
-   * @covers ::buildForm()
+   * @covers ::buildForm
    *
    * @test
    */
