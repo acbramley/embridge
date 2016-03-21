@@ -177,4 +177,5 @@ class EmbridgeAssetItem extends FileItem {
 
     return $validators;
   }
+
 }
