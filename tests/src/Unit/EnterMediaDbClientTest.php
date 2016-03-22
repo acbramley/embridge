@@ -101,6 +101,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       'uri' => 'http://www.example.com',
       'username' => 'admin',
       'password' => 'admin',
+      'timeout' => EMBRIDGE_TIMEOUT_DEFAULT,
     ];
     $this->sampleConfig = $sample_config;
 
@@ -126,7 +127,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->emdbClient = new EnterMediaDbClient($this->configFactory, $this->client, $this->serializer, $this->fileSystem);
 
     $this->defaultOptions = [
-      'timeout' => 5,
+      'timeout' => EMBRIDGE_TIMEOUT_DEFAULT,
       'cookies' => new SessionCookieJar('SESSION_STORAGE', TRUE),
     ];
     $this->defaultLoginOptions = $this->defaultOptions + [

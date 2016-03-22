@@ -127,6 +127,15 @@ class EmbridgeSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('password'),
       '#required' => TRUE,
     ];
+    $form['connection']['timeout'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Timeout'),
+      '#description' => $this->t('Timeout value for API calls, in seconds.'),
+      '#maxlength' => 8,
+      '#size' => 8,
+      '#default_value' => $config->get('timeout'),
+      '#required' => TRUE,
+    ];
     return parent::buildForm($form, $form_state);
   }
 
@@ -173,6 +182,7 @@ class EmbridgeSettingsForm extends ConfigFormBase {
       ->set('uri', $form_state->getValue('uri'))
       ->set('username', $form_state->getValue('username'))
       ->set('password', $form_state->getValue('password'))
+      ->set('timeout', $form_state->getValue('timeout'))
       ->save();
   }
 

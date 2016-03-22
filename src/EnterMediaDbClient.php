@@ -25,6 +25,11 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
   const EMBRIDGE_SEARCH_PATH_DEFAULT = 'mediadb/services/module/asset/search';
 
   /**
+   * Default guzzle/curl timeout for calls to the API.
+   */
+  const EMBRIDGE_TIMEOUT_DEFAULT = 5;
+
+  /**
    * Config Factory.
    *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
@@ -108,7 +113,7 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
     $uri = $settings->get('uri');
     $uri = sprintf('%s/%s', $uri, $path);
     $options = [
-      'timeout' => 5,
+      'timeout' => $settings->get('timeout'),
       'cookies' => $this->cookieJar,
     ];
     if (!empty($body['json'])) {
