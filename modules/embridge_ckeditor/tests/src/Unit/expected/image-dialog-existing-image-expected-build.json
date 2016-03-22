@@ -33,52 +33,66 @@
     "search_link": {
       "#type": "link",
       "#url": {},
-      "#title": "Search existing"
+      "#title": "Search asset library"
     }
   },
-  "attributes": {
-    "src": {
-      "#type": "value"
+  "attributes_wrapper": {
+    "#type": "container",
+    "#tree": true,
+    "#attributes": {
+      "class": ["image-attributes"]
     },
-    "alt": {
-      "#title": "Alternative text",
-      "#description": "If the image imparts meaning, describe it in the alt text. If the image is purely decorative, the alt text can remain blank.",
-      "#type": "textfield",
-      "#default_value": "test image",
-      "#maxlength": 2048
-    },
-    "data-conversion": {
-      "#title": "Conversion",
-      "#description": "Choose the conversion to display",
-      "#type": "select",
-      "#options": {
-        "thumb": "thumb",
-        "medium": "medium",
-        "large": "large"
+    "attributes": {
+      "src": {
+        "#type": "value"
       },
-      "#default_value": "center"
-    },
-    "data-align": {
-      "#title": "Align",
-      "#type": "select",
-      "#options": {
-        "none": "None",
-        "left": "Left",
-        "center": "Center",
-        "right": "Right"
+      "alt": {
+        "#title": "Alternative text",
+        "#description": "The alt text describes the image for non-sighted users. <br/>The alt text can remain empty only if the image conveys no meaning (is decorative only).",
+        "#type": "textfield",
+        "#default_value": "test image",
+        "#maxlength": 2048
       },
-      "#default_value": "right"
-    }
-  },
-  "actions": {
-    "#type": "actions",
-    "save_modal": {
-      "#type": "submit",
-      "#value": "Save",
-      "#submit": [],
-      "#ajax": {
-        "callback": [{}, "ajaxSave"],
-        "event": "click"
+      "data-conversion": {
+        "#title": "Image size",
+        "#description": "Choose the image size conversion to display.",
+        "#type": "select",
+        "#options": {
+          "thumb": "thumb",
+          "medium": "medium",
+          "large": "large"
+        },
+        "#default_value": "center"
+      },
+      "data-align": {
+        "#title": "Align",
+        "#description": "How the image will align within the content.",
+        "#type": "select",
+        "#options": {
+          "none": "None",
+          "left": "Left",
+          "center": "Center",
+          "right": "Right"
+        },
+        "#default_value": "right"
+      }
+    },
+    "actions": {
+      "#type": "actions",
+      "save_modal": {
+        "#type": "submit",
+        "#value": "Save",
+        "#submit": [],
+        "#attributes": {
+          "class": ["button--primary"]
+        },
+        "#ajax": {
+          "callback": [
+            {},
+            "ajaxSave"
+          ],
+          "event": "click"
+        }
       }
     }
   }
