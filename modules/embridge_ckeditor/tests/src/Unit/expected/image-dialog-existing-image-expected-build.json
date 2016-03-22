@@ -39,14 +39,17 @@
     "search_link": {
       "#type": "link",
       "#url": {},
-      "#title": "Search asset library"
+      "#title": "Search asset library",
+      "#weight": -100
     }
   },
-  "attributes_wrapper": {
+  "attributes": {
     "#type": "container",
     "#tree": true,
     "#attributes": {
-      "class": ["image-attributes"]
+      "class": [
+        "image-attributes"
+      ]
     },
     "attributes": {
       "src": {
@@ -82,20 +85,20 @@
         },
         "#default_value": "right"
       }
-    },
-    "actions": {
-      "#type": "actions",
-      "save_modal": {
-        "#type": "submit",
-        "#value": "Save",
-        "#attributes": {
-          "class": ["button--primary"]
-        },
-        "#submit": [],
-        "#ajax": {
-          "callback": ["Drupal\\embridge_ckeditor\\Form\\EmbridgeCkeditorImageDialog", "ajaxSave"],
-          "event": "click"
-        }
+    }
+  },
+  "actions": {
+    "#type": "actions",
+    "save_modal": {
+      "#type": "submit",
+      "#value": "Save",
+      "#attributes": {
+        "class": ["button--primary"]
+      },
+      "#submit": [],
+      "#ajax": {
+        "callback": ["Drupal\\embridge_ckeditor\\Form\\EmbridgeCkeditorImageDialog", "ajaxSave"],
+        "event": "click"
       }
     }
   }
