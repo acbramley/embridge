@@ -210,6 +210,13 @@ class EmbridgeCkeditorImageDialog extends FormBase {
     ];
     $form['asset']['search_link']['#weight'] = 100;
 
+    $form['attributes'] = [
+      '#type' => 'container',
+      '#tree' => TRUE,
+      '#attributes' => [
+        'class' => ['image-attributes'],
+      ],
+    ];
     $form['attributes']['src'] = [
       '#type' => 'value',
     ];
@@ -221,8 +228,6 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       '#type' => 'textfield',
       '#default_value' => $alt,
       '#maxlength' => 2048,
-      // Open wrapper div for left column.
-      '#prefix' => '<div class="image-attributes">',
     ];
 
     $conversion = isset($image_element['data-conversion']) ? $image_element['data-conversion'] : '';
@@ -250,8 +255,6 @@ class EmbridgeCkeditorImageDialog extends FormBase {
           'right' => $this->t('Right'),
         ],
         '#default_value' => $data_align,
-        // Close wrapper div for left column.
-        '#suffix' => '</div>',
       ];
     }
 
