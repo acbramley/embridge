@@ -41,7 +41,7 @@
       "#weight": 100
     }
   },
-  "attributes_wrapper": {
+  "attributes": {
     "#type": "container",
     "#tree": true,
     "#attributes": {
@@ -49,40 +49,38 @@
         "image-attributes"
       ]
     },
-    "attributes": {
-      "src": {
-        "#type": "value"
+    "src": {
+      "#type": "value"
+    },
+    "alt": {
+      "#title": "Alternative text",
+      "#description": "The alt text describes the image for non-sighted users. <br/>The alt text can remain empty only if the image conveys no meaning (is decorative only).",
+      "#type": "textfield",
+      "#default_value": "",
+      "#maxlength": 2048
+    },
+    "data-conversion": {
+      "#title": "Image size",
+      "#description": "Choose the image size conversion to display.",
+      "#type": "select",
+      "#options": {
+        "thumb": "thumb",
+        "medium": "medium",
+        "large": "large"
       },
-      "alt": {
-        "#title": "Alternative text",
-        "#description": "The alt text describes the image for non-sighted users. <br/>The alt text can remain empty only if the image conveys no meaning (is decorative only).",
-        "#type": "textfield",
-        "#default_value": "",
-        "#maxlength": 2048
+      "#default_value": ""
+    },
+    "data-align": {
+      "#title": "Align",
+      "#description": "How the image will align within the content.",
+      "#type": "select",
+      "#options": {
+        "none": "None",
+        "left": "Left",
+        "center": "Center",
+        "right": "Right"
       },
-      "data-conversion": {
-        "#title": "Image size",
-        "#description": "Choose the image size conversion to display.",
-        "#type": "select",
-        "#options": {
-          "thumb": "thumb",
-          "medium": "medium",
-          "large": "large"
-        },
-        "#default_value": ""
-      },
-      "data-align": {
-        "#title": "Align",
-        "#description": "How the image will align within the content.",
-        "#type": "select",
-        "#options": {
-          "none": "None",
-          "left": "Left",
-          "center": "Center",
-          "right": "Right"
-        },
-        "#default_value": ""
-      }
+      "#default_value": ""
     }
   },
   "actions": {
