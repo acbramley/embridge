@@ -30,6 +30,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
   const EXAMPLE_LOGIN_URL = 'http://www.example.com/mediadb/services/authentication/login';
   const EXAMPLE_UPLOAD_URL = 'http://www.example.com/mediadb/services/module/asset/create';
   const EXAMPLE_SEARCH_URL = 'http://www.example.com/mediadb/services/module/asset/search';
+  const EXAMPLE_TIMEOUT = 10;
 
   /**
    * HTTP Client.
@@ -101,6 +102,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       'uri' => 'http://www.example.com',
       'username' => 'admin',
       'password' => 'admin',
+      'timeout' => self::EXAMPLE_TIMEOUT,
     ];
     $this->sampleConfig = $sample_config;
 
@@ -112,6 +114,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
           ['uri', $sample_config['uri']],
           ['username', $sample_config['username']],
           ['password', $sample_config['password']],
+          ['timeout', $sample_config['timeout']],
         ]
       ));
 
@@ -126,7 +129,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->emdbClient = new EnterMediaDbClient($this->configFactory, $this->client, $this->serializer, $this->fileSystem);
 
     $this->defaultOptions = [
-      'timeout' => 5,
+      'timeout' => self::EXAMPLE_TIMEOUT,
       'cookies' => new SessionCookieJar('SESSION_STORAGE', TRUE),
     ];
     $this->defaultLoginOptions = $this->defaultOptions + [
