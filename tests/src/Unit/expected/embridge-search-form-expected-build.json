@@ -125,43 +125,51 @@
       }
     ]
   },
-  "page_previous": {
-    "#type": "submit",
-    "#value": "Previous page",
-    "#submit": [
-      [
-        {},
-        "previousPageSubmit"
+  "pagination": {
+    "#type": "container",
+    "#attributes": {
+      "class": [
+        "pagination"
       ]
-    ],
-    "#ajax": {
-      "callback": [
-        {},
-        "searchAjax"
-      ],
-      "wrapper": "embridge-results-wrapper",
-      "effect": "fade"
     },
-    "#disabled": true
-  },
-  "page_next": {
-    "#type": "submit",
-    "#value": "Next page",
-    "#submit": [
-      [
-        {},
-        "nextPageSubmit"
-      ]
-    ],
-    "#ajax": {
-      "callback": [
-        {},
-        "searchAjax"
+    "page_previous": {
+      "#type": "submit",
+      "#value": "Previous page",
+      "#submit": [
+        [
+          {},
+          "previousPageSubmit"
+        ]
       ],
-      "wrapper": "embridge-results-wrapper",
-      "effect": "fade"
+      "#ajax": {
+        "callback": [
+          {},
+          "searchAjax"
+        ],
+        "wrapper": "embridge-results-wrapper",
+        "effect": "fade"
+      },
+      "#disabled": true
     },
-    "#disabled": true
+    "page_next": {
+      "#type": "submit",
+      "#value": "Next page",
+      "#submit": [
+        [
+          {},
+          "nextPageSubmit"
+        ]
+      ],
+      "#ajax": {
+        "callback": [
+          {},
+          "searchAjax"
+        ],
+        "wrapper": "embridge-results-wrapper",
+        "effect": "fade"
+      },
+      "#disabled": true
+    }
   },
   "result_chosen": {
     "#type": "hidden",

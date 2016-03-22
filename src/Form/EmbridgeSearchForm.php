@@ -273,7 +273,13 @@ class EmbridgeSearchForm extends FormBase {
       ];
     }
     // Add "previous page" pager.
-    $form['page_previous'] = [
+    $form['pagination'] = [
+      '#type' => 'container',
+      '#attributes' => [
+        'class' => ['pagination'],
+      ],
+    ];
+    $form['pagination']['page_previous'] = [
       '#type' => 'submit',
       '#value' => $this->t('Previous page'),
       '#submit' => [[$this, 'previousPageSubmit']],
@@ -287,7 +293,7 @@ class EmbridgeSearchForm extends FormBase {
     ];
 
     // Add "next page" pager.
-    $form['page_next'] = [
+    $form['pagination']['page_next'] = [
       '#type' => 'submit',
       '#value' => $this->t('Next page'),
       '#submit' => [[$this, 'nextPageSubmit']],

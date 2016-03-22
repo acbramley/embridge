@@ -78,7 +78,7 @@ class EmbridgeCkeditorImageWizard extends FormWizardBase {
     return array(
       [
         'form' => 'Drupal\embridge\Form\EmbridgeSearchForm',
-        'title' => $this->t('Search assets'),
+        'title' => $this->t('Search asset library'),
         'submit' => ['::stepOneSubmit'],
       ],
       [

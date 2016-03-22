@@ -39,23 +39,31 @@
     "search_link": {
       "#type": "link",
       "#url": {},
-      "#title": "Search existing"
+      "#title": "Search asset library",
+      "#weight": 100
     }
   },
   "attributes": {
+    "#type": "container",
+    "#tree": true,
+    "#attributes": {
+      "class": [
+        "image-attributes"
+      ]
+    },
     "src": {
       "#type": "value"
     },
     "alt": {
       "#title": "Alternative text",
-      "#description": "If the image imparts meaning, describe it in the alt text. If the image is purely decorative, the alt text can remain blank.",
+      "#description": "The alt text describes the image for non-sighted users. <br/>The alt text can remain empty only if the image conveys no meaning (is decorative only).",
       "#type": "textfield",
       "#default_value": "test image",
       "#maxlength": 2048
     },
     "data-conversion": {
-      "#title": "Conversion",
-      "#description": "Choose the conversion to display",
+      "#title": "Image size",
+      "#description": "Choose the image size conversion to display.",
       "#type": "select",
       "#options": {
         "thumb": "thumb",
@@ -66,6 +74,7 @@
     },
     "data-align": {
       "#title": "Align",
+      "#description": "How the image will align within the content.",
       "#type": "select",
       "#options": {
         "none": "None",
@@ -81,6 +90,9 @@
     "save_modal": {
       "#type": "submit",
       "#value": "Save",
+      "#attributes": {
+        "class": ["button--primary"]
+      },
       "#submit": [],
       "#ajax": {
         "callback": ["Drupal\\embridge_ckeditor\\Form\\EmbridgeCkeditorImageDialog", "ajaxSave"],

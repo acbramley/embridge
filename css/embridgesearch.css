@@ -101,3 +101,15 @@
 .hidden-button.button {
   display: none;
 }
+
+.pagination {
+  text-align: center;
+  padding: 0.5rem 1.75rem 0.5rem 0;
+}
+
+/* Temp until wizard button wrapping markup updated */
+.embridge-search-form .button--primary {
+  float: left;
+  clear: both;
+  margin: 1.25rem 0 0.25rem;
+}
