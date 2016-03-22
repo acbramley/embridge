@@ -28,6 +28,12 @@
         2097152
       ]
     },
+    "#pre_render": [
+      [
+        "Drupal\\embridge_ckeditor\\Form\\EmbridgeCkeditorImageDialog",
+        "preRenderAssetElement"
+      ]
+    ],
     "#allow_search": false,
     "#required": true,
     "search_link": {
@@ -83,14 +89,8 @@
         "#type": "submit",
         "#value": "Save",
         "#submit": [],
-        "#attributes": {
-          "class": ["button--primary"]
-        },
         "#ajax": {
-          "callback": [
-            {},
-            "ajaxSave"
-          ],
+          "callback": ["Drupal\\embridge_ckeditor\\Form\\EmbridgeCkeditorImageDialog", "ajaxSave"],
           "event": "click"
         }
       }

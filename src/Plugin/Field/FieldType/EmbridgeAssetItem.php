@@ -7,6 +7,8 @@
 namespace Drupal\embridge\Plugin\Field\FieldType;
 
 use Drupal\Component\Utility\Bytes;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\embridge\Entity\EmbridgeCatalog;
@@ -43,6 +45,7 @@ class EmbridgeAssetItem extends FileItem {
   public static function defaultFieldSettings() {
     return array(
       'catalog_id' => '',
+      'library_id' => '',
       'allow_search' => 0,
     ) + parent::defaultFieldSettings();
   }
@@ -88,6 +91,7 @@ class EmbridgeAssetItem extends FileItem {
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
     $element = array();
     $field_settings = $this->getSettings();
+    $embridge_settings = \Drupal::config('embridge.settings');
 
     /** @var EmbridgeCatalog[] $entities */
     $entities = EmbridgeCatalog::loadMultiple();
@@ -104,6 +108,17 @@ class EmbridgeAssetItem extends FileItem {
       '#options' => $options,
       '#description' => t("Select the Catalog to source media from for this field."),
       '#required' => TRUE,
+      '#weight' => 6,
+    );
+
+    $libraries_admin = Link::fromTextAndUrl('libraries admin', Url::fromUri($embridge_settings->get('uri') . '/' . $field_settings['catalog_id'] . '/views/modules/library/index.html'));
+    $element['library_id'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Library'),
+      '#default_value' => $field_settings['library_id'],
+      '#description' => t("Limit uploads via this field to a specific library. This will also provide a default library on the asset search advanced filter. To identify the library ID, select the library on the @libraries_admin page and note the ID.", ['@libraries_admin' => $libraries_admin->toString()]),
+      '#required' => FALSE,
+      '#size' => 10,
       '#weight' => 6,
     );
 

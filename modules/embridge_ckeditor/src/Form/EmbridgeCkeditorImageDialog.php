@@ -15,6 +15,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\embridge\Element\EmbridgeAsset;
 use Drupal\embridge\EnterMediaAssetHelperInterface;
 use Drupal\filter\Entity\FilterFormat;
 use Drupal\Core\Ajax\AjaxResponse;
@@ -189,6 +190,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       ]
     );
 
+    $class = get_class($this);
     $form['asset'] = [
       'preview' => [
         '#theme' => 'image',
@@ -203,6 +205,9 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       '#upload_validators' => [
         'validateFileExtensions' => [$allowed_extensions],
         'validateFileSize' => [$max_filesize],
+      ],
+      '#pre_render' => [
+        [$class, 'preRenderAssetElement'],
       ],
       '#allow_search' => FALSE,
       '#required' => TRUE,
@@ -267,7 +272,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       // No regular submit-handler. This form only works via JavaScript.
       '#submit' => [],
       '#ajax' => [
-        'callback' => [$this, 'ajaxSave'],
+        'callback' => [$class, 'ajaxSave'],
         'event' => 'click',
       ],
       '#attributes' => [
@@ -283,6 +288,26 @@ class EmbridgeCkeditorImageDialog extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
+  }
+
+  /**
+   * Pre render hook for asset element.
+   *
+   * Disables the remove button after running the normal pre render function.
+   * There's a bug with the remove button post search, and users can just delete
+   * the image if they need to remove it from the editor.
+   *
+   * @param array $element
+   *   The element.
+   *
+   * @return array
+   *   Altered element.
+   */
+  public static function preRenderAssetElement(array $element) {
+    $element = EmbridgeAsset::preRenderEmbridgeAsset($element);
+    $element['remove_button']['#access'] = FALSE;
+
+    return $element;
   }
 
   /**

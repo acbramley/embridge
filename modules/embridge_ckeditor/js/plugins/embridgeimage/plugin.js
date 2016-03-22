@@ -87,8 +87,8 @@
 
           // Parse attributes using originalUpcast adding our custom attributes
           element = originalUpcast.call(this, element, data);
-          data['data-conversion'] = element.attributes['data-conversion'];
-          data['data-align'] = element.attributes['data-align'];
+          data['conversion'] = element.attributes['data-conversion'];
+          data['align'] = element.attributes['data-align'];
 
           if (element.parent.name === 'a') {
             element = element.parent;
@@ -102,7 +102,7 @@
         // @see core/modules/ckeditor/js/plugins/drupalimage/plugin.js
         CKEDITOR.tools.extend(widgetDefinition._mapDataToDialog, {
           'align': 'data-align',
-          'data-conversion': 'data-conversion'
+          'conversion': 'data-conversion'
         });
 
         // Low priority to ensure drupalimage's event handler runs first.
@@ -125,7 +125,7 @@
     // Create a new command with the desired exec function
     var editor = event.editor;
     var overridecmd = new CKEDITOR.command(editor, {
-      allowedContent: 'img[alt,!src,width,height,!data-entity-type,!data-entity-uuid,!data-align, !data-conversion]',
+      allowedContent: 'img[alt,!src,width,height,!data-entity-type,!data-entity-uuid,!data-align,!data-conversion]',
       requiredContent: 'img[alt,src,width,height,data-entity-type,data-entity-uuid]',
       modes: {wysiwyg: 1},
       canUndo: true,

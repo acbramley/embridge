@@ -30,6 +30,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
   const EXAMPLE_LOGIN_URL = 'http://www.example.com/mediadb/services/authentication/login';
   const EXAMPLE_UPLOAD_URL = 'http://www.example.com/mediadb/services/module/asset/create';
   const EXAMPLE_SEARCH_URL = 'http://www.example.com/mediadb/services/module/asset/search';
+  const EXAMPLE_TIMEOUT = 10;
 
   /**
    * HTTP Client.
@@ -101,6 +102,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       'uri' => 'http://www.example.com',
       'username' => 'admin',
       'password' => 'admin',
+      'timeout' => self::EXAMPLE_TIMEOUT,
     ];
     $this->sampleConfig = $sample_config;
 
@@ -112,6 +114,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
           ['uri', $sample_config['uri']],
           ['username', $sample_config['username']],
           ['password', $sample_config['password']],
+          ['timeout', $sample_config['timeout']],
         ]
       ));
 
@@ -126,7 +129,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $this->emdbClient = new EnterMediaDbClient($this->configFactory, $this->client, $this->serializer, $this->fileSystem);
 
     $this->defaultOptions = [
-      'timeout' => 5,
+      'timeout' => self::EXAMPLE_TIMEOUT,
       'cookies' => new SessionCookieJar('SESSION_STORAGE', TRUE),
     ];
     $this->defaultLoginOptions = $this->defaultOptions + [
@@ -237,7 +240,7 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->with($method, self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
       ->willThrowException(new RequestException('', new Request($method, self::EXAMPLE_LOGIN_URL), NULL));
 
-    $this->setExpectedException('Exception', 'Error connecting to EMDB backend');
+    $this->setExpectedExceptionRegExp('Exception', '/Error connecting to EMDB backend: .*/');
     $this->emdbClient->login();
   }
 
@@ -407,6 +410,111 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->will($this->returnSelf());
 
     $this->emdbClient->upload($mock_asset);
+  }
+
+  /**
+   * Tests upload() metadata sanitisation.
+   *
+   * @covers ::login
+   * @covers ::upload
+   * @covers ::doRequest
+   *
+   * @test
+   */
+  public function uploadCorrectlySantitisesMetadata() {
+    $mock_login_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_login_response
+      ->expects($this->once())
+      ->method('getStatusCode')
+      ->willReturn(200);
+
+    $mock_login_response
+      ->expects($this->once())
+      ->method('getBody')
+      ->willReturn(file_get_contents('expected/login-expected-good-response.json', TRUE));
+
+    // This sucks, returnValueMap wasn't working though.
+    $this->client
+      ->expects($this->at(0))
+      ->method('request')
+      ->with('POST', self::EXAMPLE_LOGIN_URL, $this->defaultLoginOptions)
+      ->willReturn($mock_login_response);
+
+    $mock_upload_response = $this->getMockBuilder('\GuzzleHttp\Psr7\Response')->disableOriginalConstructor()->getMock();
+    $mock_upload_response
+      ->expects($this->once())
+      ->method('getStatusCode')
+      ->willReturn(200);
+
+    $mock_upload_response
+      ->expects($this->once())
+      ->method('getBody')
+      ->willReturn(file_get_contents('expected/upload-expected-good-response.json', TRUE));
+
+    $expected_realpath = dirname(__FILE__) . '/expected/cat3.png';
+    $mock_sourcepath = 'public://test123';
+    $expected_filename = 'cat3.png';
+
+    $unsanitised_metadata = [
+      'is_string' => 'abc',
+      'is_integer' => 123,
+      // Following should be stripped.
+      'is_array' => ['a' => 1, 'b' => 2],
+      'is_object' => (object) ['a' => 1, 'b' => 2],
+      // Should correct to a string, as libraries fails with integer IDs.
+      'libraries' => 101,
+    ];
+
+    $json_values_expected = [
+      'id' => NULL,
+      'description' => $expected_filename,
+      'is_string' => 'abc',
+      'is_integer' => 123,
+      'libraries' => '101',
+    ];
+    $body = [
+      'multipart' => [
+        [
+          'name' => 'jsonrequest',
+          'contents' => $this->serializer->encode($json_values_expected),
+        ],
+        [
+          'name'     => 'file',
+          'contents' => file_get_contents($expected_realpath),
+          'filename' => $expected_filename,
+        ],
+      ],
+    ];
+    $options = $this->defaultOptions + $body;
+
+    $this->fileSystem
+      ->expects($this->once())
+      ->method('realpath')
+      ->with($mock_sourcepath)
+      ->willReturn($expected_realpath);
+
+    $this->client
+      ->expects($this->at(1))
+      ->method('request')
+      ->with('POST', self::EXAMPLE_UPLOAD_URL, $options)
+      ->willReturn($mock_upload_response);
+
+    /** @var \Drupal\embridge\EmbridgeAssetEntityInterface|\PHPUnit_Framework_MockObject_MockObject $mock_asset */
+    $mock_asset = $this->getMockBuilder('\Drupal\embridge\EmbridgeAssetEntityInterface')->disableOriginalConstructor()->getMock();
+    $mock_asset
+      ->expects($this->once())
+      ->method('getSourcePath')
+      ->willReturn($mock_sourcepath);
+    $mock_asset
+      ->expects($this->once())
+      ->method('getOriginalId')
+      ->willReturn(NULL);
+    $mock_asset
+      ->expects($this->once())
+      ->method('getFileName')
+      ->willReturn($expected_filename);
+
+    $this->emdbClient->upload($mock_asset, $unsanitised_metadata);
   }
 
   /**
