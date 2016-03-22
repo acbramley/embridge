@@ -40,10 +40,10 @@
       "#type": "link",
       "#url": {},
       "#title": "Search asset library",
-      "#weight": -100
+      "#weight": 100
     }
   },
-  "attributes": {
+  "attributes_wrapper": {
     "#type": "container",
     "#tree": true,
     "#attributes": {

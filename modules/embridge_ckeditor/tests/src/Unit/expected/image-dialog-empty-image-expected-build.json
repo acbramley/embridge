@@ -38,7 +38,7 @@
       "#type": "link",
       "#url": {},
       "#title": "Search asset library",
-      "#weight": -100
+      "#weight": 100
     }
   },
   "attributes_wrapper": {
