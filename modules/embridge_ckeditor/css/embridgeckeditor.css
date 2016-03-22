@@ -38,10 +38,3 @@ form > [id^="ajax-wrapper"] {
   display: block;
   margin-left: 280px;
 }
-
-/* Temp until wizard button wrapping markup updated */
-.image-attributes + .button {
-  float: left;
-  clear: both;
-  margin: 1.25rem 0 0.25rem;
-}
