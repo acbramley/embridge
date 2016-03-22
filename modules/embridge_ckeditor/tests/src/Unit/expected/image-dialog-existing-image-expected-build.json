@@ -88,6 +88,9 @@
       "save_modal": {
         "#type": "submit",
         "#value": "Save",
+        "#attributes": {
+          "class": ["button--primary"]
+        },
         "#submit": [],
         "#ajax": {
           "callback": ["Drupal\\embridge_ckeditor\\Form\\EmbridgeCkeditorImageDialog", "ajaxSave"],
