@@ -272,7 +272,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       // No regular submit-handler. This form only works via JavaScript.
       '#submit' => [],
       '#ajax' => [
-        'callback' => [$class, 'ajaxSave'],
+        'callback' => [$this, 'ajaxSave'],
         'event' => 'click',
       ],
       '#attributes' => [
