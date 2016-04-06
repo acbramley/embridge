@@ -23,6 +23,8 @@ use GuzzleHttp\Psr7\Request;
  *
  * @package Drupal\Tests\embridge\Unit
  *
+ * @group embridge
+ *
  * @coversDefaultClass \Drupal\embridge\EnterMediaDbClient
  */
 class EnterMediaDbClientTest extends UnitTestCase {
