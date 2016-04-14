@@ -71,7 +71,7 @@ class EmbridgeImage extends PluginBase implements CKEditorPluginInterface, CKEdi
     $plugin_settings += [
       'directory' => 'embridge-inline-images',
       'max_size' => '',
-      'catalog' => '',
+      'catalog_id' => '',
       'enabled' => FALSE,
     ];
     $sub_form = [];
@@ -123,7 +123,7 @@ class EmbridgeImage extends PluginBase implements CKEditorPluginInterface, CKEdi
     $sub_form['catalog_id'] = [
       '#type' => 'select',
       '#title' => t('Catalog'),
-      '#default_value' => $plugin_settings['catalog'],
+      '#default_value' => $plugin_settings['catalog_id'],
       '#options' => $options,
       '#description' => t("Select the Catalog to source media from for this field."),
       '#required' => TRUE,
