@@ -25,6 +25,8 @@ if (!defined('FILE_STATUS_PERMANENT')) {
  *
  * @package Drupal\Tests\embridge\Unit
  *
+ * @group embridge
+ *
  * @coversDefaultClass \Drupal\embridge\EnterMediaAssetHelper
  */
 class EnterMediaAssetHelperTest extends UnitTestCase {

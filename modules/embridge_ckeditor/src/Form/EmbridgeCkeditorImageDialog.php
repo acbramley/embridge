@@ -200,6 +200,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       '#title' => $this->t('Image'),
       '#type' => 'embridge_asset',
       '#catalog_id' => $embridge_image_settings['catalog_id'],
+      '#library_id' => $embridge_image_settings['library_id'],
       '#upload_location' => 'public://' . $embridge_image_settings['directory'],
       '#default_value' => $asset_id ? [$asset_id] : NULL,
       '#upload_validators' => [
@@ -272,7 +273,7 @@ class EmbridgeCkeditorImageDialog extends FormBase {
       // No regular submit-handler. This form only works via JavaScript.
       '#submit' => [],
       '#ajax' => [
-        'callback' => [$class, 'ajaxSave'],
+        'callback' => [$this, 'ajaxSave'],
         'event' => 'click',
       ],
       '#attributes' => [

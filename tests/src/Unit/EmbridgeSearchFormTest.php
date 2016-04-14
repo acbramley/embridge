@@ -25,6 +25,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  *
  * @package Drupal\Tests\embridge\Unit
  *
+ * @group embridge
+ *
  * @coversDefaultClass \Drupal\embridge\Form\EmbridgeSearchForm
  */
 class EmbridgeSearchFormTest extends FormTestBase {

@@ -29,6 +29,8 @@ require_once 'embridge_ckeditor.test_functions.php';
  *
  * @package Drupal\Tests\embridge_ckeditor\Unit
  *
+ * @group embridge_ckeditor
+ *
  * @coversDefaultClass \Drupal\embridge_ckeditor\Form\EmbridgeCkeditorImageDialog
  */
 class EmbridgeCkeditorImageDialogTest extends FormTestBase {
