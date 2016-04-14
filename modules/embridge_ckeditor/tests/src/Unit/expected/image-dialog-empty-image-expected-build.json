@@ -16,6 +16,7 @@
     "#title": "Image",
     "#type": "embridge_asset",
     "#catalog_id": "test_catalog",
+    "#library_id": 101,
     "#upload_location": "public:\/\/test-directory",
     "#default_value": null,
     "#upload_validators": {
@@ -95,10 +96,7 @@
       },
       "#submit": [],
       "#ajax": {
-        "callback": [
-          "Drupal\\embridge_ckeditor\\Form\\EmbridgeCkeditorImageDialog",
-          "ajaxSave"
-        ],
+        "callback": [{}, "ajaxSave"],
         "event": "click"
       }
     }
