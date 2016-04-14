@@ -299,7 +299,7 @@ class EmbridgeAssetEntity extends ContentEntityBase implements EmbridgeAssetEnti
       ->setDescription(t('The internal ID of the Embridge asset.'))
       ->setReadOnly(TRUE);
 
-    $fields['asset_id'] = BaseFieldDefinition::create('integer')
+    $fields['asset_id'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Asset ID'))
       ->setDescription(t('The Enter Media ID of the Embridge asset.'))
       ->setReadOnly(TRUE);
