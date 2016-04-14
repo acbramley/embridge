@@ -147,6 +147,7 @@ class EmbridgeCkeditorImageDialogTest extends FormTestBase {
     $catalog_id = 'test_catalog';
     $editor_settings['plugins']['embridgeimage']['embridge_image_upload'] = [
       'max_size' => '2 MB',
+      'library_id' => 101,
       'catalog_id' => $catalog_id,
       'directory' => 'test-directory',
     ];

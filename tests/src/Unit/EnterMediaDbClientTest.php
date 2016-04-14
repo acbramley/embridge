@@ -360,7 +360,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
     $expected_filename = 'cat3.png';
     $json_request = $this->serializer->encode(
       [
-        "id" => NULL,
         "description" => $expected_filename,
       ]
     );
@@ -391,10 +390,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->once())
       ->method('getSourcePath')
       ->willReturn($mock_sourcepath);
-    $mock_asset
-      ->expects($this->once())
-      ->method('getOriginalId')
-      ->willReturn(NULL);
     $mock_asset
       ->expects($this->once())
       ->method('getFileName')
@@ -468,7 +463,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
     ];
 
     $json_values_expected = [
-      'id' => NULL,
       'description' => $expected_filename,
       'is_string' => 'abc',
       'is_integer' => 123,
@@ -507,10 +501,6 @@ class EnterMediaDbClientTest extends UnitTestCase {
       ->expects($this->once())
       ->method('getSourcePath')
       ->willReturn($mock_sourcepath);
-    $mock_asset
-      ->expects($this->once())
-      ->method('getOriginalId')
-      ->willReturn(NULL);
     $mock_asset
       ->expects($this->once())
       ->method('getFileName')
