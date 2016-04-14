@@ -193,7 +193,6 @@ class EnterMediaDbClient implements EnterMediaDbClientInterface {
 
     // Build the main request data.
     $json_values = [
-      'id' => $asset->getOriginalId(),
       'description' => $filename,
     ];
     $json_values = array_merge($json_values, $metadata);
